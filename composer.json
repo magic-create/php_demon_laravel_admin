@@ -1,11 +1,11 @@
 {
-    "name": "comingdemon/admin",
+    "name": "comingdemon/admin-laravel",
     "type": "library",
-    "description": "Universal PHP admin quick development library",
+    "description": "Universal PHP admin quick development library for laravel",
     "homepage": "http://www.m-create.cn",
     "keywords": [
         "comingdemon",
-        "admin"
+        "laravel-admin"
     ],
     "authors": [
         {
@@ -21,7 +21,7 @@
             "helpers.php"
         ],
         "psr-4": {
-            "Demon\\Admin\\": "src"
+            "Demon\\AdminLaravel\\": "src"
         }
     }
 }

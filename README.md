@@ -1,6 +1,8 @@
-# PHP Demon Admin Library
+# PHP Demon Admin Library For Laravel
 
 ## 框架说明
+
+本服务仅支持Laravel6+
 
 正常来说是内部开发使用的，外部使用也可以（水平有限，请慎用，可能会有漏洞或者性能问题）
 

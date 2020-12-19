@@ -8,7 +8,7 @@
  * Time: 23:15
  */
 
-namespace Demon\Admin;
+namespace Demon\AdminLaravel;
 
 use Illuminate\Config\Repository;
 

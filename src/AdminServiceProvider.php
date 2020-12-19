@@ -1,6 +1,6 @@
 <?php
 
-namespace Demon\Admin;
+namespace Demon\AdminLaravel;
 
 use Illuminate\Support\ServiceProvider;
 
