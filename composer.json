@@ -14,7 +14,9 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+		"laravel/framework": ">=6.0",
+		"comingdemon/demon": "dev-master"
     },
     "autoload": {
         "files": [
@@ -22,6 +24,13 @@
         ],
         "psr-4": {
             "Demon\\AdminLaravel\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Demon\\AdminLaravel\\AdminServiceProvider"
+            ]
         }
     }
 }
