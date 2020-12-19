@@ -1,0 +1,27 @@
+{
+    "name": "comingdemon/admin",
+    "type": "library",
+    "description": "Universal PHP admin quick development library",
+    "homepage": "http://www.m-create.cn",
+    "keywords": [
+        "comingdemon",
+        "admin"
+    ],
+    "authors": [
+        {
+            "name": "ComingDemon"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.2"
+    },
+    "autoload": {
+        "files": [
+            "helpers.php"
+        ],
+        "psr-4": {
+            "Demon\\Admin\\": "src"
+        }
+    }
+}
