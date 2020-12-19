@@ -57,7 +57,7 @@
         <div class="dropdown notification-list nav-pro-img">
             {{--用户头像--}}
             <a class="dropdown-toggle nav-link arrow-none waves-effect nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                <img src="{{$view->asset}}/images/users/1.jpg" alt="user" class="rounded-circle">
+                <img src="{{$view->asset}}/images/avatar/1.jpg" alt="user" class="rounded-circle">
             </a>
             {{--菜单部分--}}
             <div class="dropdown-menu dropdown-menu-right profile-dropdown">
