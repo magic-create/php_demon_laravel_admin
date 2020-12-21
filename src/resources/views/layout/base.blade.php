@@ -14,25 +14,26 @@
     <title>@yield('title',config('admin.web.title'))</title>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
-    <link rel="shortcut icon" href="{{$view->asset}}/images/favicon.ico">
+    <link rel="shortcut icon" href="/static/admin/images/favicon.ico">
+    @php($assetUrl = config('admin.web.cdnUrl') ?: '/static/admin/libs')
     {{--加载脚本--}}
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/metisMenu/2.7.9/metisMenu.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/node-waves/0.7.6/waves.min.js"></script>
+    <script src="{{$assetUrl}}/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{{$assetUrl}}/metisMenu/2.7.9/metisMenu.min.js"></script>
+    <script src="{{$assetUrl}}/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
+    <script src="{{$assetUrl}}/node-waves/0.7.6/waves.min.js"></script>
     {{--启动应用--}}
-    <script src="{{$view->asset}}/js/app.js"></script>
+    <script src="/static/admin/js/app.js"></script>
     {{--加载脚本--}}
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/layui/2.5.7/layui.all.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>
+    <script src="{{$assetUrl}}/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
+    <script src="{{$assetUrl}}/layui/2.5.7/layui.all.min.js"></script>
+    <script src="{{$assetUrl}}/echarts/5.0.0/echarts.min.js"></script>
     {{--加载样式--}}
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="https://cdn.bootcdn.net/ajax/libs/metisMenu/2.7.9/metisMenu.min.css" rel="stylesheet" type="text/css">
-    <link href="https://cdn.bootcdn.net/ajax/libs/node-waves/0.7.6/waves.min.css" rel="stylesheet" type="text/css">
-    <link href="/static/library/layui/css/layui.css" rel="stylesheet" type="text/css">
-    <link href="{{$view->asset}}/css/style.css" rel="stylesheet" type="text/css">
-    <link href="{{$view->asset}}/css/layout_{{config('admin.web.style.layout')}}.css" rel="stylesheet" type="text/css">
+    <link href="{{$assetUrl}}/twitter-bootstrap/4.5.3/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="{{$assetUrl}}/metisMenu/2.7.9/metisMenu.min.css" rel="stylesheet" type="text/css">
+    <link href="{{$assetUrl}}/node-waves/0.7.6/waves.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/libs/layui/2.5.7/css/layui.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/layout_{{config('admin.web.style.layout')}}.css" rel="stylesheet" type="text/css">
     {{--挂载引入区域--}}
     @yield('link')
     <script>

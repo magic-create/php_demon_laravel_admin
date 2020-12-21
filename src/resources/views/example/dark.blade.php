@@ -1,6 +1,6 @@
 @extends('admin::preset.container')
 @section('container.link')
-    <link href="{{$view->asset}}/css/style_dark.css" rel="stylesheet" type="text/css">
+    <link href="/static/admin/css/style_dark.css" rel="stylesheet" type="text/css">
 @endsection
 @section('container.content')
     <h4 class="mt-0 header-title">Grid options</h4>

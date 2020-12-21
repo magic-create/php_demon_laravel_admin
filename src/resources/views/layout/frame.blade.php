@@ -6,8 +6,8 @@
                 {{--顶部左侧--}}
                 <div class="topbar-left">
                     <a href="{{adminUrl()}}" class="logo">
-                        <span><img src="{{$view->asset}}/images/logo-light.png" alt="{{config('admin.web.title')}}" title="{{config('admin.web.title')}}" height="18"></span>
-                        <i><img src="{{$view->asset}}/images/logo-sm.png" alt="{{config('admin.web.title')}}" title="{{config('admin.web.title')}}" height="22"></i>
+                        <span><img src="/static/admin/images/logo-light.png" alt="{{config('admin.web.title')}}" title="{{config('admin.web.title')}}" height="18"></span>
+                        <i><img src="/static/admin/images/logo-sm.png" alt="{{config('admin.web.title')}}" title="{{config('admin.web.title')}}" height="22"></i>
                     </a>
                 </div>
                 {{--自定义部分--}}
@@ -46,8 +46,8 @@
                     {{--顶部左侧--}}
                     <div class="logo">
                         <a href="{{adminUrl()}}" class="logo">
-                            <img src="{{$view->asset}}/images/logo-sm.png" alt="{{config('admin.web.title')}}" title="{{config('admin.web.title')}}" class="logo-small">
-                            <img src="{{$view->asset}}/images/logo.png" alt="{{config('admin.web.title')}}" title="{{config('admin.web.title')}}" class="logo-large">
+                            <img src="/static/admin/images/logo-sm.png" alt="{{config('admin.web.title')}}" title="{{config('admin.web.title')}}" class="logo-small">
+                            <img src="/static/admin/images/logo.png" alt="{{config('admin.web.title')}}" title="{{config('admin.web.title')}}" class="logo-large">
                         </a>
                     </div>
                     {{--自定义部分--}}
