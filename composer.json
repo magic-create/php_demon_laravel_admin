@@ -16,7 +16,8 @@
     "require": {
         "php": "^7.2",
 		"laravel/framework": ">=6.0",
-		"comingdemon/demon": "dev-master"
+		"comingdemon/demon": "dev-master",
+		"phpoffice/phpspreadsheet": "1.13"
     },
     "autoload": {
         "files": [
