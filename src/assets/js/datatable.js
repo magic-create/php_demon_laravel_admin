@@ -76,7 +76,7 @@ $(function(){
         $.dataTable.builder.on('draw', function(table){
             //  自定义复选框
             var id = '#' + table.target.id;
-            $(id + ' .i-checks').iCheck({checkboxClass:'$dataTableConfig->batchClass'});
+            $(id + ' .i-checks').iCheck({checkboxClass:$.dataTable.config.batchClass});
             $(id + ' th input:checkbox').iCheck('uncheck');
             var ids = id + ' td input[data-bind="batch"]:checkbox';
             //  刷新当前值
