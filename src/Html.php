@@ -115,7 +115,7 @@ class Html
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
-    public function button($title = '', $attribute = [], $type = 'a', $class = 'btn-xs btn-primary')
+    public function button($title = '', $attribute = [], $type = 'a', $class = 'btn-sm btn-primary')
     {
         //  属性列表
         $append = '';
@@ -139,7 +139,7 @@ class Html
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
-    public function batch($attribute = [], $class = 'i-checks')
+    public function batch($attribute = [], $class = 'i-checks hidden')
     {
         //  属性列表
         $append = '';
@@ -202,6 +202,8 @@ class Html
                     $parm = array_merge(object_to_array($data), $parm);
                     $data = bomber()->objectClone($data->data);
                 }
+                // 强制变更为数组
+                $data = object_to_array($data);
                 $keys = $parm['keys'] ?? '';
                 foreach ($data as $key => $val) {
                     // 如果是对象处理

@@ -226,7 +226,7 @@ class Spreadsheet
                         if (!is_file($file)) {
                             $content = file_get_contents($value);
                             if ($content) {
-                                File::instance()->create($cache, $content, $this->_config['cache']);
+                                bomber()->fileCreate($cache, $content, $this->_config['cache']);
                                 $images[$cache] = $file;
                             }
                             else
@@ -313,7 +313,7 @@ class Spreadsheet
                 //  开始写出
                 $writer = IOFactory::createWriter($sheet, ucfirst($format));
                 //  创建目录
-                File::instance()->mkdir(dirname($filename));
+                bomber()->dirMake(dirname($filename));
                 //  保存到文件
                 $writer->save($filename);
 

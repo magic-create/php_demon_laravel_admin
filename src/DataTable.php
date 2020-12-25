@@ -31,6 +31,11 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
     protected $config = [];
 
     /**
+     * @var array 预制配置信息
+     */
+    protected $preset = [];
+
+    /**
      * DataTable constructor.
      */
     public function __construct()
@@ -50,6 +55,8 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
      */
     public function render($view, $data = [], $mergeData = [])
     {
+        $this->getSearch($this->setSearch());
+
         return parent::render($view, $data, $mergeData);
     }
 
@@ -125,26 +132,40 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
      */
     public function getColumn($array = [])
     {
-        foreach ($array as $key => $val) {
+        foreach ($array as $key => &$val) {
+            //  批量选择器强制设定
+            if ($val['data'] == '_batch') {
+                $val['width'] = '22px';
+                $val['title'] = '';
+                $val['className'] = $val['data'];
+                $val['shrink'] = 1;
+                $val['reorder'] = $val['export'] = $val['search'] = $val['print'] = false;
+            }
+            //  操作列强制设定
+            if ($val['data'] == '_action') {
+                $val['className'] = $val['data'];
+                $val['shrink'] = 1;
+                $val['reorder'] = $val['export'] = $val['search'] = $val['print'] = false;
+            }
             //  默认排序关闭
-            $array[$key]['orderable'] = $val['orderable'] ?? ($val['reorder'] ?? false);
+            $val['orderable'] = $val['orderable'] ?? ($val['reorder'] ?? false);
             //  默认关联排序
-            if ($array[$key]['orderable'] && !is_bool($array[$key]['orderable']))
-                $array[$key]['orderData'] = $val['orderData'] ?? ($array[$key]['orderable'] ?? []);
+            if ($val['orderable'] && !is_bool($val['orderable']))
+                $val['orderData'] = $val['orderData'] ?? ($val['orderable'] ?? []);
             //  默认搜索关闭
-            $array[$key]['searchable'] = $val['searchable'] ?? ($val['search'] ?? false);
+            $val['searchable'] = $val['searchable'] ?? ($val['search'] ?? false);
             //  默认导出开启
-            $array[$key]['exportable'] = $val['exportable'] ?? ($val['export'] ?? true);
+            $val['exportable'] = $val['exportable'] ?? ($val['export'] ?? true);
             //  默认打印开启
-            $array[$key]['printable'] = $val['printable'] ?? ($val['print'] ?? true);
+            $val['printable'] = $val['printable'] ?? ($val['print'] ?? true);
             //  默认搜索关闭
-            $array[$key]['searchable'] = $val['searchable'] ?? ($val['search'] ?? false);
+            $val['searchable'] = $val['searchable'] ?? ($val['search'] ?? false);
             //  默认收缩权重（越大越被收缩）
-            $array[$key]['responsivePriority'] = $val['responsivePriority'] ?? ($val['shrink'] ?? 10000);
+            $val['responsivePriority'] = $val['responsivePriority'] ?? ($val['shrink'] ?? 10000);
             //  如果data是带.的表示关联查询，将其填补name，并且data去掉关联
-            if (!isset($array[$key]['name']) && strpos($array[$key]['data'], '.') !== false) {
-                $array[$key]['name'] = $array[$key]['data'];
-                $array[$key]['data'] = preg_replace('/.*\./', '', $array[$key]['data']);
+            if (!isset($val['name']) && strpos($val['data'], '.') !== false) {
+                $val['name'] = $val['data'];
+                $val['data'] = preg_replace('/.*\./', '', $val['data']);
             }
         }
 
@@ -182,7 +203,7 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
      *
      * @param array $data
      *
-     * @return mixed
+     * @return array
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -191,26 +212,42 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
         //  遍历预设内容给JS使用
         $value = [];
         foreach ($data as $key => $val) {
+            // 将name的表去掉
+            $name = $val['name'] ?? $val['data'];
+            if ($name == $val['data'] && $strrpos = strrpos($name, '.') !== false)
+                $data[$key]['name'] = $val['name'] = substr($name, $strrpos + 1);
             // 如果有预设默认值
             if (isset($val['value'])) {
-                if ($val['where'] ?? '' == 'range') {
-                    $value[$val['data'] . '__start'] = $val['value'][0] ?? '';
-                    $value[$val['data'] . '__end'] = $val['value'][1] ?? '';
+                if (($val['where'] ?? '') == 'range') {
+                    $value[$val['name'] . '__start'] = $val['value'][0] ?? '';
+                    $value[$val['name'] . '__end'] = $val['value'][1] ?? '';
                 }
-                else {
-                    $value[$val['data']] = $val['value'];
-                }
+                else
+                    $value[$val['name']] = $val['value'];
             }
             // 如果有参数的控件
             if (isset($val['attr'])) {
                 $data[$key]['attrHtml'] = '';
-                foreach ($val['attr'] as $k => $a) {
+                foreach ($val['attr'] as $k => $a)
                     $data[$key]['attrHtml'] .= ($k . '="' . $a . '"');
-                }
             }
         }
 
-        return view()->share(['searchList' => array_to_object($data), 'searchValue' => json_encode($value, JSON_UNESCAPED_UNICODE)]);
+        //  读取配置
+        $config = $this->getConfig($this->setConfig());
+        //  拼接参数
+        $config['serverParams'] = $config['serverParams'] ? : "function(data){data.search.list=$.dataTable.searchParams();}";
+        //  传递到视图
+        view()->share('dataTableSearch', array_to_object([
+            'status' => $config['searching'],
+            'template' => $config['searchTemplate'],
+            'form' => $config['searchForm'],
+            'list' => $data,
+            'value' => $value
+        ]));
+
+        //  返回配置
+        return $config;
     }
 
     /**
@@ -258,13 +295,14 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
         };
         //  遍历规则
         foreach ($list as $val) {
+            //  将name的表去掉
+            $val->name = $val->name ?? $val->data;
+            if ($val->name == $val->data && $strrpos = strrpos($val->name, '.') !== false)
+                $val->name = substr($val->name, $strrpos + 1);
             //  初始化where
             $val->where = $val->where ?? '=';
             //  如果是范围搜索，则拼接start和end
-            if ($val->where == 'range')
-                $val->value = [$format(arguer('search.list.' . ($val->name ?? $val->data) . '__start', ''), $val), $format(arguer('search.list.' . ($val->name ?? $val->data) . '__end', ''), $val)];
-            else
-                $val->value = $format(arguer('search.list.' . ($val->name ?? $val->data), ''), $val);
+            $val->value = $val->where == 'range' ? [$format(arguer("search.list.{$val->name}__start", ''), $val), $format(arguer("search.list.{$val->name}__end", ''), $val)] : $format(arguer("search.list.{$val->name}", ''), $val);
             //  初始化连接符
             $val->joint = $val->joint ?? 'and';
             // 如果有内容的话开始拼接where条件
@@ -337,6 +375,34 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
         return [];
     }
 
+
+    /**
+     * 设置私有信息
+     *
+     * @param      $key
+     * @param null $val
+     *
+     * @return $this
+     */
+    public function setPreset($key, $val = null)
+    {
+        if (is_string($key))
+            $this->preset[$key] = $val;
+        else
+            $this->preset = array_merge($this->preset, $key);
+
+        return $this;
+    }
+
+    /**
+     * 获取私有信息
+     * @return array
+     */
+    public function getPreset()
+    {
+        return $this->preset;
+    }
+
     /**
      * 表格配置定义
      *
@@ -348,29 +414,12 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
      */
     public function getConfig($custom = [])
     {
-        //  默认配置
-        $default = [
-            'stype' => [
-                'display' => true,
-            ],
-            'dom' => 'Blfrtip',
-            'autoWidth' => false,
-            'colReorder' => true,
-            'responsive' => false,
-            'searching' => true,
-            'searchDelay' => true,
-            'ordering' => true,
-            'stripeClasses' => ['odd', 'even'],
-            'processing' => true,
-            'info' => true,
-            'serverSide' => true,
-            'paging' => true,
-            'pagingType' => 'full_numbers',
-            'serverParams' => 'function(data){data.search.value=$(\'[data-search="like"]\').val();data.search.list=datatables.server();}',
-            'pageLength' => 30,
-            'lengthMenu' => [10, 30, 50, 100]
-        ];
-
+        //  读取并移除渲染配置
+        $render = config('admin.datatable.render') ? : [];
+        config(['admin.datatable.render' => null]);
+        //  更新到渲染器
+        foreach ($render as $key => $val)
+            config(["datatables-html.{$key}" => $val]);
         //  获取排序配置
         $order = $this->getOrder();
         //  默认排序
@@ -383,7 +432,6 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
         $custom['orderFixed']['post'] = $custom['orderFixed']['post'] ?? ($order['after'] ?? []);
         //  是否允许模糊搜索
         $custom['searchDelay'] = $custom['searchLike'] ?? false;
-
         //  获取按钮配置
         $custom['buttons'] = $custom['buttons'] ?? ($this->getButton() ?? []);
         //  默认三件套之导出
@@ -409,7 +457,7 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
 
         //  返回合并后的配置
         $this->custom = array_merge($custom);
-        $this->config = array_merge_recursive($default, $custom);
+        $this->config = array_merge(config('admin.datatable'), $this->preset, $custom);
 
         return $this->config;
     }
@@ -433,8 +481,6 @@ class DataTable extends \Yajra\DataTables\Services\DataTable
      */
     public function html()
     {
-        $this->getSearch($this->setSearch());
-
-        return $this->builder()->columns($this->getThead())->addTableClass($this->getClass())->parameters($this->getConfig($this->setConfig()));
+        return $this->builder()->columns($this->getThead())->addTableClass($this->getClass())->parameters($this->getSearch($this->setSearch()));
     }
 }
