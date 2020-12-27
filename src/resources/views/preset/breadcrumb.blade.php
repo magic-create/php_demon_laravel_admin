@@ -10,6 +10,7 @@
                     <li class="breadcrumb-item"><a href="javascript:">Tab</a></li>
                     <li class="breadcrumb-item active">Page</li>
                 </ol>
+                <div class="page-statis d-none d-sm-block"></div>
             </div>
         </div>
     </div>

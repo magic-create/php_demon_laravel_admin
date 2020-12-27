@@ -2,12 +2,12 @@
     @php
         $list = [
             [
-                'icon' => 'view-dashboard',
+                'icon' => 'tachometer-alt',
                 'title' => 'Menu-1',
                 'path' => 'javascript:',
             ],
             [
-                'icon' => 'memory',
+                'icon' => 'magic',
                 'title' => 'Menu-2',
                 'active' => true,
                 'list' => [
@@ -19,7 +19,7 @@
                 ]
             ],
             [
-                'icon' => 'medium',
+                'icon' => 'fingerprint',
                 'title' => 'Menu-3',
                 'path' => 'javascript:',
                 'count' => rand(1, 10),
@@ -51,13 +51,13 @@
                             <li class="{{($val->active ?? false) ? 'active' : ''}}">
                                 {{--标题区域--}}
                                 <a href="{{$val->list ?? null ? 'javascript:' : $val->path}}" class="waves-effect {{($val->active ?? false) ? 'active' : ''}}">
-                                    <i class="mdi mdi-{{($val->icon ?? null) ? $val->icon : 'format-list-bulleted-type'}}"></i>
+                                    <i class="fa fa-{{($val->icon ?? null) ? $val->icon : 'list'}}"></i>
                                     {{--数字提醒--}}
                                     @if($val->count ?? 0)
                                         <span class="badge badge-primary badge-pill float-right">{{$val->count}}</span>
                                     @endif
                                     {{--标题和箭头--}}
-                                    <span>{{$val->title}}@if(!($val->count ?? 0) && ($val->list ?? null))<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span>@endif</span>
+                                    <span>{{$val->title}}@if(!($val->count ?? 0) && ($val->list ?? null))<span class="float-right menu-arrow"><i class="fa fa-angle-right"></i></span>@endif</span>
                                 </a>
                                 {{--子菜单--}}
                                 @if($val->list ?? null)
@@ -85,7 +85,7 @@
                             <li class="has-submenu {{($val->active ?? false) ? 'active' : ''}}">
                                 {{--标题区域--}}
                                 <a href="{{$val->list ?? null ? 'javascript:' : $val->path}}">
-                                    <i class="mdi mdi-{{($val->icon ?? null) ? $val->icon : 'format-list-bulleted-type'}}"></i>
+                                    <i class="fa fa-{{($val->icon ?? null) ? $val->icon : 'list'}}"></i>
                                     <span>{{$val->title}}</span>
                                 </a>
                                 {{--子菜单--}}

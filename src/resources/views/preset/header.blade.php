@@ -61,11 +61,11 @@
             </a>
             {{--菜单部分--}}
             <div class="dropdown-menu dropdown-menu-right profile-dropdown">
-                <a class="dropdown-item" href="javascript:"><i class="mdi mdi-account-circle m-r-5"></i> Profile</a>
-                <a class="dropdown-item" href="javascript:"><i class="mdi mdi-wallet m-r-5"></i> My Wallet</a>
-                <a class="dropdown-item d-block" href="#"><span class="badge badge-success float-right">11</span><i class="mdi mdi-settings m-r-5"></i> Settings</a>
+                <a class="dropdown-item" href="javascript:"><i class="fa fa-user-circle m-r-5"></i> Profile</a>
+                <a class="dropdown-item" href="javascript:"><i class="fa fa-wallet m-r-5"></i> My Wallet</a>
+                <a class="dropdown-item d-block" href="#"><span class="badge badge-success float-right">11</span><i class="fa fa-cog m-r-5"></i> Settings</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" href="javascript:"><i class="mdi mdi-power text-danger"></i> Logout</a>
+                <a class="dropdown-item text-danger" href="javascript:"><i class="fa fa-power-off text-danger"></i> Logout</a>
             </div>
         </div>
     </li>

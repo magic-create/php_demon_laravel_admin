@@ -21,7 +21,7 @@
     <script src="{{$assetUrl}}/metisMenu/2.7.9/metisMenu.min.js"></script>
     <script src="{{$assetUrl}}/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
     <script src="{{$assetUrl}}/node-waves/0.7.6/waves.min.js"></script>
-    <script src="{{$assetUrl}}/select2/4.0.9/select2.full.min.js"></script>
+    <script src="{{$assetUrl}}/select2/4.0.9/js/select2.full.min.js"></script>
     <script src="{{$assetUrl}}/iCheck/1.0.3/icheck.min.js"></script>
     {{--启动应用--}}
     <script src="/static/admin/js/app.js"></script>
@@ -33,8 +33,9 @@
     <link href="{{$assetUrl}}/twitter-bootstrap/4.5.3/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="{{$assetUrl}}/metisMenu/2.7.9/metisMenu.min.css" rel="stylesheet" type="text/css">
     <link href="{{$assetUrl}}/node-waves/0.7.6/waves.min.css" rel="stylesheet" type="text/css">
-    <link href="{{$assetUrl}}/select2/4.0.9/select2.min.css" rel="stylesheet" type="text/css">
-    <link href="{{$assetUrl}}/iCheck/1.0.3/all.min.css" rel="stylesheet" type="text/css">
+    <link href="{{$assetUrl}}/select2/4.0.9/css/select2.min.css" rel="stylesheet" type="text/css">
+    <link href="{{$assetUrl}}/iCheck/1.0.3/skins/all.min.css" rel="stylesheet" type="text/css">
+    <link href="{{$assetUrl}}/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="/static/admin/libs/layui/2.5.7/css/layui.css" rel="stylesheet" type="text/css">
     <link href="/static/admin/css/style.css" rel="stylesheet" type="text/css">
     <link href="/static/admin/css/layout_{{config('admin.web.style.layout')}}.css" rel="stylesheet" type="text/css">
@@ -44,6 +45,7 @@
         window.$ = window.jQuery = layui.$;
         window.laydate = layui.laydate;
         window._token = '{{function_exists('csrf_token') ? csrf_token() : ''}}';
+        $.ajaxSetup({headers:{'X-CSRF-TOKEN':window._token}});
     </script>
     {{--挂载样式区域--}}
     @yield('style')

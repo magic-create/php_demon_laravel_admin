@@ -16,7 +16,7 @@
                     <ul class="list-inline menu-left mb-0">
                         <li class="float-left">
                             <button class="button-menu-mobile open-left waves-effect">
-                                <i class="mdi mdi-menu"></i>
+                                <i class="fa fa-bars"></i>
                             </button>
                         </li>
                     </ul>
