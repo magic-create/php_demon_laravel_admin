@@ -27,7 +27,7 @@ class AdminServiceProvider extends ServiceProvider
         //  加载视图
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'admin');
         //  单例化配置
-        $this->app->singleton('admin', function($app) { return new Avatar($app['config']); });
+        $this->app->singleton('admin', function($app) { return new Admin($app['config']); });
         //  前端资源
         $this->publishes([__DIR__ . '/assets' => public_path('static/admin')], 'admin');
     }

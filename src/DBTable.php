@@ -21,7 +21,7 @@ class DBTable
     /**
      * @var string[] 模板内容
      */
-    public $template = ['script' => '', 'search' => ''];
+    public $template = ['script' => '', 'search' => '', 'button' => ''];
 
     /**
      * @var array 自定义储存
@@ -69,10 +69,16 @@ class DBTable
     public $query = null;
 
     /**
+     * @var array 按钮定义
+     */
+    public $button = [];
+
+    /**
      * DataTable constructor.
      */
     public function __construct()
     {
+        $this->getConfig();
     }
 
     /**
@@ -97,8 +103,10 @@ class DBTable
     {
         //  读取总配置
         $this->config = $this->config ? : array_to_object(array_merge(config('admin.dbtable'), ['columns' => $this->getColumn()], $this->setConfig(), $this->getPreset()));
+        //  设置URL
+        $this->config->url = ($this->config->url ?? null) ? : url()->current();
         //  开启批量选择
-        if ($this->config->batch ?? false)
+        if (($this->config->batch ?? false) && !($this->config->columns[0]->checkbox ?? false))
             array_unshift($this->config->columns, ['checkbox' => true]);
 
         //  返回配置
@@ -106,12 +114,14 @@ class DBTable
     }
 
     /**
-     * 设置私有信息
+     * 设置前置配置
      *
      * @param      $key
      * @param null $val
      *
      * @return $this
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function setPreset($key, $val = null)
     {
@@ -119,13 +129,17 @@ class DBTable
             $this->preset[$key] = $val;
         else
             $this->preset = array_merge($this->preset, $key);
+        //  合并到配置项
+        $this->config = bomber()->objectMerge($this->config, $this->preset);
 
         return $this;
     }
 
     /**
-     * 获取私有信息
+     * 获取前置配置
      * @return array
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function getPreset()
     {
@@ -135,6 +149,8 @@ class DBTable
     /**
      * 设置额外字段
      * @return array
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function setField()
     {
@@ -144,10 +160,12 @@ class DBTable
     /**
      * 设置字段
      * @return array
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function getField()
     {
-        return $this->field += $this->setField();
+        return $this->field = $this->setField() + $this->field;
     }
 
     /**
@@ -164,10 +182,24 @@ class DBTable
     /**
      * 表格按钮定义
      * @return array
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function getButton()
     {
-        return $this->setButton();
+        //  循环处理
+        $list = $this->setButton();
+        foreach ($list as $key => &$val) {
+            $val['text'] = $val['text'] ?? '';
+            $val['class'] = ($val['class'] ?? '') ? : $this->config->toolbarButton ?? 'btn btn-secondary';
+            $val['attr'] = $val['attr'] ?? [];
+            $attribute = '';
+            foreach ($val['attr'] as $k => $v)
+                $attribute += " {$k}='$v'";
+            $val['html'] = "<button class='{$val['class']}' {$attribute} data-button-key='{$key}'>{$val['text']}</button>";
+        }
+
+        return $this->button = array_to_object($list);
     }
 
     /**
@@ -224,11 +256,14 @@ class DBTable
                 $val['data'] = preg_replace('/.*\./', '', $val['data']);
                 $this->field[$val['data']] = $val['name'];
             }
-            else if ($val['field'] ?? $val['data'])
+            else if (!($val['custom'] ?? false))
                 $this->field[$val['data']] = $val['data'];
             //  对应字段
             $val['field'] = $val['field'] ?? $val['data'];
             unset($val['data']);
+            //  是否有事件
+            if ($val['action'] ?? false && !(($val['events'] ?? null)))
+                $val['events'] = ($this->config->namespace ?? '$.dbTable') . '.' . ($this->config->actionEvents ?? 'event');
         }
 
         //  返回字段
@@ -238,6 +273,8 @@ class DBTable
     /**
      * 设置格式化
      * @return array
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function setFormat()
     {
@@ -303,6 +340,8 @@ class DBTable
     /**
      * 表格排序定义
      * @return array
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function getOrder()
     {
@@ -369,6 +408,8 @@ class DBTable
      * @param null $text
      *
      * @return array
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
     public function setFuzzy($text = null)
     {
@@ -394,6 +435,8 @@ class DBTable
      * @param null $text
      *
      * @return array
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
     public function getFuzzy($text = null)
     {
@@ -406,6 +449,8 @@ class DBTable
      * @param array $array
      *
      * @return array
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
     public function setSearchs($array = [])
     {
@@ -514,6 +559,8 @@ class DBTable
      * @param array $array
      *
      * @return array
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
     public function getSearchs($array = [])
     {
@@ -526,6 +573,8 @@ class DBTable
      * @param $query
      *
      * @return array
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
     public function setStatis($query)
     {
@@ -538,6 +587,8 @@ class DBTable
      * @param $query
      *
      * @return array
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
     public function getStatis($query)
     {
@@ -546,7 +597,9 @@ class DBTable
 
     /**
      * 查询构造器
-     * @return Model
+     * @return Model|DB
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function setQuery()
     {
@@ -558,7 +611,9 @@ class DBTable
      *
      * @param bool $structure
      *
-     * @return Model|null
+     * @return Model|DB|null
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
     public function getQuery($structure = false)
     {
@@ -608,7 +663,9 @@ class DBTable
      * @param array $data
      * @param null  $content
      *
-     * @return $this|Illuminate\Contracts\View\View
+     * @return $this|string
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function template($type, $data = [], $content = null)
     {
@@ -626,23 +683,39 @@ class DBTable
     /**
      * 输出脚本内容
      *
-     * @param null   $script
+     * @param null   $content
      * @param string $attributes
      *
-     * @return HtmlString
+     * @return string
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
-    public function script($content = null, $attributes = 'id="dbTableScript" type="text/javascript"')
+    public function script($content = null, $attributes = 'type="text/javascript"')
     {
+        //  获取事件
+        $events = [];
+        foreach ($this->column as $key => $val) {
+            if ($val['events'] ?? null)
+                $events[] = "{$val['events']}={$val['events']}||{}";
+        }
         //  生成脚本
-        $content = $content ? : new HtmlString(sprintf($this->template('script'), $this->config->namespace ?? '$.dbTable', $this->config->id ?? 'dbTable', json_encode($this->config)));
+        $content = $content ? : new HtmlString(sprintf($this->template('script'), $this->config->namespace ?? '$.dbTable', $this->config->id ?? 'dbTable', json_encode($this->config), implode(';', $events)));
+        //  脚本执行后是否删除
+        if (!config('app.debug'))
+            $content .= '$(function(){$("#dbTableScript").remove()})';
 
         //  返回视图文本
-        return (new HtmlString("<script {$attributes}>{$content}</script>\n"))->toHtml();
+        return (new HtmlString("<script id='dbTableScript' {$attributes}>{$content}</script>\n"))->toHtml();
     }
 
     /**
      * 输出搜索面板
+     *
+     * @param null $content
+     *
      * @return string
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
     public function search($content = null)
     {
@@ -654,8 +727,31 @@ class DBTable
     }
 
     /**
-     * 输出表格内容
+     * 输出按钮区域
+     *
+     * @param null $content
+     *
      * @return string
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function button($content = null)
+    {
+        //  生成脚本
+        $content = $content ? : new HtmlString($this->template('button', ['dbTableConfig' => $this->config, 'dbTableButton' => $this->button]));
+
+        //  返回视图文本
+        return (new HtmlString("{$content}\n"))->toHtml();
+    }
+
+    /**
+     * 输出表格内容
+     *
+     * @param null $content
+     *
+     * @return string
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
     public function table($content = null)
     {
@@ -664,8 +760,23 @@ class DBTable
     }
 
     /**
+     * 快捷输出表格
+     *
+     * @return string
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function html()
+    {
+        //  返回视图文本
+        return $this->search() . $this->button() . (new HtmlString("<table id='" . ($this->config->id ?? 'dbTable') . "'>" . $this->script() . "</table>\n"))->toHtml();
+    }
+
+    /**
      * 查询数据集并打包格式
-     * @return false|string
+     * @return JsonResponse
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
      */
     public function ajax()
     {
@@ -683,15 +794,6 @@ class DBTable
     }
 
     /**
-     * 导出
-     * @return array
-     */
-    public function export()
-    {
-        return [];
-    }
-
-    /**
      * 渲染页面数据
      *
      * @param string $view
@@ -704,16 +806,15 @@ class DBTable
      */
     public function render($view, $data = [], $mergeData = [])
     {
-        //  指定配置
-        $this->getConfig();
+        //  指定字段
         $this->getField();
+        //  指定搜索
         $this->getSearch();
         //  如果是AJAX则表示查询数据
-        if (DEMON_INAJAX && !arguer('ignore', false, 'bool'))
+        if (DEMON_INAJAX)
             return $this->ajax();
-        //  如果是要求导出
-        if (arguer($this->config->actionName ?? '_action', null, 'xss') == 'export')
-            return $this->export();
+        //  渲染按钮
+        $this->getButton();
 
         //  渲染视图
         return view($view, $data, $mergeData)->with('dbTable', $this);

@@ -18,7 +18,18 @@ $(function(){
         //  文本格式化
         var sprintf = $.fn.bootstrapTable.utils.sprintf;
         //  搜索表单
-        var search = function(){ return $.MainApp.form.value('#' + this.options.searchForm); }.bind(this);
+        var value = function(element){
+            var value = {};
+            $.each($(element).serializeArray(), function(){
+                if(value[this['name']]){
+                    if($.isArray(value[this['name']])) value[this['name']].push(this['value']);
+                    else value[this['name']] = [value[this['name']], this['value']];
+                }else value[this['name']] = this['value'];
+            });
+            return value;
+        };
+        var search = function(){ return value('#' + this.options.searchForm); }.bind(this);
+        var url = function(url, parm){ return url + (url.search(/\?/) === -1 ? '?' : '&') + decodeURIComponent($.param(parm)); };
         //  扩展高级搜索
         if(this.options.searchPanel){
             var html = sprintf('<div class="columns columns-%s float-%s">', this.options.buttonsAlign, this.options.buttonsAlign);
@@ -54,17 +65,15 @@ $(function(){
             $('body').on('load-success.bs.table', function(e, data){ if(data) eval(this.options.namespace).onDraw(data); }.bind(this));
             //  获取多选
             eval(this.options.namespace).getBatch = function(){return $('#' + this.options.id).bootstrapTable('getSelections');}.bind(this);
-            eval(this.options.namespace).getUrl = function(action = 'null'){
-                this.refresh({silent:true, query:{ignore:true, [this.options.actionName]:action}});
+            eval(this.options.namespace).getUrl = function(action = 'null', parm = {}){
+                this.refresh({silent:true, query:Object.assign({ignore:true, [this.options.actionName]:action}, parm)});
                 return eval(this.options.namespace).builder[0].url;
             }.bind(this);
             //  接管请求
             eval(this.options.namespace).ajax = function(data){
                 var parm = JSON.parse(data.data);
-                if(parm.ignore)
-                    eval(this.options.namespace).builder[0].url = $.MainApp.form.url(data.url, parm);
-                else
-                    $.ajax(data);
+                if(parm.ignore) eval(this.options.namespace).builder[0].url = url(data.url, parm);
+                else $.ajax(data);
             }.bind(this);
         }
     };

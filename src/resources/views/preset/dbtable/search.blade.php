@@ -28,7 +28,7 @@
                                     <div class="row range">
                                         <div class="col-6">
                                             <select name="{{$val->name}}__start" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
-                                                <option value="">全部</option>
+                                                <option value="">{{__('admin.preset.search.all')}}</option>
                                                 @foreach($options as $k => $o)
                                                     <option @if(($val->value[0]??null) === $k) selected @endif value="{{$k}}">{!!$o!!}</option>
                                                 @endforeach
@@ -36,7 +36,7 @@
                                         </div>
                                         <div class="col-6">
                                             <select name="{{$val->name}}__end" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
-                                                <option value="">全部</option>
+                                                <option value="">{{__('admin.preset.search.all')}}</option>
                                                 @foreach($options as $k => $o)
                                                     <option @if(($val->value[1]??null) === $k) selected @endif value="{{$k}}">{!!$o!!}</option>
                                                 @endforeach
@@ -45,7 +45,7 @@
                                     </div>
                                 @else
                                     <select name="{{$val->name}}" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
-                                        <option value="">全部</option>
+                                        <option value="">{{__('admin.preset.search.all')}}</option>
                                         @foreach($options as $k => $o)
                                             <option @if(($val->value??null) === $k) selected @endif value="{{$k}}">{!!$o!!}</option>
                                         @endforeach
@@ -94,11 +94,9 @@
             @endforeach
             <div class="form-group search-panel">
                 <label class="row">
-                    <div class="col-9 offset-3">
-                        <div class="btn-group" style="width:100%">
-                            <button type="submit" class="btn btn-primary">提交</button>
-                            <button type="reset" class="btn btn-secondary">重置</button>
-                        </div>
+                    <div class="col-9 offset-sm-3">
+                        <button type="submit" class="btn btn-primary">{{__('admin.preset.search.submit')}}</button>
+                        <button type="reset" class="btn btn-secondary">{{__('admin.preset.search.reset')}}</button>
                     </div>
                 </label>
             </div>

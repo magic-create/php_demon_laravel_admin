@@ -264,6 +264,23 @@ class Spreadsheet
     }
 
     /**
+     * 快速下载
+     *
+     * @param $name
+     * @param $config
+     * @param $data
+     *
+     * @return bool|string
+     * @throws Exception
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function download($name, $config, $data)
+    {
+        return $this->save($this->config($config)->data($data)->export(), $name, 'download');
+    }
+
+    /**
      * 下载或保存
      *
      * @param Spreadsheets $sheet
@@ -271,7 +288,6 @@ class Spreadsheet
      * @param string       $type
      *
      * @return bool|string
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */

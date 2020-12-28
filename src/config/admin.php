@@ -22,6 +22,7 @@ return [
         'template' => [
             'script' => 'admin::preset.dbtable.script',
             'search' => 'admin::preset.dbtable.search',
+            'button' => 'admin::preset.dbtable.button',
         ],
         'locale' => 'zh-CN',
         'totalField' => 'total',
@@ -45,6 +46,7 @@ return [
         'loadingFontSize' => 20,
         'ajax' => '$.dbTable.ajax',
         'actionName' => '_action',
+        'actionEvent' => 'event',
         'searchForm' => 'dbSearchForm',
         'searchList' => 'searchs',
         'showColumns' => true,
@@ -57,5 +59,6 @@ return [
         'idField' => 'id',
         'selectItemName' => 'selects',
         'toolbar' => '#toolbar',
+        'toolbarButton' => 'btn btn-primary',
     ],
 ];

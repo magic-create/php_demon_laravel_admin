@@ -21,11 +21,11 @@
     <div class="row">
         <div class="col-12">
             <div class="email-leftbar card">
-                @yield('container.menu','暂无内容')
+                @yield('container.menu',__('admin.preset.container.none'))
             </div>
             <div class="email-rightbar mb-3">
                 <div class="card">
-                    @yield('container.content','暂无内容')
+                    @yield('container.content',__('admin.preset.container.none'))
                 </div>
             </div>
         </div>
