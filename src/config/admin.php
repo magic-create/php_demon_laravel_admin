@@ -7,7 +7,7 @@ return [
         'title' => env('ADMIN_WEB_TITLE', 'Admin Management'),
         //  入口
         'path' => 'admin',
-        //  配置CDN后一些资源将加载CDN，否则走本机
+        //  配置CDN后一些资源将加载CDN，否则走本地
         'cdnUrl' => 'https://cdn.bootcdn.net/ajax/libs/',
         //  风格
         'style' => [
@@ -26,6 +26,7 @@ return [
         ],
         'locale' => 'zh-CN',
         'totalField' => 'total',
+        'classes' => 'table table-bordered table-hover table-nowrap',
         'batch' => true,
         'method' => 'post',
         'cache' => false,

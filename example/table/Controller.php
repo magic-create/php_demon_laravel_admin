@@ -8,7 +8,9 @@ class Controller extends \App\Http\Controllers\Controller
 {
     /**
      * 表格测试
+	 *
      * @return mixed
+	 *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
