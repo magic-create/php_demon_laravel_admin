@@ -45,9 +45,9 @@ $(function(){
             //  是否默认展开
             if(this.options.searchPanelOpen) $('#' + this.options.searchTemplate).addClass('d-block');
             //  时间控件渲染
-            $(formId + ' [data-time]').each(function(){laydate.render({elem:formId + ' [name="' + $(this).attr('name') + '"]', type:$(this).data('time')});});
+            $(formId + ' [data-time]').each(function(){$.dbDate(formId + ' [name="' + $(this).attr('name') + '"]', {format:$(this).data('format')});});
             //  选择控件渲染
-            $(formId + ' [data-select]').each(function(){ $(formId + ' [name="' + $(this).attr('name') + '"]').select2({dropdownAutoWidth:true, width:'100%'});});
+            $(formId + ' [data-select]').each(function(){$.dbSelect(formId + ' [name="' + $(this).attr('name') + '"]', {dropdownAutoWidth:true, width:'100%'});});
             //  表单提交搜索;
             $('body').on('submit', formId, function(){ this.refresh({pageNumber:1}); }.bind(this));
             //  增加参数

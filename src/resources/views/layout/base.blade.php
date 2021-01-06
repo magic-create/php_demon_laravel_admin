@@ -31,12 +31,15 @@
     <script src="{{$assetUrl}}/moment.js/2.29.1/moment.min.js"></script>
     <script src="/static/admin/libs/bootstrap4-datetimepicker/4.17.50/js/bootstrap-datetimepicker.js"></script>
     <script src="{{$assetUrl}}/jquery-validate/1.9.0/jquery.validate.min.js"></script>
+    <script src="{{$assetUrl}}/bootstrap-table/1.18.1/bootstrap-table.min.js"></script>
+    <script src="{{$assetUrl}}/bootstrap-table/1.18.1/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
     {{--启动应用--}}
     <script src="/static/admin/js/app.js"></script>
     <script src="/static/admin/js/lang/zh-CN.js"></script>
+    <script src="/static/admin/js/dbform.js"></script>
+    <script src="/static/admin/js/dbtable.js"></script>
     {{--加载脚本--}}
     <script src="{{$assetUrl}}/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
-    <script src="{{$assetUrl}}/echarts/5.0.0/echarts.min.js"></script>
     {{--加载样式--}}
     <link href="{{$assetUrl}}/twitter-bootstrap/4.5.3/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="{{$assetUrl}}/metisMenu/2.7.9/metisMenu.min.css" rel="stylesheet" type="text/css">
@@ -45,6 +48,7 @@
     <link href="{{$assetUrl}}/iCheck/1.0.3/skins/all.min.css" rel="stylesheet" type="text/css">
     <link href="{{$assetUrl}}/bootstrap-colorpicker/3.2.0/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css">
     <link href="{{$assetUrl}}/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="{{$assetUrl}}/bootstrap-table/1.18.1/bootstrap-table.min.css" rel="stylesheet" type="text/css">
     <link href="/static/admin/css/style.css" rel="stylesheet" type="text/css">
     <link href="/static/admin/css/layout_{{config('admin.web.style.layout')}}.css" rel="stylesheet" type="text/css">
     {{--挂载引入区域--}}

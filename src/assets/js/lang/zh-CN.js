@@ -1,6 +1,6 @@
 !function(){
     $.locale = 'zh-CN';
-    //  File默认语言
+    //  Filestyle默认语言
     $.fn.filestyle.defaults.text = '选择文件';
     //  Select2默认语言
     $.fn.select2.amd.define('select2/i18n/' + $.locale, [], function(){
@@ -35,7 +35,7 @@
         max:$.validator.format("请输入一个最大为 {0} 的值"),
         min:$.validator.format("请输入一个最小为 {0} 的值")
     });
-    //  Moment默认语言
+    //  Datetimepicker默认语言
     $.fn.datetimepicker.defaults.locale = $.locale;
     $.fn.datetimepicker.defaults.tooltips = {
         today:'现在',
@@ -64,6 +64,7 @@
         togglePeriod:'切换时期',
         selectTime:'选择时间'
     };
+    //  Moment默认语言
     moment.defineLocale($.locale, {
         months:'一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
         monthsShort:'1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
@@ -105,5 +106,42 @@
         },
         relativeTime:{future:'%s后', past:'%s前', s:'几秒', ss:'%d 秒', m:'1 分钟', mm:'%d 分钟', h:'1 小时', hh:'%d 小时', d:'1 天', dd:'%d 天', w:'1 周', ww:'%d 周', M:'1 个月', MM:'%d 个月', y:'1 年', yy:'%d 年'},
         week:{dow:1, doy:4}
+    });
+    //  BootstrapTable
+    $.extend($.fn.bootstrapTable.defaults, {
+        formatCopyRows:function formatCopyRows(){ return '复制'; },
+        formatPrint:function formatPrint(){ return '打印'; },
+        formatLoadingMessage:function formatLoadingMessage(){ return '正在努力地加载数据中，请稍候'; },
+        formatRecordsPerPage:function formatRecordsPerPage(pageNumber){ return "每页显示 ".concat(pageNumber, " 条记录"); },
+        formatShowingRows:function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered){
+            if(totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) return "显示第 ".concat(pageFrom, " 到第 ").concat(pageTo, " 条记录，总共 ").concat(totalRows, " 条记录（从 ").concat(totalNotFiltered, " 总记录中过滤）");
+            return "显示第 ".concat(pageFrom, " 到第 ").concat(pageTo, " 条记录，总共 ").concat(totalRows, " 条记录");
+        },
+        formatSRPaginationPreText:function formatSRPaginationPreText(){ return '上一页'; },
+        formatSRPaginationPageText:function formatSRPaginationPageText(page){ return "第".concat(page, "页"); },
+        formatSRPaginationNextText:function formatSRPaginationNextText(){ return '下一页'; },
+        formatDetailPagination:function formatDetailPagination(totalRows){ return "总共 ".concat(totalRows, " 条记录"); },
+        formatClearSearch:function formatClearSearch(){ return '清空过滤'; },
+        formatSearch:function formatSearch(){ return '搜索'; },
+        formatNoMatches:function formatNoMatches(){ return '没有找到匹配的记录'; },
+        formatPaginationSwitch:function formatPaginationSwitch(){ return '隐藏/显示分页'; },
+        formatPaginationSwitchDown:function formatPaginationSwitchDown(){ return '显示分页'; },
+        formatPaginationSwitchUp:function formatPaginationSwitchUp(){ return '隐藏分页'; },
+        formatRefresh:function formatRefresh(){ return '刷新'; },
+        formatToggle:function formatToggle(){ return '切换'; },
+        formatToggleOn:function formatToggleOn(){ return '显示卡片视图'; },
+        formatToggleOff:function formatToggleOff(){ return '隐藏卡片视图'; },
+        formatColumns:function formatColumns(){ return '列'; },
+        formatColumnsToggleAll:function formatColumnsToggleAll(){ return '切换所有'; },
+        formatFullscreen:function formatFullscreen(){ return '全屏'; },
+        formatAllRows:function formatAllRows(){ return '所有'; },
+        formatAutoRefresh:function formatAutoRefresh(){ return '自动刷新'; },
+        formatExport:function formatExport(){ return '导出数据'; },
+        formatJumpTo:function formatJumpTo(){ return '跳转'; },
+        formatAdvancedSearch:function formatAdvancedSearch(){ return '高级搜索'; },
+        formatAdvancedCloseButton:function formatAdvancedCloseButton(){ return '关闭'; },
+        formatFilterControlSwitch:function formatFilterControlSwitch(){ return '隐藏/显示过滤控制'; },
+        formatFilterControlSwitchHide:function formatFilterControlSwitchHide(){ return '隐藏过滤控制'; },
+        formatFilterControlSwitchShow:function formatFilterControlSwitchShow(){ return '显示过滤控制'; }
     });
 }();

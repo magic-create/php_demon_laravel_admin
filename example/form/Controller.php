@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Example;
 
-use App\Http\Tables\Table;
-
 class Controller extends \App\Http\Controllers\Controller
 {
     /**

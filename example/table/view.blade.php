@@ -1,11 +1,6 @@
 @extends('admin::preset.container')
 @section('container.link')
     @php($assetUrl = config('admin.web.cdnUrl') ?: '/static/admin/libs')
-    <script src="{{$assetUrl}}/bootstrap-table/1.18.1/bootstrap-table.min.js"></script>
-    <script src="{{$assetUrl}}/bootstrap-table/1.18.1/bootstrap-table-locale-all.min.js"></script>
-    <script src="{{$assetUrl}}/bootstrap-table/1.18.1/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
-    <link href="{{$assetUrl}}/bootstrap-table/1.18.1/bootstrap-table.min.css" rel="stylesheet" type="text/css">
-    <script src="/static/admin/js/dbtable.js"></script>
 @endsection
 @section('search.nickname.nickname')
     <input name="nickname" value="{{$dbTable->search->value->nickname??''}}" class="form-control">

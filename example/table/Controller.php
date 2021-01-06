@@ -6,11 +6,13 @@ use App\Http\Tables\Table;
 
 class Controller extends \App\Http\Controllers\Controller
 {
-    /**
+     /**
      * 表格测试
-	 *
+     *
+     * @param MemberTable $table
+     *
      * @return mixed
-	 *
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */

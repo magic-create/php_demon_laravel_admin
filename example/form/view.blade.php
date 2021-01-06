@@ -1,7 +1,6 @@
 @extends('admin::preset.blank')
 @section('container.link')
     @php($assetUrl = config('admin.web.cdnUrl') ?: '/static/admin/libs')
-    <script src="/static/admin/js/dbform.js"></script>
 @endsection
 @section('container.content')
     <div class="modal fade" id="modal" role="dialog" aria-hidden="true">
