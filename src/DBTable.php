@@ -102,7 +102,11 @@ class DBTable
     public function getConfig()
     {
         //  读取总配置
-        $this->config = $this->config ? : array_to_object(array_merge(config('admin.dbtable'), ['columns' => $this->getColumn()], $this->setConfig(), $this->getPreset()));
+        $this->config = $this->config ? : array_to_object(array_merge(config('admin.dbtable'), $this->setConfig(), $this->getPreset()));
+        //  读取字段
+        $this->config->columns = array_to_object($this->getColumn());
+        //  JS作用域
+        $this->config->namespace = $this->config->namespace ?? '$.admin.table';
         //  设置URL
         $this->config->url = ($this->config->url ?? null) ? : url()->current();
         //  开启批量选择
@@ -192,10 +196,18 @@ class DBTable
         foreach ($list as $key => &$val) {
             $val['text'] = $val['text'] ?? '';
             $val['class'] = ($val['class'] ?? '') ? : $this->config->toolbarButton ?? 'btn btn-secondary';
+            $val['title'] = $val['title'] ?? '';
             $val['attr'] = $val['attr'] ?? [];
+            $val['icon'] = $val['icon'] ?? '';
+            $val['text'] = ($val['icon'] ? adminHtml()->fast('', [], 'i', $val['icon']) : '') . $val['text'];
+            if ($val['title']) {
+                $val['attr']['title'] = $val['title'];
+                $val['attr']['data-toggle'] = 'tooltip';
+                $val['attr']['data-trigger'] = 'hover';
+            }
             $attribute = '';
             foreach ($val['attr'] as $k => $v)
-                $attribute += " {$k}='$v'";
+                $attribute .= " {$k}='$v'";
             $val['html'] = "<button class='{$val['class']}' {$attribute} data-button-key='{$key}'>{$val['text']}</button>";
         }
 
@@ -226,10 +238,8 @@ class DBTable
         $array = $this->setColumn();
         foreach ($array as $key => &$val) {
             //  操作列强制设定
-            if ($val['data'] == '_action') {
-                $val['className'] = $val['data'];
-                $val['reorder'] = $val['export'] = $val['search'] = $val['print'] = false;
-            }
+            if ($val['action'] ?? false)
+                $val['clickToSelect'] = $val['reorder'] = $val['export'] = $val['search'] = $val['print'] = false;
             //  处理宽度
             if ($val['width'] ?? null) {
                 if (stripos($val['width'], 'rem') !== false)
@@ -247,7 +257,7 @@ class DBTable
             //  默认导出开启
             $val['exporIgnore'] = $val['exporIgnore'] ?? !($val['export'] ?? true);
             if ($val['exporIgnore'])
-                $this->config['ignoreColumn'][] = $key;
+                $this->config->ignoreColumn[] = $key;
             //  默认打印开启
             $val['printIgnore'] = $val['printIgnore'] ?? !($val['print'] ?? true);
             //  如果data是带.的表示关联查询，将其填补name，并且data去掉关联
@@ -263,7 +273,7 @@ class DBTable
             unset($val['data']);
             //  是否有事件
             if ($val['action'] ?? false && !(($val['events'] ?? null)))
-                $val['events'] = ($this->config->namespace ?? '$.dbTable') . '.' . ($this->config->actionEvents ?? 'event');
+                $val['events'] = $this->config->namespace . '.' . ($this->config->actionEvent ?? 'action');
         }
 
         //  返回字段
@@ -699,7 +709,7 @@ class DBTable
                 $events[] = "{$val['events']}={$val['events']}||{}";
         }
         //  生成脚本
-        $content = $content ? : new HtmlString(sprintf($this->template('script'), $this->config->namespace ?? '$.dbTable', $this->config->id ?? 'dbTable', json_encode($this->config), implode(';', $events)));
+        $content = $content ? : new HtmlString(sprintf($this->template('script'), $this->config->namespace, $this->config->id ?? 'dbTable', json_encode($this->config), implode(';', $events)));
         //  脚本执行后是否删除
         if (!config('app.debug'))
             $content .= '$(function(){$("#dbTableScript").remove()})';
@@ -819,5 +829,4 @@ class DBTable
         //  渲染视图
         return view($view, $data, $mergeData)->with('dbTable', $this);
     }
-
 }

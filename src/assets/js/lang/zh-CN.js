@@ -2,6 +2,31 @@
     $.locale = 'zh-CN';
     //  Filestyle默认语言
     $.fn.filestyle.defaults.text = '选择文件';
+    //  Layer默认语言
+    layer.config({
+        lang:{
+            info:function(){return '信息';},
+            alert:function(){return '提示信息';},
+            confirm:function(){return '确认对话框';},
+            prompt:function(){return '输入框';},
+            ok:function(){return '确定';},
+            cancel:function(){return '取消'; },
+            maxlength:function(length){return '请输入一个长度最多是 ' + length + ' 的字符串'; },
+            nopic:function(){return '没有图片';},
+            errpic:function(){return '当前图片地址异常<br>是否继续查看下一张？';},
+            nextpic:function(){return '下一张';},
+            closepic:function(){return '不看了';}
+        }
+    });
+    //  Modal默认语言
+    $.bootstrapModaler.options.lang = {
+        info:'信息',
+        alert:'提示信息',
+        confirm:'确认对话框',
+        prompt:'输入框',
+        ok:'确定',
+        cancel:'取消'
+    };
     //  Select2默认语言
     $.fn.select2.amd.define('select2/i18n/' + $.locale, [], function(){
         return {

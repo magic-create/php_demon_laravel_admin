@@ -3,25 +3,11 @@
     @php($assetUrl = config('admin.web.cdnUrl') ?: '/static/admin/libs')
 @endsection
 @section('container.content')
-    <div class="modal fade" id="modal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">表单接口反馈</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">...</div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="col-lg-6">
         <div class="card m-b-20">
             <div class="card-body">
                 <h4 class="mt-0 header-title">Form Validation</h4>
-                <p class="text-muted m-b-30 ">使用$.dbForm来验证（基于jquery.validate）</p>
+                <p class="text-muted m-b-30 ">使用$.admin.form来验证（基于jquery.validate）</p>
                 <form id="validate">
                     <div class="form-group">
                         <label>必填内容</label>
@@ -159,12 +145,12 @@
 @section('container.script')
     <script>
         // Form Validation
-        $.dbSwitch('#validate .switch');
-        $.dbCheck('#validate .checkbox');
-        $.dbRadio('#validate .radio');
-        $.dbSelect('#validate .select');
-        var modal = function(status, data){$('#modal').modal().find('.modal-body').html('<p>' + status + ':</p><textarea class="form-control" rows="10">' + JSON.stringify(data) + '</textarea>');};
-        $.dbForm('#validate', {
+        $.admin.switch('#validate .switch');
+        $.admin.checkbox('#validate .checkbox');
+        $.admin.radio('#validate .radio');
+        $.admin.select('#validate .select');
+        var modalContent = function(status, data){return '<p>' + status + ':</p><textarea class="form-control" rows="10">' + JSON.stringify(data) + '</textarea>';};
+        $.admin.form('#validate', {
             list:{
                 required:true,
                 digits:{digits:true},
@@ -180,35 +166,32 @@
                 selects:{minlength:{rule:1, message:'至少需要选择1个选项'}},
                 custom:{function:{rule:function(e){return $(e).val() == (new Date).getFullYear(); }, message:'输入的年份不正确'}}
             },
-            commit:function(form){
-                var value = form.value();
-                var data = prompt('请输入和自定义相同的内容');
-                if(data != value.custom){
-                    alert('输入的内容和自定义的内容不相同');
-                    return false;
-                }
-            },
             callback:{
                 success:function(e){
-                    $.post(location.href, e.value(), function(data){
-                        modal('success', data);
-                    }).fail(function(xhr){
-                        modal('fail', JSON.parse(xhr.responseText));
-                    });
+                    var prompt = $.admin.modal.prompt({content:'请输入和自定义相同的内容(年份)'}, function(value){
+                        var data = e.value();
+                        if(value != data.custom) return $.admin.layer.alert('输入的内容和自定义的内容不相同', {icon:0});
+                        $.admin.modal.close(prompt);
+                        $.post(location.href, data, function(data){
+                            $.admin.modal.alert(modalContent('success', data));
+                        }).fail(function(xhr){
+                            $.admin.modal.alert(modalContent('fail', JSON.parse(xhr.responseText)));
+                        });
+                    }, function(){$.admin.layer.alert('取消提交', {icon:0});});
                 }
             }
         });
         //  More Advanced
-        $.dbDate('#advanced .date[name="date"]', {format:'YYYY-MM-DD'});
-        $.dbDate('#advanced .date[name="datetime"]', {format:'YYYY-MM-DD HH:mm:ss'});
-        $.dbDate('#advanced .date[name="time"]', {format:'hh:mm:ss'});
-        $.dbColor('#advanced .color');
-        $.dbFile('#advanced .file');
-        $.dbSlider('#advanced .slider[name="slider"]');
-        $.dbSlider('#advanced .slider[name="sliders"]', {type:'double', grid:true, grid_num:10, prefix:"￥", max:1000, step:0.01, from:150, to:600});
+        $.admin.date('#advanced .date[name="date"]', {format:'YYYY-MM-DD'});
+        $.admin.date('#advanced .date[name="datetime"]', {format:'YYYY-MM-DD HH:mm:ss'});
+        $.admin.date('#advanced .date[name="time"]', {format:'hh:mm:ss'});
+        $.admin.color('#advanced .color');
+        $.admin.file('#advanced .file');
+        $.admin.slider('#advanced .slider[name="slider"]');
+        $.admin.slider('#advanced .slider[name="sliders"]', {type:'double', grid:true, grid_num:10, prefix:"￥", max:1000, step:0.01, from:150, to:600});
         var height = function(){ return $('#markdown').height($('#advanced .markdown').height());};
         height().css('overflow-y', 'auto');
         $('#advanced .markdown').on("keyup blur", function(){$('#markdown').html(marked($(this).val()));}).on('resize', height);
-        $.dbForm('#advanced', {callback:{success:function(e){modal('advanced', e.value());}}});
+        $.admin.form('#advanced', {callback:{success:function(e){$.admin.modal.alert(modalContent('advanced', e.value()));}}});
     </script>
 @endsection

@@ -25,8 +25,8 @@ class Table extends DBTable
     public function setButton()
     {
         return [
-            'export' => ['class' => 'btn btn-primary', 'text' => '服务端导出'],
-            'batch' => ['class' => 'btn btn-primary', 'text' => '批量调试'],
+            'export' => ['class' => 'btn btn-info', 'text' => '服务端导出', 'icon' => 'fa fa-file-download'],
+            'batch' => ['class' => 'btn btn-warning', 'icon' => 'fa fa-list', 'title' => '批量调试'],
         ];
     }
 
@@ -102,7 +102,11 @@ class Table extends DBTable
             '_action' => [
                 'type' => 'add',
                 'callback' => function() {
-                    return adminHtml('button', '测试按钮1', ['_action' => 'test1']) . adminHtml('button', '测试按钮2', ['_action' => 'test2']);
+                    return adminTableButton('add', 'add', ['text' => '测试按钮']) .
+                        adminTableButton('edit', 'edit') .
+                        adminTableButton('del', 'del', ['title' => '测试按钮']) .
+                        adminTableButton('get', 'get') .
+                        adminTableButton('test');
                 }
             ],
         ];

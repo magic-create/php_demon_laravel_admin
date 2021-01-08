@@ -18,7 +18,7 @@ return [
     //  表格相关
     'dbtable' => [
         'id' => 'dbTable',
-        'namespace' => '$.dbTable',
+        'namespace' => '$.admin.table',
         'template' => [
             'script' => 'admin::preset.dbtable.script',
             'search' => 'admin::preset.dbtable.search',
@@ -45,9 +45,9 @@ return [
         'searchPanelOpen' => true,
         'searchTemplate' => 'dbSearchTemplate',
         'loadingFontSize' => 20,
-        'ajax' => '$.dbTable.ajax',
+        'ajax' => '$.admin.table.ajax',
         'actionName' => '_action',
-        'actionEvent' => 'event',
+        'actionEvent' => 'action',
         'searchForm' => 'dbSearchForm',
         'searchList' => 'searchs',
         'showColumns' => true,

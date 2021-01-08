@@ -93,12 +93,12 @@
                 </div>
             @endforeach
             <div class="form-group search-panel">
-                <label class="row">
+                <div class="row">
                     <div class="col-9 offset-sm-3">
                         <button type="submit" class="btn btn-primary">{{__('admin.preset.search.submit')}}</button>
                         <button type="reset" class="btn btn-secondary">{{__('admin.preset.search.reset')}}</button>
                     </div>
-                </label>
+                </div>
             </div>
         </form>
     @endif

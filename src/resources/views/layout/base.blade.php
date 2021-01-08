@@ -33,11 +33,11 @@
     <script src="{{$assetUrl}}/jquery-validate/1.9.0/jquery.validate.min.js"></script>
     <script src="{{$assetUrl}}/bootstrap-table/1.18.1/bootstrap-table.min.js"></script>
     <script src="{{$assetUrl}}/bootstrap-table/1.18.1/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+    <script src="/static/admin/libs/bootstrap4-layer/3.1.1/layer.min.js"></script>
     {{--启动应用--}}
     <script src="/static/admin/js/app.js"></script>
+    <script src="/static/admin/js/demon.js"></script>
     <script src="/static/admin/js/lang/zh-CN.js"></script>
-    <script src="/static/admin/js/dbform.js"></script>
-    <script src="/static/admin/js/dbtable.js"></script>
     {{--加载脚本--}}
     <script src="{{$assetUrl}}/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
     {{--加载样式--}}

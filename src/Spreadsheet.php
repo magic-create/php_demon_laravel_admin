@@ -10,7 +10,6 @@
 
 namespace Demon\AdminLaravel;
 
-use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet as Spreadsheets;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -129,7 +128,6 @@ class Spreadsheet
     /**
      * 导出表格
      * @return Spreadsheets
-     * @throws Exception
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -271,7 +269,6 @@ class Spreadsheet
      * @param $data
      *
      * @return bool|string
-     * @throws Exception
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -344,8 +341,6 @@ class Spreadsheet
     /**
      * 导入表格
      * @return array
-     * @throws Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */

@@ -14,24 +14,48 @@
 @section('container.script')
     <script>
         $(function(){
-            //  批量调试
-            $('body').on('click', '[data-button-key="batch"]', function(){
-                var uids = [];
-                $.each($.dbTable.getBatch(), function(index, item){uids.push(item.uid);});
-                uids.length ? alert('选择了如下内容:\n' + uids.join(',')) : alert('未选择内容');
-            });
-            //  服务端导出
-            $('body').on('click', '[data-button-key="export"]', function(){ window.open($.dbTable.getUrl('export')); });
-            //  扩展按钮
-            $('body').on('click', '[data-button-key="custom"]', function(){
-                alert('点击了扩展按钮，然后表格刷新');
-                $.dbTable.method('refresh');
-            });
             //  加载完毕
-            $.dbTable.onDraw = function(data){ $('.page-statis').html('<div>' + JSON.stringify(data.statis) + '</div>'); };
-            //  操作事件
-            $.dbTable.event['click [_action="test1"]'] = function(e, value, row){ alert('操作了' + row.uid);};
-            $.dbTable.event['click [_action="test2"]'] = function(e, value, row){ alert('操作了' + row.nickname);};
+            $.admin.table.onDraw = function(data){ $('.page-statis').html('<div>' + JSON.stringify(data.statis) + '</div>'); };
+            //  工具栏点击
+            $('body').on('toolbar:action', function(e, a){
+                switch(a.action){
+                    //  批量调试
+                    case 'batch':
+                        var uids = [];
+                        $.each($.admin.table.getBatch(), function(index, item){uids.push(item.uid);});
+                        uids.length ? $.admin.modal.alert('选择了如下内容:\n' + uids.join(',')) : $.admin.alert.warning('未选择内容');
+                        break;
+                    //  服务端导出
+                    case 'export':
+                        window.open($.admin.table.getUrl('export'));
+                        break;
+                    //  扩展按钮
+                    case 'custom':
+                        $.admin.layer.msg('点击了扩展按钮，然后表格刷新');
+                        $.admin.table.method('refresh');
+                        break;
+                }
+            });
+            //  内容点击
+            $('body').on('row:action', function(e, a){
+                switch(a.action){
+                    case 'add':
+                        $.admin.alert.success('Add : ' + a.row.nickname, {pos:'r'});
+                        break;
+                    case 'edit':
+                        $.admin.alert.primary('Edit : ' + a.row.nickname, {pos:'r'});
+                        break;
+                    case 'del':
+                        $.admin.alert.danger('Del : ' + a.row.nickname, {pos:'r'});
+                        break;
+                    case 'get':
+                        $.admin.alert.info('Get : ' + a.row.nickname, {pos:'r'});
+                        break;
+                    case 'test':
+                        $.admin.alert.secondary('Test : ' + a.row.nickname, {pos:'r'});
+                        break;
+                }
+            });
         });
     </script>
 @endsection

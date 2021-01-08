@@ -81,7 +81,7 @@ class Html
             $append .= "{$key}='{$val}' ";
         }
         //  相同内容
-        $common = "class='{$class}' title='{$title}' {$append}";
+        $common = "class='{$class}' {$append}";
 
         //  生成内容
         return "<{$type} {$common}>{$title}</{$type}>" . PHP_EOL;
@@ -123,7 +123,7 @@ class Html
             $append .= "{$key}='{$val}' ";
         }
         //  相同内容
-        $common = "class='btn {$class}' title='{$title}' {$append}";
+        $common = "class='btn {$class}' {$append}";
 
         //  生成内容
         return "<{$type} {$common}>{$title}</{$type}>" . PHP_EOL;
