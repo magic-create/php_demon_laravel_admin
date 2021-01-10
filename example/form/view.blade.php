@@ -4,10 +4,10 @@
 @endsection
 @section('container.content')
     <div class="col-lg-6">
-        <div class="card m-b-20">
+        <div class="card m-b-3">
             <div class="card-body">
                 <h4 class="mt-0 header-title">Form Validation</h4>
-                <p class="text-muted m-b-30 ">使用$.admin.form来验证（基于jquery.validate）</p>
+                <p class="text-muted m-b-4">使用$.admin.form来验证（基于jquery.validate）</p>
                 <form id="validate">
                     <div class="form-group">
                         <label>必填内容</label>
@@ -32,7 +32,7 @@
                     <div class="form-group">
                         <label>二次确认密码</label>
                         <div><input type="password" name="ref" class="form-control" placeholder="请输入任意密码"/></div>
-                        <div class="m-t-10"><input type="password" name="password" class="form-control" placeholder="请再次输入相同的密码"/></div>
+                        <div class="m-t-1"><input type="password" name="password" class="form-control" placeholder="请再次输入相同的密码"/></div>
                     </div>
                     <div class="form-group">
                         <label>开关</label>
@@ -88,10 +88,10 @@
         </div>
     </div>
     <div class="col-lg-6">
-        <div class="card m-b-20">
+        <div class="card m-b-3">
             <div class="card-body">
                 <h4 class="mt-0 header-title">More Advanced</h4>
-                <p class="text-muted m-b-30 ">扩展表单元素（基于各类jquery插件）</p>
+                <p class="text-muted m-b-4">扩展表单元素（基于各类jquery插件）</p>
                 <form id="advanced">
                     <div class="form-group">
                         <label>日期选择</label>

@@ -55,7 +55,7 @@ $.validator.addMethod('function', function(value, element, params){return params
                 var $footer = $('<div class="modal-footer"></div>');
                 options.btns.forEach(function(btn){
                     btn = $.extend(true, {label:'Button', className:'btn-primary', onClick:function onClick(callback){}}, btn);
-                    var button = $('<button type="button" class="btn ' + btn.className + ' pl-5 pr-5">' + (options.lang[btn.label] || btn.label) + '</button>');
+                    var button = $('<button type="button" class="btn ' + btn.className + '">' + (options.lang[btn.label] || btn.label) + '</button>');
                     button.on('click', function(event){
                         event.hide = function(){element.modal('hide');};
                         if(btn.onClick(event) !== false) element.modal('hide');

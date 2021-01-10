@@ -134,6 +134,8 @@
     });
     //  BootstrapTable
     $.extend($.fn.bootstrapTable.defaults, {
+        paginationPreText:'上一页',
+        paginationNextText:'下一页',
         formatCopyRows:function formatCopyRows(){ return '复制'; },
         formatPrint:function formatPrint(){ return '打印'; },
         formatLoadingMessage:function formatLoadingMessage(){ return '正在努力地加载数据中，请稍候'; },

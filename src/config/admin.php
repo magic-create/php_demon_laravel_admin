@@ -12,7 +12,9 @@ return [
         //  风格
         'style' => [
             //  布局（horizontal/vertical）
-            'layout' => 'vertical'
+            'layout' => 'vertical',
+            //  主题（light/dark）
+            'theme' => 'light'
         ],
     ],
     //  表格相关
@@ -26,7 +28,7 @@ return [
         ],
         'locale' => 'zh-CN',
         'totalField' => 'total',
-        'classes' => 'table table-bordered table-hover table-nowrap',
+        'classes' => 'table table-bordered table-hover table-nowrap table-striped',
         'batch' => true,
         'method' => 'post',
         'cache' => false,
@@ -38,6 +40,8 @@ return [
         'pageSize' => 15,
         'pageNumber' => 1,
         'pageList' => [15, 30, 50, 100],
+        'paginationLoop' => false,
+        'showJumpTo' => true,
         'queryParamsType' => 'limit',
         'search' => true,
         'searchOnEnterKey' => true,

@@ -20,7 +20,7 @@
 @section('page')
     <div class="row">
         <div class="col-12">
-            <div class="card m-b-30">
+            <div class="card m-b-4">
                 <div class="card-body">
                     @yield('container.content',__('admin.preset.container.none'))
                 </div>

@@ -7,10 +7,10 @@
 @endsection
 @section('container.content')
     <div class="col-lg-6">
-        <div class="card m-b-20">
+        <div class="card m-b-3">
             <div class="card-body">
                 <h4 class="mt-0 header-title">Layer Dialog</h4>
-                <p class="text-muted m-b-30">使用$.admin.layer（基于layer.js）</p>
+                <p class="text-muted m-b-4">使用$.admin.layer（基于layer.js）</p>
                 <div class="button-items">
                     <button type="button" id="alert" class="btn btn-primary waves-effect waves-light">Alert - 普通信息框</button>
                     <button type="button" id="confirm" class="btn btn-secondary waves-effect">Confirm - 询问框</button>
@@ -95,10 +95,10 @@ $('#media').click(function() {
         </div>
     </div>
     <div class="col-lg-6">
-        <div class="card m-b-20">
+        <div class="card m-b-3">
             <div class="card-body">
                 <h4 class="mt-0 header-title">More Bootstrap</h4>
-                <p class="text-muted m-b-30 ">扩展弹出层（基于bootstrap）</p>
+                <p class="text-muted m-b-4">扩展弹出层（基于bootstrap）</p>
                 <div class="button-items">
                     <button type="button" id="bs-open" class="btn btn-outline-primary waves-effect waves-light">Open - 弹出Modal</button>
                     <button type="button" id="bs-alert" class="btn btn-outline-secondary waves-effect">Alert - 普通信息框</button>
