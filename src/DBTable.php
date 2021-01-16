@@ -102,7 +102,7 @@ class DBTable
     public function getConfig()
     {
         //  读取总配置
-        $this->config = $this->config ? : array_to_object(array_merge(config('admin.dbtable'), $this->setConfig(), $this->getPreset()));
+        $this->config = $this->config ? : array_to_object(array_merge(config('dbtable'), $this->setConfig(), $this->getPreset()));
         //  读取字段
         $this->config->columns = array_to_object($this->getColumn());
         //  JS作用域
@@ -112,6 +112,20 @@ class DBTable
         //  开启批量选择
         if (($this->config->batch ?? false) && !($this->config->columns[0]->checkbox ?? false))
             array_unshift($this->config->columns, ['checkbox' => true]);
+        //  唯一索引
+        if ($this->config->key ?? null)
+            $this->config->uniqueId = $this->config->key;
+        //  默认排序
+        if ($this->config->reorder ?? null) {
+            if (is_array($this->config->reorder)) {
+                $this->config->sortName = $this->config->reorder[0];
+                $this->config->sortOrder = $this->config->reorder[1];
+            }
+            else {
+                $this->config->sortName = $this->config->reorder;
+                $this->config->sortOrder = 'asc';
+            }
+        }
 
         //  返回配置
         return $this->config;
@@ -199,7 +213,7 @@ class DBTable
             $val['title'] = $val['title'] ?? '';
             $val['attr'] = $val['attr'] ?? [];
             $val['icon'] = $val['icon'] ?? '';
-            $val['text'] = ($val['icon'] ? adminHtml()->fast('', [], 'i', $val['icon']) : '') . $val['text'];
+            $val['text'] = ($val['icon'] ? admin_html()->fast('', [], 'i', $val['icon']) : '') . $val['text'];
             if ($val['title']) {
                 $val['attr']['title'] = $val['title'];
                 $val['attr']['data-toggle'] = 'tooltip';
@@ -238,8 +252,11 @@ class DBTable
         $array = $this->setColumn();
         foreach ($array as $key => &$val) {
             //  操作列强制设定
-            if ($val['action'] ?? false)
+            if ($val['action'] ?? false) {
+                $val['custom'] = true;
                 $val['clickToSelect'] = $val['reorder'] = $val['export'] = $val['search'] = $val['print'] = false;
+
+            }
             //  处理宽度
             if ($val['width'] ?? null) {
                 if (stripos($val['width'], 'rem') !== false)
@@ -260,17 +277,19 @@ class DBTable
                 $this->config->ignoreColumn[] = $key;
             //  默认打印开启
             $val['printIgnore'] = $val['printIgnore'] ?? !($val['print'] ?? true);
-            //  如果data是带.的表示关联查询，将其填补name，并且data去掉关联
-            if (!isset($val['name']) && strpos($val['data'], '.') !== false) {
-                $val['name'] = $val['data'];
+            //  如果data是带.的表示关联查询，将其填补origin，并且data去掉关联
+            if (!isset($val['origin']) && strpos($val['data'], '.') !== false) {
+                $val['origin'] = $val['data'];
                 $val['data'] = preg_replace('/.*\./', '', $val['data']);
-                $this->field[$val['data']] = $val['name'];
+                $this->field[$val['data']] = $val['origin'];
             }
+            else if (isset($val['origin']))
+                $this->field[$val['data']] = $val['origin'] . ' as ' . $val['data'];
             else if (!($val['custom'] ?? false))
                 $this->field[$val['data']] = $val['data'];
             //  对应字段
             $val['field'] = $val['field'] ?? $val['data'];
-            unset($val['data']);
+            unset($val['data'], $val['origin']);
             //  是否有事件
             if ($val['action'] ?? false && !(($val['events'] ?? null)))
                 $val['events'] = $this->config->namespace . '.' . ($this->config->actionEvent ?? 'action');
@@ -317,18 +336,18 @@ class DBTable
                 //  添加字段
                 case 'add':
                     foreach ($list as $k => $v)
-                        $list[$k][$key] = $callback ? $callback($v) : null;
+                        $list[$k]->{$key} = $callback ? $callback($v) : null;
                     break;
                 //  移除字段
                 case 'remove':
                     foreach ($list as $k => $v)
-                        unset($list[$k][$key]);
+                        unset($list[$k]->{$key});
                     break;
                 //  编辑字段
                 case 'edit':
                 default:
                     foreach ($list as $k => $v)
-                        $list[$k][$key] = $callback ? $callback($v) : $list[$k][$key];
+                        $list[$k]->{$key} = $callback ? $callback($v) : $list[$k]->{$key};
             }
         }
 
@@ -466,33 +485,34 @@ class DBTable
     {
         if ($this->config->searchPanel ?? false) {
             //  获取配置规则
-            $list = array_to_object($this->setSearch());
+            $list = $this->setSearch();
             $searchs = $this->config->searchList ?? 'searchs';
             //  初始化where条件
             $where = [];
             //  规则内容转义
             $format = function($data, $config) {
-                //  初始化规则
-                $config->rule = $config->rule ?? null;
-                //  按照类型格式化
-                switch ($config->type ?? '') {
-                    //  通用的时间转换
-                    case 'time':
-                        switch ($config->rule->format ?? 'string') {
-                            case 's':
-                                $data = strtotime($data, DEMON_TIME);
-                                break;
-                            case 'ms':
-                                $data = strtotime($data, DEMON_TIME) * 1000;
-                                break;
-                        }
-                        break;
-                    //  其他自定义
-                    default:
-                        //  自定义回调
-                        if (gettype($config->callback ?? null) == 'function')
-                            return $config->callback($data, $config->rule, $config->type);
-                        break;
+                if ($data !== '') {
+                    switch ($config->format) {
+                        //  转换为时间戳
+                        case 'time':
+                        case 'mstime':
+                        case 'timestamp':
+                            $data = strtotime($data);
+                            if ($config->format == 'mstime')
+                                $data *= 1000;
+                            break;
+                        //  转换为数字IP
+                        case 'ip2long':
+                            $data = ip2long($data) ? : 0;
+                            break;
+                        default:
+                            //  是自定义方法
+                            if (bomber()->isFunction($config->format, false))
+                                $data = call_user_func($config->format, $data, $config);
+                            else if (bomber()->isFunction($config->format, true))
+                                $data = call_user_func($config->format, $data);
+                            break;
+                    }
                 }
 
                 //  返回转换结果
@@ -500,66 +520,83 @@ class DBTable
             };
             //  遍历规则
             foreach ($list as $val) {
+                //  where和format可能是匿名函数所以特殊处理一下
+                $whereCall = $val['where'] ?? '';
+                $formatCall = $val['format'] ?? '';
+                $val = array_to_object($val);
+                //  重新赋值where和format
+                $val->where = $whereCall;
+                $val->format = $formatCall;
                 //  将name的表去掉
                 $val->name = $val->name ?? $val->data;
                 if ($val->name == $val->data && $strrpos = strrpos($val->name, '.') !== false)
                     $val->name = substr($val->name, $strrpos + 1);
-                //  初始化where
-                $val->where = $val->where ?? '=';
                 //  如果是范围搜索，则拼接start和end
-                $val->value = $val->where == 'range' ? [$format(arguer("{$searchs}.{$val->name}__start", ''), $val), $format(arguer("{$searchs}.{$val->name}__end", ''), $val)] : $format(arguer("{$searchs}.{$val->name}", ''), $val);
-                //  初始化连接符
-                $val->joint = $val->joint ?? 'and';
+                $val->value = in_array($val->where, ['range', 'between']) ? [
+                    $format(arguer("{$searchs}.{$val->name}__start", ''), $val), $format(arguer("{$searchs}.{$val->name}__end", ''), $val)
+                ] : $format(arguer("{$searchs}.{$val->name}", ''), $val);
                 // 如果有内容的话开始拼接where条件
                 if ($val->value !== '') {
-                    switch ($val->where) {
-                        //  自定义
-                        case 'custom':
-                            break;
-                        //  范围区间
-                        case 'range':
-                            if ($val->value[0])
-                                $where[] = [$val->data, '>=', $val->value[0], $val->joint];
-                            if ($val->value[1])
-                                $where[] = [$val->data, '<=', $val->value[1], $val->joint];
-                            break;
-                        //  全部模糊匹配
-                        case 'like':
-                            $where[] = [$val->data, $val->where, '%' . $val->value . '%', $val->joint];
-                            break;
-                        //  后缀模糊匹配
-                        case 'like%':
-                            $where[] = [$val->data, $val->where, $val->value . '%', $val->joint];
-                            break;
-                        //  前缀模糊匹配
-                        case '%like':
-                            $where[] = [$val->data, $val->where, '%' . $val->value, $val->joint];
-                            break;
-                        //  IN或者NOTIN
-                        case 'in':
-                        case 'notin':
-                            if (!is_array($val->value))
-                                $val->value = explode(',', $val->value);
-                            $where[] = [$val->data, $val->where, $val->value, $val->joint];
-                            break;
-                        //  比较符
-                        case '=':
-                        case '>':
-                        case '>=':
-                        case '<':
-                        case '<=':
-                        default:
-                            $where[] = [$val->data, $val->where, $val->value, $val->joint];
-                            break;
+                    //  是自定义方法
+                    if (bomber()->isFunction($val->where, false)) {
+                        if ($call = call_user_func($val->where, $val->data, $val->value))
+                            $where[] = $call;
+                    }
+                    else {
+                        switch ($val->where) {
+                            //  范围区间
+                            case 'between':
+                            case 'range':
+                                if ($val->value[0] !== '')
+                                    $where[] = [$val->data, '>=', $val->value[0]];
+                                if ($val->value[1] !== '')
+                                    $where[] = [$val->data, '<=', $val->value[1]];
+                                break;
+                            //  全部模糊匹配
+                            case 'like':
+                                $where[] = [$val->data, $val->where, '%' . $val->value . '%'];
+                                break;
+                            //  后缀模糊匹配
+                            case 'like%':
+                                $where[] = [$val->data, 'like', $val->value . '%'];
+                                break;
+                            //  前缀模糊匹配
+                            case '%like':
+                                $where[] = [$val->data, 'like', '%' . $val->value];
+                                break;
+                            //  IN或者NOTIN
+                            case 'in':
+                            case 'notin':
+                                if (!is_array($val->value))
+                                    $val->value = explode(',', $val->value);
+                                $where[] = function($query) use ($val) { $val->where == 'in' ? $query->whereIn($val->data, $val->value) : $query->whereNotIn($val->data, $val->value); };
+                                break;
+                            //  是否为空
+                            case 'null':
+                            case 'notnull':
+                                $where[] = function($query) use ($val) { $val->where == 'null' ? $query->whereNull($val->data, $val->value) : $query->whereNotNull($val->data, $val->value); };
+                                break;
+                            //  比较符
+                            case '=':
+                            case '!=':
+                            case '<>':
+                            case '>':
+                            case '>=':
+                            case '<':
+                            case '<=':
+                            default:
+                                $where[] = [$val->data, $val->where, $val->value];
+                                break;
+                        }
                     }
                 }
             }
         }
-
         //  加入条件
         foreach ($where as $val)
-            $this->query->where(...$val);
+            is_array($val) ? $this->query->where(...$val) : $this->query->where($val);
 
+        //  返回结果
         return $where;
     }
 
@@ -648,7 +685,6 @@ class DBTable
         $this->getFuzzy($searchText);
         //  搜索表单
         $this->getSearchs(arguer($this->config->searchList ?? 'searchs', [], 'array'));
-
         //  阻断
         if (!$structure)
             return $this->query;
@@ -657,10 +693,10 @@ class DBTable
         $this->query->offset($offset)->limit($limit);
         //  排序设定
         if ($sortName)
-            $this->query->orderBy($this->field[$sortName] ?? $sortName, $sortOrder ? : 'asc');
-        //  强制排序
+            $this->query->orderBy(strtok($this->field[$sortName] ?? $sortName, ' '), $sortOrder ? : 'asc');
+        //  附加排序
         foreach ($this->getOrder() as $key => $val)
-            $this->query->orderBy($this->field[$key] ?? $key, $val);
+            $this->query->orderBy(strtok($this->field[$key] ?? $key, ' '), $val);
 
         //  返回构造
         return $this->query;
@@ -687,7 +723,7 @@ class DBTable
         }
 
         //  输出模板
-        return view()->make($this->template[$type] ? : config("admin.dbtable.template.{$type}", ''))->with($data)->render();
+        return view()->make($this->template[$type] ? : config("dbtable.template.{$type}", ''))->with($data)->render();
     }
 
     /**

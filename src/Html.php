@@ -152,6 +152,29 @@ class Html
     }
 
     /**
+     * 自动生成开关标签
+     *
+     * @param array  $attribute
+     * @param bool   $status
+     * @param string $class
+     *
+     * @return string
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
+     */
+    public function switch($attribute = [], $status = false, $class = 'switch hidden')
+    {
+        //  属性列表
+        $append = ($status ? 'checked' : '');
+        foreach ($attribute as $key => $val) {
+            $append .= " {$key}='{$val}'";
+        }
+
+        //  生成内容
+        return "<input class='{$class}' type='checkbox' data-bind='switch' {$append}>" . PHP_EOL;
+    }
+
+    /**
      * 自动生成Input标签
      *
      * @param string $title
@@ -198,13 +221,13 @@ class Html
             // 选择控件
             case 'select':
                 // 如果目标是对象，并且有子值
-                if (is_object($data) && isset($data->data)) {
+                if (is_object($data) && isset($data->list)) {
                     $parm = array_merge(object_to_array($data), $parm);
-                    $data = bomber()->objectClone($data->data);
+                    $data = bomber()->objectClone($data->list);
                 }
                 // 强制变更为数组
                 $data = object_to_array($data);
-                $keys = $parm['keys'] ?? '';
+                $keys = $parm['bind'] ?? '';
                 foreach ($data as $key => $val) {
                     // 如果是对象处理
                     if (is_object($data)) {

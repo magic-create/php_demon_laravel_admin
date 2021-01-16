@@ -15,7 +15,10 @@
             nopic:function(){return '没有图片';},
             errpic:function(){return '当前图片地址异常<br>是否继续查看下一张？';},
             nextpic:function(){return '下一张';},
-            closepic:function(){return '不看了';}
+            closepic:function(){return '不看了';},
+            avatar:function(){return '选择头像';},
+            cropper:function(){return '选择图片';},
+            image:function(){return '选择图片';}
         }
     });
     //  Modal默认语言
@@ -25,7 +28,11 @@
         confirm:'确认对话框',
         prompt:'输入框',
         ok:'确定',
-        cancel:'取消'
+        cancel:'取消',
+        reset:'重置',
+        file:'文件选择',
+        imageUrl:'图片地址',
+        imageDump:'外链转换'
     };
     //  Select2默认语言
     $.fn.select2.amd.define('select2/i18n/' + $.locale, [], function(){
@@ -136,6 +143,8 @@
     $.extend($.fn.bootstrapTable.defaults, {
         paginationPreText:'上一页',
         paginationNextText:'下一页',
+        searchSubmitText:'提交搜索',
+        searchResetText:'重置条件',
         formatCopyRows:function formatCopyRows(){ return '复制'; },
         formatPrint:function formatPrint(){ return '打印'; },
         formatLoadingMessage:function formatLoadingMessage(){ return '正在努力地加载数据中，请稍候'; },

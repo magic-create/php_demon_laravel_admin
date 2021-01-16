@@ -1,4 +1,4 @@
-layer.config({skin:'primary', shade:0.5, resize:false, move:false});
+layer.config({skin:'primary', shade:0.5, resize:false, scrollbar:false});
 $.validator.addMethod('function', function(value, element, params){return params;}, $.validator.messages.remote);
 !function($){
     "use strict";
@@ -301,7 +301,6 @@ $.validator.addMethod('function', function(value, element, params){return params
         };
         var search = function(){ return value('#' + self.options.searchForm); };
         var url = function(url, parm){ return url + (url.search(/\?/) === -1 ? '?' : '&') + decodeURIComponent($.param(parm)); };
-
         //  扩展高级搜索
         if(self.options.searchPanel){
             var html = sprintf('<div class="columns columns-%s float-%s">', self.options.buttonsAlign, self.options.buttonsAlign);
@@ -317,9 +316,11 @@ $.validator.addMethod('function', function(value, element, params){return params
             //  是否默认展开
             if(self.options.searchPanelOpen) $('#' + self.options.searchTemplate).addClass('d-block');
             //  时间控件渲染
-            $(formId + ' [data-time]').each(function(){$.admin.date(formId + ' [name="' + $(this).attr('name') + '"]', {format:$(this).data('format')});});
+            $(formId + ' [data-time]').each(function(){$.admin.date(formId + ' [name="' + $(this).attr('name') + '"]', {format:$(this).data('time')});});
             //  选择控件渲染
             $(formId + ' [data-select]').each(function(){$.admin.select(formId + ' [name="' + $(this).attr('name') + '"]', {dropdownAutoWidth:true, width:'100%'});});
+            $('#' + self.options.searchTemplate + '_button button[type="submit"]').html(self.options.searchSubmitText || 'Submit');
+            $('#' + self.options.searchTemplate + '_button button[type="reset"]').html(self.options.searchResetText || 'Reset');
             //  表单提交搜索;
             $('body').on('submit', formId, function(){ self.refresh({pageNumber:1}); });
             //  增加参数
@@ -337,6 +338,21 @@ $.validator.addMethod('function', function(value, element, params){return params
         eval(self.options.namespace).onDraw = function(data){};
         $('body').on('load-success.bs.table', function(e, data){
             $('#' + self.options.id + ' [data-toggle="tooltip"]' + ',' + self.options.toolbar + ' [data-toggle="tooltip"]').tooltip();
+            //  关于开关的特殊处理
+            $.admin.switch('#' + self.options.id + ' [data-bind="switch"]', {
+                size:'small', onSwitchChange:function(e, o){
+                    if(self.options.uniqueId){
+                        var d = eval(self.options.namespace).getData($(this).closest('tr[data-uniqueid]').data('uniqueid'));
+                        $(this).trigger('row:' + self.options.actionEvent, [{
+                            $elem:$(this),
+                            action:$(this).attr('action'),
+                            row:d.row || {},
+                            switch:o,
+                            index:d.index || false
+                        }]);
+                    }
+                }
+            });
             if(data) eval(self.options.namespace).onDraw(data);
         });
         //  工具事件
@@ -353,12 +369,299 @@ $.validator.addMethod('function', function(value, element, params){return params
             self.refresh({silent:true, query:Object.assign({ignore:true, [self.options.actionName]:action}, parm)});
             return eval(self.options.namespace).builder[0].url;
         };
+        eval(self.options.namespace).getData = function(key, type = 'key'){
+            if(self.options.uniqueId){
+                if(type == 'key'){
+                    var row = $('#' + self.options.id).bootstrapTable('getRowByUniqueId', key);
+                    var index = $('#' + self.options.id).find('tr[data-uniqueid="' + key + '"]').data('index');
+                }else{
+                    var row = $('#' + self.options.id).bootstrapTable('getRowByUniqueId', $('#' + self.options.id).find('tr[data-index="' + key + '"]').data('uniqueid'));
+                    var index = key;
+                }
+                return {row:row, index:index};
+            }else return null;
+        };
         //  接管请求
         eval(self.options.namespace).ajax = function(data){
             var parm = JSON.parse(data.data);
             if(parm.ignore) eval(self.options.namespace).builder[0].url = url(data.url, parm);
             else $.ajax(data);
         };
+    };
+    //  扩展Layer上传头像
+    layer.avatar = function(cropper, options, yes){
+        cropper = cropper || [];
+        var ready = cropper.ready || function(){};
+        cropper.placeholder = cropper.placeholder || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAtJREFUCNdjIBEAAAAwAAFletZ8AAAAAElFTkSuQmCC';
+        cropper.image = cropper.image || cropper.placeholder;
+        cropper.lock = cropper.lock || true;
+        var rand = 'cropper-avatar-' + (new Date).getTime() + '' + parseInt(Math.random() * 1e5) + 1;
+        var html = '<div class="row cropper-avatar" id="' + rand + '"><div class="col-sm-9 cropper-left"><div class="cropper-box"><img class="cropper" src="' + cropper.image + '"><div class="m-t-2 cropper-tool"><button type="button" class="btn btn-sm btn-secondary" data-action="file"><i class="m-b-0 fa fa-image"></i></button>\n<input type="file" style="display:none" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"><button type="button" class="btn btn-sm btn-secondary" data-action="reset"><i class="m-b-0 fa fa-sync"></i></button>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="zoom+"><i class="m-b-0 fa fa-search-plus"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="zoom-"><i class="m-b-0 fa fa-search-minus"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_left"><i class="m-b-0 fa fa-undo"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_right"><i class="m-b-0 fa fa-redo"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="move_up"><i class="m-b-0 fa fa-arrow-up"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_down"><i class="m-b-0 fa fa-arrow-down"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_left"><i class="m-b-0 fa fa-arrow-left"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_right"><i class="m-b-0 fa fa-arrow-right"></i></button></div>\n</div></div></div><div class="col cropper-right p-l-sm-2"><div class="row no-gutters"><div class="cropper-preview"></div><div class="cropper-preview rounded m-l-3 m-l-sm-0 m-t-sm-2"></div><div class="cropper-preview rounded-circle m-l-3 m-l-sm-0 m-t-sm-2"></div></div></div></div>';
+        cropper = $.extend({viewMode:1, toggleDragModeOnDblclick:false, aspectRatio:1}, cropper, {
+            preview:'#' + rand + ' .cropper-preview', ready:function(e){
+                ready(e);
+                var self = avatarLayer.cropper;
+                var vessel = $('#' + rand);
+                var fileInput = vessel.find('input[type="file"]');
+                var isImageFile = function(file){
+                    if(file.type) return /^image\/\w+$/.test(file.type);
+                    else return /\.(jpg|jpeg|png|gif|webp)$/.test(file);
+                };
+                (vessel).on('click', 'button', function(){
+                    switch($(this).data('action')){
+                        case 'file':
+                            fileInput.trigger('click');
+                            fileInput.on('change', function(){
+                                var fileList = $(this).prop('files');
+                                if(typeof (fileList) == 'object' && fileList.length > 0){
+                                    var fileContent = fileList[0];
+                                    if(isImageFile(fileContent)){
+                                        if(this.url) URL.revokeObjectURL(this.url);
+                                        this.url = URL.createObjectURL(fileContent);
+                                        self.replace(this.url);
+                                    }
+                                }
+                            });
+                            break;
+                        case 'reset':
+                            self.reset();
+                            break;
+                        case 'zoom+':
+                            self.zoom(0.25);
+                            break;
+                        case 'zoom-':
+                            self.zoom(-0.25);
+                            break;
+                        case 'rotate_left':
+                            self.rotate(-18);
+                            break;
+                        case 'rotate_right':
+                            self.rotate(18);
+                            break;
+                        case 'move_up':
+                            self.move(0, 5);
+                            break;
+                        case 'move_down':
+                            self.move(0, -5);
+                            break;
+                        case 'move_left':
+                            self.move(-5, 0);
+                            break;
+                        case 'move_right':
+                            self.move(5, 0);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            }
+        });
+
+        var avatarLayer = null;
+        options = options || {};
+        if(typeof options === 'function') yes = options;
+        var success = options.success || function(){};
+        options = $.extend({area:window.innerWidth < 600 ? '95%' : '600px', title:'avatar'}, options, {
+            success:function(layero, index){
+                if(cropper.lock) $(layero).find('[data-action="file"]').remove();
+                success(layero, index);
+                avatarLayer = layero;
+                avatarLayer.cropper = new Cropper($('#' + rand + ' .cropper')[0], cropper);
+                avatarLayer.cropper.selectImage = function(){ $('#' + rand).find('input[type="file"]').trigger('click'); };
+            },
+            yes:function(index, layero){
+                yes(index, layero);
+            }
+        });
+
+        return layer.confirm(html, options);
+    };
+    //  扩展Layer图片裁剪
+    layer.cropper = function(cropper, options, yes){
+        cropper = cropper || [];
+        var ready = cropper.ready || function(){};
+        cropper.placeholder = cropper.placeholder || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAtJREFUCNdjIBEAAAAwAAFletZ8AAAAAElFTkSuQmCC';
+        cropper.image = cropper.image || cropper.placeholder;
+        cropper.lock = cropper.lock || true;
+        var rand = 'cropper-image-' + (new Date).getTime() + '' + parseInt(Math.random() * 1e5) + 1;
+        var html = '<div class="cropper-image" id="' + rand + '"><div class="cropper-box"><img class="cropper" src="' + cropper.image + '"><div class="m-t-2 cropper-tool"><button type="button" class="btn btn-sm btn-secondary" data-action="file"><i class="m-b-0 fa fa-image"></i></button>\n<input type="file" style="display:none" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"><button type="button" class="btn btn-sm btn-secondary" data-action="reset"><i class="m-b-0 fa fa-sync"></i></button>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="zoom+"><i class="m-b-0 fa fa-search-plus"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="zoom-"><i class="m-b-0 fa fa-search-minus"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_left"><i class="m-b-0 fa fa-undo"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_right"><i class="m-b-0 fa fa-redo"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="move_up"><i class="m-b-0 fa fa-arrow-up"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_down"><i class="m-b-0 fa fa-arrow-down"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_left"><i class="m-b-0 fa fa-arrow-left"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_right"><i class="m-b-0 fa fa-arrow-right"></i></button></div>\n</div></div></div>';
+        cropper = $.extend({toggleDragModeOnDblclick:false}, cropper, {
+            ready:function(e){
+                ready(e);
+                var self = avatarLayer.cropper;
+                var vessel = $('#' + rand);
+                var fileInput = vessel.find('input[type="file"]');
+                var isImageFile = function(file){
+                    if(file.type) return /^image\/\w+$/.test(file.type);
+                    else return /\.(jpg|jpeg|png|gif|webp)$/.test(file);
+                };
+                (vessel).on('click', 'button', function(){
+                    switch($(this).data('action')){
+                        case 'file':
+                            fileInput.trigger('click');
+                            fileInput.on('change', function(){
+                                var fileList = $(this).prop('files');
+                                if(typeof (fileList) == 'object' && fileList.length > 0){
+                                    var fileContent = fileList[0];
+                                    if(isImageFile(fileContent)){
+                                        if(this.url) URL.revokeObjectURL(this.url);
+                                        this.url = URL.createObjectURL(fileContent);
+                                        self.replace(this.url);
+                                    }
+                                }
+                            });
+                            break;
+                        case 'reset':
+                            self.reset();
+                            break;
+                        case 'zoom+':
+                            self.zoom(0.25);
+                            break;
+                        case 'zoom-':
+                            self.zoom(-0.25);
+                            break;
+                        case 'rotate_left':
+                            self.rotate(-18);
+                            break;
+                        case 'rotate_right':
+                            self.rotate(18);
+                            break;
+                        case 'move_up':
+                            self.move(0, 5);
+                            break;
+                        case 'move_down':
+                            self.move(0, -5);
+                            break;
+                        case 'move_left':
+                            self.move(-5, 0);
+                            break;
+                        case 'move_right':
+                            self.move(5, 0);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            }
+        });
+
+        var avatarLayer = null;
+        options = options || {};
+        if(typeof options === 'function') yes = options;
+        var success = options.success || function(){};
+        options = $.extend({area:[window.innerWidth < 600 ? '95%' : '500px', '500px'], title:'cropper'}, options, {
+            success:function(layero, index){
+                if(cropper.lock) $(layero).find('[data-action="file"]').remove();
+                success(layero, index);
+                avatarLayer = layero;
+                avatarLayer.cropper = new Cropper($('#' + rand + ' .cropper')[0], cropper);
+                avatarLayer.cropper.selectImage = function(){ $('#' + rand).find('input[type="file"]').trigger('click'); };
+            },
+            yes:function(index, layero){
+                yes(index, layero);
+            }
+        });
+
+        return layer.confirm(html, options);
+    };
+    //  扩展Layer图片选择
+    layer.image = function(choose, options, yes){
+        choose = choose || [];
+        var change = choose.change || function(){};
+        choose.placeholder = choose.placeholder || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxMDB2MTAwSDB6Ii8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTlFOUU5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTMwKSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iIzk4OTY5NyIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgzMCAxMDUuOTggNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjOUI5OTlBIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc1Ljk4IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0EzQTFBMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCA2NSA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNBQkE5QUEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDU4LjY2IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0IyQjJCMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgxNTAgNTQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjQkFCOEI5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCA1MCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDMkMwQzEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1MCA0NS45OCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDQkNCQ0IiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA0MS4zNCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNEMkQyRDIiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDM1IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0RBREFEQSIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNjAgMjQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTJFMkUyIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtNS45OCA2NSkiLz48L3N2Zz4=';
+        choose.image = choose.image || '';
+        choose.local = choose.local || true;
+        choose.dump = choose.dump || '';
+        choose.dispose = choose.dispose || true;
+        choose.quality = choose.quality || 0.9;
+        choose.force = choose.force || false;
+        choose.scale = choose.scale || false;
+        choose.width = choose.width || 0;
+        choose.height = choose.height || 0;
+        choose.type = choose.type || '';
+        var appendClass = [!choose.local ? 'hidden-local' : '', !choose.dump ? 'hidden-url' : ''];
+        var html = '<div class="layer-image-select ' + appendClass.join(' ') + '"><div class="form-group"><div class="preview"><img src="' + (choose.image || choose.placeholder) + '"><i></i></div></div><div class="form-group input-file"><label>' + ($.bootstrapModaler.options.lang.file || 'Select File') + '</label><input type="file" name="file" class="form-control file" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"></div><div class="form-group input-url"><label>' + ($.bootstrapModaler.options.lang.imageUrl || 'Image Url') + '</label><div class="input-group"><input type="url" name="url" class="form-control" value="' + choose.image + '"><span class="input-group-append"><button type="reset" class="btn btn-secondary">' + ($.bootstrapModaler.options.lang.reset || 'Reset') + '</button><button type="button" class="btn btn-secondary url-dump">' + ($.bootstrapModaler.options.lang.imageDump || 'Image Dump') + '</button></span></div></div></div>';
+        var imageLayer = null;
+        options = options || {};
+        if(typeof options === 'function') yes = options;
+        var success = options.success || function(){};
+        options = $.extend({area:[window.innerWidth < 600 ? '95%' : '600px'], title:'image'}, options, {
+            success:function(layero, index){
+                success(layero, index);
+                imageLayer = layero;
+                var imagePreview = $(layero).find('img');
+                imageLayer.preview = imagePreview, imageLayer.canvas;
+                var fileInput = $(layero).find('input[type="file"]');
+                var urlInput = $(layero).find('input[name="url"]');
+                var urlDump = $(layero).find('button.url-dump');
+                var file, src, data, canvas, mime;
+                var isImageFile = function(file){
+                    if(file.type) return /^image\/\w+$/.test(file.type);
+                    else return /\.(jpg|jpeg|png|gif|webp)$/.test(file);
+                };
+                if(choose.type && !isImageFile('.' + choose.type)) choose.type = 'jpeg';
+                var dump = function(url){
+                    imagePreview.attr('src', choose.placeholder);
+                    $.get(choose.dump, {url:url}, function(data, status, xhr){
+                        src = this.url;
+                        fileInput.val('');
+                        imageLayer.data = {type:'url', value:url};
+                        mime = xhr.getResponseHeader('Content-Type');
+                        dispose();
+                    }).fail(function(e){
+                        urlInput.val('');
+                    });
+                };
+                var dispose = function(){
+                    var type = typeof (choose.dispose);
+                    if(type != 'function'){
+                        var img = new Image;
+                        canvas = document.createElement('canvas');
+                        var drawer = canvas.getContext('2d');
+                        img.src = src;
+                        img.onload = function(){
+                            canvas.width = choose.width ? (choose.force ? choose.width : Math.min(choose.width, img.width)) : img.width;
+                            if(choose.scale) canvas.height = choose.width * (img.height / img.width);
+                            else canvas.height = choose.height ? (choose.force ? choose.height : Math.min(choose.height, img.height)) : img.height;
+                            drawer.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            if(choose.dispose && (choose.type || mime)) var src = canvas.toDataURL((choose.type ? 'image/' + choose.type : mime), choose.quality);
+                            else var src = canvas.toDataURL();
+                            imageLayer.canvas = canvas;
+                            imagePreview.attr('src', src);
+                        };
+                    }else if(type == 'function') imagePreview.attr('src', choose.dispose(url));
+                };
+                if(choose.image && choose.dump) dump(choose.image);
+                if(choose.local){
+                    fileInput.filestyle();
+                    $(layero).find('.bootstrap-filestyle .group-span-filestyle').removeClass('input-group-btn').addClass('input-group-append');
+                    fileInput.on('change', function(){
+                        var fileList = $(this).prop('files');
+                        if(typeof (fileList) == 'object' && fileList.length > 0){
+                            var fileContent = fileList[0];
+                            if(isImageFile(fileContent)){
+                                imagePreview.attr('src', choose.placeholder);
+                                if(this.url) URL.revokeObjectURL(this.url);
+                                this.url = URL.createObjectURL(fileContent);
+                                imageLayer.data = {type:'file', value:fileContent};
+                                src = this.url;
+                                mime = fileContent.type;
+                                urlInput.val('');
+                                dispose();
+                            }
+                        }
+                    });
+                }else $(layero).find('.input-file').remove();
+                if(choose.dump){
+                    urlDump.on('click', function(){ dump(urlInput.val()); });
+                }else $(layero).find('.input-url').remove();
+            },
+            yes:function(index, layero){
+                yes(index, layero);
+            }
+        });
+
+        return layer.confirm(html, options);
     };
     //  扩展方法
     $.extend($, {
@@ -548,6 +851,21 @@ $.validator.addMethod('function', function(value, element, params){return params
                 var self = {selector:selector, options:options, validate:$(selector).validate(data), value:function(){ return $(selector).serializeObject(); }};
                 if(self.validate && typeof (options.callback.build) === 'function') options.callback.build(self);
                 return self.validate;
+            },
+            cropper:function(selector, options){
+                //  没有选择器则直接返回
+                if(!selector)
+                    return false;
+                //  循环匹配选择器
+                var list = [];
+                $(selector).each(function(i, v){
+                    //  非有效标签则不处理
+                    if(!v || !/^img|canvas$/i.test(v.tagName))
+                        return true;
+                    list.push(v.cropper = new Cropper(v, options));
+                });
+                //  单条数据返回值否则返回数组
+                return list.length == 0 ? false : (list.length == 1 ? list[0] : list);
             }
         }
     });

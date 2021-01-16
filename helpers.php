@@ -3,20 +3,37 @@
 use Demon\AdminLaravel\Html;
 
 /**
+ * 运维后台代码路径
+ *
+ * @param string $path
+ *
+ * @return string
+ *
+ * @author    ComingDemon
+ * @copyright 魔网天创信息科技
+ */
+function admin_path($path = '')
+{
+    return app_path('Admin' . ($path ? DIRECTORY_SEPARATOR . $path : $path));
+}
+
+/**
  * 运维后台URL路径
  *
  * @param null  $path
  * @param array $parameters
  * @param null  $secure
  *
- * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\UrlGenerator|string
+ * @return string
  *
  * @author    ComingDemon
  * @copyright 魔网天创信息科技
  */
-function adminUrl($path = null, $parameters = [], $secure = null)
+function admin_url($path = null, $parameters = [], $secure = null)
 {
-    return url(config('admin.web.path') . ($path ? '/' . ltrim($path, '/') : ''), $parameters, $secure);
+    $url = url(config('admin.path') . ($path ? '/' . ltrim($path, '/') : ''), [], $secure);
+
+    return $url . ($parameters ? ((strpos($url, '?') !== false) ? '&' : '?') . http_build_query($parameters) : '');
 }
 
 /**
@@ -27,7 +44,7 @@ function adminUrl($path = null, $parameters = [], $secure = null)
  * @copyright 魔网天创信息科技
  * @author    ComingDemon
  */
-function adminHtml()
+function admin_html()
 {
     $html = Html::instance();
     //  获取参数
@@ -47,8 +64,8 @@ function adminHtml()
             case 'input':
                 return $html->input($parm[1] ?? '', $parm[2] ?? [], $parm[3] ?? 'text', $parm[4] ?? '');
                 break;
-            case 'batch':
-                return $html->batch($parm[1] ?? [], $parm[3] ?? 'i-checks');
+            case 'switch':
+                return $html->switch($parm[1] ?? [], $parm[2] ?? [], $parm[3] ?? 'switch hidden');
                 break;
             case 'fast':
                 return $html->fast($parm[1] ?? '', $parm[2] ?? [], $parm[3] ?? 'span', $parm[4] ?? '');
@@ -79,7 +96,7 @@ function adminHtml()
  * @author    ComingDemon
  * @copyright 魔网天创信息科技
  */
-function adminTableButton($action = '', $type = '', $parm = [])
+function admin_button($action = '', $type = '', $parm = [])
 {
     $text = $parm['text'] ?? '';
     $title = $parm['title'] ?? $text;
@@ -130,7 +147,7 @@ function adminTableButton($action = '', $type = '', $parm = [])
     }
 
     //  返回内容
-    return adminHtml()->button(($icon ? adminHtml()->fast('', [], 'i', $icon) : '') . $text, [
+    return admin_html()->button(($icon ? admin_html()->fast('', [], 'i', $icon) : '') . $text, [
         'action' => $action, 'title' => $title, 'data-toggle' => 'tooltip', 'data-trigger' => 'hover'
     ], $tag, "btn-{$size} btn-{$theme} " . ($parm['class'] ?? ''));
 }

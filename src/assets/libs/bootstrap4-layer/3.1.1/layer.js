@@ -225,10 +225,10 @@
             ok:function(){return 'OK';},
             cancel:function(){return 'Cancel';},
             maxlength:function(length){return 'Please enter no more than ' + length + ' characters.';},
-            nopic:function(){return 'no photos';},
+            nopic:function(){return 'No photos';},
             errpic:function(){return 'The current image address is abnormal<br>Do you want to check the next one?';},
-            nextpic:function(){return 'continue';},
-            closepic:function(){return 'cancel';}
+            nextpic:function(){return 'Continue';},
+            closepic:function(){return 'Cancel';}
         }
     };
 
@@ -282,7 +282,7 @@
             , body = $('body');
 
         // @todo hack 处理语言包
-        config.title = typeof (config.lang[config.title]) == 'function' ? config.lang[config.title]() : config.title;
+        config.title = typeof (config.lang[config.title]) == 'function' ? config.lang[config.title]() : (typeof (config.title) == 'string' ? config.title.replace(config.title[0], config.title[0].toUpperCase()) : config.title);
         $.each(ready.btn, function(i, v){ ready.btn[i] = typeof (config.lang[v]) == 'function' ? config.lang[v]() : v;});
         $.each(config.btn, function(i, v){ config.btn[i] = typeof (config.lang[v]) == 'function' ? config.lang[v]() : v;});
 
