@@ -1,15 +1,22 @@
 <?php
+
+use Demon\AdminLaravel\example\Controller;
+use Demon\AdminLaravel\Middleware;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Session\Middleware\StartSession;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
 app('router')->group([
     'namespace' => 'App\Admin\Controllers',
     'prefix' => config('admin.path'),
-    'middleware' => [\Demon\AdminLaravel\Middleware::class],
+    'middleware' => [StartSession::class, VerifyCsrfToken::class, Middleware::class],
 ], function($router) {
     //  路由方法
     $func = function($mod = 'common', $con = 'index', $act = 'index') {
         //  如果该路由没有被直接定义
         if (!Route::has($con)) {
             //  指向具体文件
-            $controller = "App\\Admin\\Controllers\\" . ucwords($mod) . "\\" . ucwords($con) . "Controller";
+            $controller = "App\\Admin\\Controllers\\" . ucwords($mod) . "\\" . ucwords($con) . 'Controller';
             //  如果文件存在
             try {
                 if (class_exists($controller)) {
@@ -22,7 +29,7 @@ app('router')->group([
                 }
                 //  返回错误页面
                 else abort(404);
-            } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
+            } catch (HttpException $exception) {
                 $view = 'admin::preset.error.' . $exception->getStatusCode();
                 if (!request()->ajax()) {
                     if ($view = view()->exists($view) ? $view : 'admin::preset.error.unknown')
@@ -40,7 +47,7 @@ app('router')->group([
     $router->match(['get', 'post'], '/auth/{act?}', function($act = 'login') use ($func) { return $func('common', 'auth', $act); });
     //  实例展示
     $router->match(['get', 'post'], '/example/{act?}', function($act = 'index') {
-        $control = App::make(\Demon\AdminLaravel\example\Controller::class);
+        $control = App::make(Controller::class);
         if (method_exists($control, $act))
             return App::call([$control, $act]);
         else response(null, 404);

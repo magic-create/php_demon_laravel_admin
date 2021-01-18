@@ -17,15 +17,8 @@ class Table extends Tables
      */
     public function __construct()
     {
-        //  设置内容
-        $this->store = [
-            'credit' => [1 => ['name' => '积分', 'alias' => 'credit', 'decimals' => 0], 2 => ['name' => '余额', 'alias' => 'balance', 'decimals' => 2]],
-            'sex' => [-1 => '女', 0 => '其他', 1 => '男'],
-            'avatar' => ['none' => '未设置', 'have' => '已设置'],
-            'status' => [-1 => '已删', 0 => '隐藏', 1 => '正常'],
-        ];
-        for ($i = 0; $i <= 100; $i++)
-            $this->store['level'][$i] = array_to_object(['name' => bomber()->strFill(3, $i)]);
+        //  设置字段内容
+        $this->store = Service::fieldStore();
         parent::__construct();
     }
 
@@ -39,7 +32,7 @@ class Table extends Tables
      */
     public function setConfig()
     {
-        return ['batch' => true, 'key' => 'uid', 'reorder' => ['level', 'desc']];
+        return ['batch' => true, 'key' => Service::MasterKey, 'reorder' => ['level', 'desc']];
     }
 
     /**
@@ -54,7 +47,6 @@ class Table extends Tables
     {
         return [
             'export' => ['class' => 'btn btn-info', 'text' => '服务端导出', 'icon' => 'fa fa-file-download'],
-            'batch' => ['class' => 'btn btn-warning', 'icon' => 'fa fa-list', 'title' => '批量调试'],
         ];
     }
 
@@ -147,7 +139,7 @@ class Table extends Tables
     }
 
     /**
-     * 绑定字段
+     * 设置字段
      *
      * @return array|string[]
      *
@@ -156,7 +148,7 @@ class Table extends Tables
      */
     public function setField()
     {
-        return ['status'];
+        return ['a.data'];
     }
 
     /**
@@ -169,10 +161,10 @@ class Table extends Tables
      */
     public function setQuery()
     {
-        $query = DB::connection('admin')->table('example_master as a')->where('a.status', '>=', 0);
+        $query = DB::connection(Service::connection)->table(Service::MasterModel . ' as a')->where('a.status', '>=', 0);
         foreach ($this->store['credit'] as $type => $name) {
             $alias = 'c_' . $type;
-            $query->leftJoin('example_slave as ' . $alias, function($query) use ($alias, $type) {
+            $query->leftJoin(Service::SlaveModel . ' as ' . $alias, function($query) use ($alias, $type) {
                 $query->on($alias . '.uid', '=', 'a.uid')->where($alias . '.type', $type);
             });
         }
@@ -246,37 +238,28 @@ class Table extends Tables
      */
     public function export($name = '用户信息')
     {
-        $count = $this->getQuery(false)->count();
-        if ($count > 1e5)
+        //  数据太大不允许导出
+        if ($this->count() > 1000)
             return '导出数据较大，请精准搜索条件后导出';
         //  获取数据源
-        $list = $this->query->orderBy('a.createTime', 'desc')->limit(100)->get();
+        $this->format = [
+            'status' => function($val) { return $this->store['status'][$val->status]; },
+            '_action' => ['type' => 'remove']
+        ];
+        $list = $this->getFormat($this->get());
         //  设置表头
-        $title = ['UID', '编号', '昵称', '头像', '性别', '等级', '贵族', '魔豆', '金币', '魔气', '功勋', '注册时间', '活跃时间'];
-        $width = [20, 20, 50, 30, 20, 20, 20, 20, 20, 20, 20, 50, 50];
-        $format = ['string', 'string', 'string', 'image', 'string', 'string', 'string', 'string', 'string', 'string', 'string', 'string', 'string'];
-        $height = 30;
+        $column = [
+            'UID', '手机号', '昵称', '头像' => [30, 'image'],
+            '性别', '等级', '积分', '余额',
+            '生日', '活跃时间' => 30, '签到日期', '登录时间',
+            '注册日期', '更新日期', '状态', '附加',
+        ];
         //  遍历数据
         $data = [];
-        foreach ($list as $key => $val) {
-            $data[] = [
-                $val->uid,
-                $val->code,
-                $val->nickname,
-                (new ConfigService)->format('avatar', $val->avatar),
-                $this->store['sex'][$val->sex],
-                $this->store['level']->{$val->level}->name,
-                $this->store['vip']->{$val->vip}->name,
-                $val->bean,
-                $val->gold,
-                $val->grow,
-                $val->exp,
-                msdate('Y-m-d H:i:s', $val->createTime),
-                msdate('Y-m-d H:i:s', $val->activeTime ? : $val->createTime),
-            ];
-        }
+        foreach ($list as $key => $val)
+            $data[] = array_values(object_to_array($val));
 
         //  导出文件
-        return (new Spreadsheet())->download($name . '.xls', ['sheet' => $name] + compact('title', 'width', 'height', 'format'), $data);
+        return (new Spreadsheet())->download($name . '.xls', ['sheet' => $name, 'column' => $column, 'height' => 50], $data);
     }
 }

@@ -11,10 +11,14 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public $route;
+    /**
+     * @var Api 接口服务
+     */
+    protected $api;
 
     public function __construct()
     {
-        $this->route = request()->get('route');
+        //  接口服务
+        $this->api = $this->api ? : new Api();
     }
 }

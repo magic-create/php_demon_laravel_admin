@@ -49,6 +49,11 @@ class DBTable
     public $field = [];
 
     /**
+     * @var array 字段处理
+     */
+    public $format = [];
+
+    /**
      * @var array 排序设置
      */
     public $order = [];
@@ -79,6 +84,7 @@ class DBTable
     public function __construct()
     {
         $this->getConfig();
+        $this->getField();
     }
 
     /**
@@ -183,7 +189,7 @@ class DBTable
      */
     public function getField()
     {
-        return $this->field = $this->setField() + $this->field;
+        return $this->field = $this->field + $this->setField();
     }
 
     /**
@@ -325,7 +331,7 @@ class DBTable
         //  获取表字段
         $rawColumns = [];
         //  循环处理字段内容
-        foreach ($this->setFormat() as $key => $val) {
+        foreach ($this->format + $this->setFormat() as $key => $val) {
             //  处理类型
             $type = is_array($val) ? ($val['type'] ?? '') : '';
             //  处理方法
@@ -656,13 +662,13 @@ class DBTable
     /**
      * 查询构造器
      *
-     * @param bool $structure
+     * @param bool|int $step
      *
      * @return Model|DB|null
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function getQuery($structure = false)
+    public function getQuery($step = 0)
     {
         //  初始化
         $this->query = $this->setQuery();
@@ -685,12 +691,14 @@ class DBTable
         $this->getFuzzy($searchText);
         //  搜索表单
         $this->getSearchs(arguer($this->config->searchList ?? 'searchs', [], 'array'));
-        //  阻断
-        if (!$structure)
+        //  拼接好就返回
+        if ($step == 0)
             return $this->query;
         //  分页限制
-        $limit = min($limit, max($this->config->pageList));
-        $this->query->offset($offset)->limit($limit);
+        if ($step == 2) {
+            $limit = min($limit, max($this->config->pageList));
+            $this->query->offset($offset)->limit($limit);
+        }
         //  排序设定
         if ($sortName)
             $this->query->orderBy(strtok($this->field[$sortName] ?? $sortName, ' '), $sortOrder ? : 'asc');
@@ -826,17 +834,45 @@ class DBTable
      */
     public function ajax()
     {
-        $data = [$this->config->totalField => $this->getQuery(false)->count()];
+        $data = [$this->config->totalField => $this->count()];
         if (config('app.debug'))
             $data['_debug'] = [$this->config->totalField => sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings())];
         if ($statis = $this->getStatis($this->query))
             $data['statis'] = $statis;
-        $data[$this->config->dataField] = $this->getFormat($this->getQuery(true)->select(array_values($this->field))->get());
+        $data[$this->config->dataField] = $this->getFormat($this->get(2));
         if (config('app.debug'))
             $data['_debug'][$this->config->dataField] = sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings());
 
         //  输出JSON
         return new JsonResponse($data);
+    }
+
+    /**
+     * 获取数据统计
+     *
+     * @return mixed
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function count()
+    {
+        return $this->getQuery(0)->count();
+    }
+
+    /**
+     * 获取数据列表
+     *
+     * @param int $step
+     *
+     * @return array
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function get($step = 1)
+    {
+        return $this->getQuery($step)->select(array_values($this->field))->get();
     }
 
     /**
@@ -852,8 +888,6 @@ class DBTable
      */
     public function render($view, $data = [], $mergeData = [])
     {
-        //  指定字段
-        $this->getField();
         //  指定搜索
         $this->getSearch();
         //  如果是AJAX则表示查询数据

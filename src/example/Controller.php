@@ -2,12 +2,10 @@
 
 namespace Demon\AdminLaravel\example;
 
-use App\Admin\Tables\Central\MemberTable;
 use Demon\AdminLaravel\Controller as Controllers;
 
 class Controller extends Controllers
 {
-
     function __construct()
     {
         parent::__construct();
@@ -31,8 +29,6 @@ class Controller extends Controllers
      *
      * @param Table $table
      *
-     * @return mixed
-     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -40,6 +36,12 @@ class Controller extends Controllers
     {
         //  操作动作
         switch (arguer($table->config->actionName)) {
+            //  状态
+            case 'status':
+                $this->api->check(Service::updateStatus(arguer('uid'), arguer('status', false, 'bool')));
+
+                return $this->api->send();
+                break;
             //  导出
             case 'export':
                 return $table->export();

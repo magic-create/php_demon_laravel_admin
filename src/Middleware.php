@@ -4,6 +4,7 @@ namespace Demon\AdminLaravel;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Router;
 
 class Middleware

@@ -6,7 +6,11 @@
 @endsection
 {{--扩展功能按钮--}}
 @section('toolbar.button')
-    <button class="btn btn-primary" data-button-key="custom">扩展按钮</button>
+    <button class="btn btn-primary dropdown-toggle" id="action_batch" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list"></i> 批量设置</button>
+    <div class="dropdown-menu" aria-labelledby="action_batch">
+        <a class="dropdown-item" href="javascript:" data-button-key="action_batch" data-value="true">设置正常</a>
+        <a class="dropdown-item" href="javascript:" data-button-key="action_batch" data-value="false">设置隐藏</a>
+    </div>
 @endsection
 {{--渲染表格--}}
 @section('container.content')
@@ -31,10 +35,11 @@
                     case 'export':
                         window.open($.admin.table.getUrl('export'));
                         break;
-                    //  扩展按钮
-                    case 'custom':
-                        $.admin.layer.msg('点击了扩展按钮，然后表格刷新');
-                        $.admin.table.method('refresh');
+                    //  批量操作
+                    case 'action_batch':
+                        var uids = $.admin.table.getBatch(true);
+                        if(!uids.length) return $.admin.api.fail('未选择内容');
+                        $.post('{{url()->current()}}', {_action:'status', uid:uids, status:a.$elem.data('value')}, function(){$.admin.table.method('refresh');}).fail($.admin.api.fail);
                         break;
                 }
             });
@@ -56,8 +61,9 @@
                     case 'test':
                         $.admin.alert.secondary('Test : ' + a.row.nickname, {pos:'c'});
                         break;
+                    //  变更状态
                     case 'status':
-                        $.admin.alert.secondary('Status : ' + a.row.nickname + ' : ' + (a.switch ? '开启' : '关闭'), {pos:'c'});
+                        $.post('{{url()->current()}}', {_action:'status', uid:a.row.uid, status:a.switch}, function(){$.admin.table.method('refresh');}).fail($.admin.api.fail);
                         break;
                 }
             });

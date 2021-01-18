@@ -10,6 +10,7 @@
 
 namespace Demon\AdminLaravel;
 
+use Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet as Spreadsheets;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -34,7 +35,9 @@ class Spreadsheet
 
     /**
      * 初始化
+     *
      * @return object|static
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -57,17 +60,49 @@ class Spreadsheet
     }
 
     /**
+     * 便捷处理字段
+     *
+     * @param array $list
+     *
+     * @return array[]
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function column($list = [])
+    {
+        $data = ['title' => [], 'width' => [], 'format' => []];
+        foreach ($list as $key => $val) {
+            //  可以简写
+            if (!is_array($val))
+                $val = [$val];
+            //  如果键非数字
+            if (!is_numeric($key))
+                array_unshift($val, $key);
+            $data['title'][] = $val[0] ?? '';
+            $data['width'][] = $val[1] ?? ($val['width'] ?? 20);
+            $data['format'][] = $val[2] ?? ($val['format'] ?? 'string');
+        }
+
+        return $data;
+    }
+
+    /**
      * 设置配置
      *
      * @param array $config
      *
      * @return $this
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
     public function config($config = [])
     {
-        $this->_config = array_merge_recursive($this->_config, $config);
+        //  如果需要自动处理
+        if ($config['column'] ?? [])
+            $config = array_merge(self::column($config['column']), $config);
+        $this->_config = array_merge($this->_config, $config);
         //  表格信息
         $this->_config['sheet'] = $this->_config['sheet'] ?? 'Sheet1';
         $this->_config['property'] = $this->_config['sheet'] ?? [];
@@ -75,7 +110,7 @@ class Spreadsheet
         $this->_config['height'] = $this->_config['height'] ?? 20;
         $this->_config['width'] = $this->_config['width'] ?? [];
         $this->_config['format'] = $this->_config['format'] ?? [];
-        $this->_config['cache'] = $this->_config['cache'] ?? storage_path('image/sheet/');
+        $this->_config['cache'] = $this->_config['cache'] ?? storage_path('admin/sheet/cache');
 
         return $this;
     }
@@ -86,6 +121,7 @@ class Spreadsheet
      * @param $data
      *
      * @return $this
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -102,6 +138,7 @@ class Spreadsheet
      * @param int $index
      *
      * @return float|int|string
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -127,7 +164,9 @@ class Spreadsheet
 
     /**
      * 导出表格
+     *
      * @return Spreadsheets
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -215,20 +254,24 @@ class Spreadsheet
                     $object->getCell($skeyName)->getStyle()->getFont()->getColor()->setARGB(Color::COLOR_BLUE);
                 }
                 //  图片渲染
-                if ($format == 'image') {
+                if ($format == 'image' && $value) {
                     //  将斜杠换成下滑线方式出现路径问题
                     $cache = str_replace(['?', ':', ',', '╲', '/', '*', "'", '"', '<', '>', '|'], '_', $value);
                     //  下载图片
                     if (!isset($images[$cache])) {
-                        $file = $this->_config['cache'] . $cache;
+                        $file = $this->_config['cache'] . '/' . $cache;
                         if (!is_file($file)) {
-                            $content = file_get_contents($value);
-                            if ($content) {
-                                bomber()->fileCreate($cache, $content, $this->_config['cache']);
-                                $images[$cache] = $file;
-                            }
-                            else
+                            try {
+                                $content = file_get_contents($value);
+                                if ($content) {
+                                    bomber()->fileCreate($cache, $content, $this->_config['cache']);
+                                    $images[$cache] = $file;
+                                }
+                                else
+                                    $images[$cache] = '';
+                            } catch (Exception $e) {
                                 $images[$cache] = '';
+                            }
                         }
                         else
                             $images[$cache] = $file;
@@ -269,6 +312,7 @@ class Spreadsheet
      * @param $data
      *
      * @return bool|string
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -285,6 +329,7 @@ class Spreadsheet
      * @param string       $type
      *
      * @return bool|string
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -341,7 +386,9 @@ class Spreadsheet
     /**
      * 导入表格
      * @return array
+     *
      * @copyright 魔网天创信息科技
+     *
      * @author    ComingDemon
      */
     public function import()

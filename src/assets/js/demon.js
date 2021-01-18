@@ -364,7 +364,14 @@ $.validator.addMethod('function', function(value, element, params){return params
             $(target).trigger('row:' + self.options.actionEvent, [{$elem:$(target), action:$(target).attr('action'), row:r, index:i}]);
         };
         //  获取多选
-        eval(self.options.namespace).getBatch = function(){return $('#' + self.options.id).bootstrapTable('getSelections');};
+        eval(self.options.namespace).getBatch = function(key){
+            var data = $('#' + self.options.id).bootstrapTable('getSelections');
+            if(key){
+                var uniqueIds = [];
+                if(self.options.uniqueId) $.each(data, function(index, item){uniqueIds.push(item[self.options.uniqueId]);});
+                return uniqueIds;
+            }else return data;
+        };
         eval(self.options.namespace).getUrl = function(action = 'null', parm = {}){
             self.refresh({silent:true, query:Object.assign({ignore:true, [self.options.actionName]:action}, parm)});
             return eval(self.options.namespace).builder[0].url;
@@ -669,6 +676,23 @@ $.validator.addMethod('function', function(value, element, params){return params
             layer:layer,
             modal:$.bootstrapModaler,
             alert:$.bootstrapAlert,
+            api:{
+                fail:function(xhr, callback = true, alert = true){
+                    var code = (xhr.responseJSON && xhr.responseJSON.code || null) ? xhr.responseJSON.code : xhr.status;
+                    code = code || (xhr.code || 400);
+                    var message = (xhr.responseJSON && xhr.responseJSON.message || null) ? xhr.responseJSON.message : xhr.statusText;
+                    message = message || (typeof (xhr) == 'string' ? xhr : (xhr.message || ''));
+                    var info = $.extend({code:0, message:''}, xhr.responseJSON || {}, {code:code, message:message});
+                    console.info(info);
+                    if(typeof (callback) != 'function'){
+                        alert = callback;
+                        callback = null;
+                    }
+                    if(callback) return callback(info, this);
+                    $.admin.layer.closeAll('loading');
+                    if(alert) $.admin.alert.danger(message, {pos:(typeof (alert) == 'string' && alert.length <= 2) ? alert : 'rt'});
+                }
+            },
             select:function(selector, options){
                 //  组合参数
                 options = $.extend(options, {dropdownAutoWidth:true, width:'100%'});
