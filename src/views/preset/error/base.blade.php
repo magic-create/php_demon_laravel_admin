@@ -22,9 +22,9 @@
                 <a class="btn btn-info mb-4 waves-effect waves-float" href="javascript:" onclick="goBack()"><i class="fa fa-backspace mr-2"></i>{{__('Back')}}</a>
             </div>
         </div>
-        <div class="mt-4 text-center">
+        <footer class="mt-4 text-center">
             @yield('footer')
-        </div>
+        </footer>
     </div>
 @endsection
 {{--传递脚本信息--}}

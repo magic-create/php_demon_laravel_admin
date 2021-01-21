@@ -6,6 +6,10 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Class Api
+ * @package Demon\AdminLaravel
+ */
 class Api
 {
     /**
@@ -39,19 +43,22 @@ class Api
     ];
 
     /**
-     * 检查并获取请求参数
+     * 检查参数合法性
      *
      * @param array $list
      * @param array $rules
      * @param array $messages
+     * @param array $origin
      *
-     * @return array|Application|Request|string
+     * @return array|string
      *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function arguer(array $list = [], array $rules = [], array $messages = [])
+    public function validator(array $list = [], array $rules = [], array $messages = [], $origin = [])
     {
+        //  定义内容
+        $origin = $origin ? : arguer();
         //  循环合并规则
         $field = [];
         foreach ($list as $key => $val) {
@@ -72,7 +79,7 @@ class Api
             }
         }
         //  开始验证
-        $validator = Validator::make(arguer(), $rules, $messages, $field);
+        $validator = Validator::make($origin, $rules, $messages, $field);
         if ($validator->fails()) {
             //  定义错误消息
             $message = '';
@@ -81,12 +88,36 @@ class Api
                 $message = $error[0];
                 break;
             }
-            //  抛出错误异常
-            $this->setCode(DEMON_CODE_PARAM)->setMessage($message)->send();
+
+            //  返回错误异常
+            return error_build(DEMON_CODE_PARAM, $message);
         }
 
         //  返回全部参数
-        return arguer();
+        return $origin;
+    }
+
+    /**
+     * 检查请求参数并抛出异常错误
+     *
+     * @param array $list
+     * @param array $rules
+     * @param array $messages
+     *
+     * @return array|string
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function arguer(array $list = [], array $rules = [], array $messages = [])
+    {
+        //  检查请求参数
+        $data = self::validator($list, $rules, $messages, arguer());
+        if (!error_check($data))
+            self::check($data);
+
+        //  返回全部参数
+        return $data;
     }
 
     /**

@@ -36,15 +36,58 @@ class Controller extends Controllers
     {
         //  操作动作
         switch (arguer($table->config->actionName)) {
+            //  导出
+            case 'export':
+                return $table->export();
+                break;
+            //  新增
+            case 'add':
+                if (DEMON_SUBMIT) {
+                    $this->api->check(Service::add(arguer('data', [], 'array')));
+
+                    return $this->api->send();
+                }
+                else
+                    return view('admin::preset.example.table_info', ['store' => Service::fieldStore()]);
+                break;
+            //  编辑
+            case 'edit':
+                $uid = arguer('uid', 0, 'abs');
+                if (!$uid)
+                    abort(DEMON_CODE_PARAM);
+                $info = Service::find($uid);
+                if (!$info)
+                    abort(DEMON_CODE_PARAM);
+                if (DEMON_SUBMIT) {
+                    $this->api->check(Service::edit($uid, arguer('data', [], 'array')));
+
+                    return $this->api->send();
+                }
+                else
+                    return view('admin::preset.example.table_info', ['info' => $info, 'store' => Service::fieldStore()]);
+                break;
+            //  信息
+            case 'info':
+                $uid = arguer('uid', 0, 'abs');
+                if (!$uid)
+                    abort(DEMON_CODE_PARAM);
+                $info = Service::find($uid);
+                if (!$info)
+                    abort(DEMON_CODE_PARAM);
+
+                return view('admin::preset.example.table_info', ['info' => $info, 'readonly' => true, 'store' => Service::fieldStore()]);
+                break;
             //  状态
             case 'status':
                 $this->api->check(Service::updateStatus(arguer('uid'), arguer('status', false, 'bool')));
 
                 return $this->api->send();
                 break;
-            //  导出
-            case 'export':
-                return $table->export();
+            //  删除
+            case 'delete':
+                $this->api->check(Service::updateStatus(arguer('uid'), -1));
+
+                return $this->api->send();
                 break;
             default:
                 return $table->render('admin::preset.example.table');

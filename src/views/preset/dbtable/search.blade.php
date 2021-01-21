@@ -9,7 +9,7 @@
                     $val->type = isset($val->type) ? $val->type :($val->where == 'range' ? 'num' : 'text');
                     $val->attrHtml = $val->attrHtml ?? '';
                     $val->title = $val->title ?? '';
-                    $val->placeholder = $val->placeholder ?? $val->title;
+                    $val->placeholder = $val->placeholder ?? (!in_array($val->type,['select']) ? $val->title : '');
                     $val->style = $val->style ?? '';
                 @endphp
                 <div class="form-group search-panel">
@@ -22,10 +22,10 @@
                                 @if(in_array($val->where,['range','between']))
                                     <div class="row range">
                                         <div class="col-6">
-                                            <input name="{{$val->name}}__start" placeholder="{{$val->placeholder}}" value="{{$val->value[0]??''}}" type="text" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
+                                            <input name="{{$val->name}}__start" placeholder="{{is_array($val->placeholder) ? $val->placeholder[0] : $val->placeholder}}" value="{{$val->value[0]??''}}" type="text" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
                                         </div>
                                         <div class="col-6">
-                                            <input name="{{$val->name}}__end" placeholder="{{$val->placeholder}}" value="{{$val->value[1]??''}}" type="text" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
+                                            <input name="{{$val->name}}__end" placeholder="{{is_array($val->placeholder) ? $val->placeholder[1] : $val->placeholder}}" value="{{$val->value[1]??''}}" type="text" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
                                         </div>
                                     </div>
                                 @else
@@ -39,7 +39,7 @@
                                     <div class="row range">
                                         <div class="col-6">
                                             <select name="{{$val->name}}__start" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
-                                                <option value="">&nbsp;</option>
+                                                <option value="">{!!is_array($val->placeholder) ? $val->placeholder[0] : ($val->placeholder ?: '&nbsp;')!!}</option>
                                                 @foreach($options as $k => $o)
                                                     <option @if(($val->value[0]??null) === $k) selected @endif value="{{$k}}">{!!$o!!}</option>
                                                 @endforeach
@@ -47,7 +47,7 @@
                                         </div>
                                         <div class="col-6">
                                             <select name="{{$val->name}}__end" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
-                                                <option value="">&nbsp;</option>
+                                                <option value="">{!!is_array($val->placeholder) ? $val->placeholder[1] : ($val->placeholder ?: '&nbsp;')!!}</option>
                                                 @foreach($options as $k => $o)
                                                     <option @if(($val->value[1]??null) === $k) selected @endif value="{{$k}}">{!!$o!!}</option>
                                                 @endforeach
@@ -56,7 +56,7 @@
                                     </div>
                                 @else
                                     <select name="{{$val->name}}" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
-                                        <option value="">&nbsp;</option>
+                                        <option value="">{!!$val->placeholder ?: '&nbsp;'!!}</option>
                                         @foreach($options as $k => $o)
                                             <option @if(($val->value??null) === $k) selected @endif value="{{$k}}">{!!$o!!}</option>
                                         @endforeach
@@ -68,10 +68,12 @@
                                 @if(in_array($val->where,['range','between']))
                                     <div class="row range">
                                         <div class="col-6">
-                                            <input name="{{$val->name}}__start" placeholder="{{$val->placeholder}}" value="{{$val->value[0]??''}}" type="number" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
+                                            <input name="{{$val->name}}__start" placeholder="{{is_array($val->placeholder) ? $val->placeholder[0] : $val->placeholder}}" value="{{$val->value[0]??''}}" type="number"
+                                                   class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
                                         </div>
                                         <div class="col-6">
-                                            <input name="{{$val->name}}__end" placeholder="{{$val->placeholder}}" value="{{$val->value[1]??''}}" type="number" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
+                                            <input name="{{$val->name}}__end" placeholder="{{is_array($val->placeholder) ? $val->placeholder[1] : $val->placeholder}}" value="{{$val->value[1]??''}}" type="number" class="form-control"
+                                                   {!!$val->attrHtml!!} style="{{$val->style}}">
                                         </div>
                                     </div>
                                 @else
@@ -83,10 +85,10 @@
                                 @if(in_array($val->where,['range','between']))
                                     <div class="row range">
                                         <div class="col-6">
-                                            <input name="{{$val->name}}__start" placeholder="{{$val->placeholder}}" value="{{$val->value[0]??''}}" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
+                                            <input name="{{$val->name}}__start" placeholder="{{is_array($val->placeholder) ? $val->placeholder[0] : $val->placeholder}}" value="{{$val->value[0]??''}}" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
                                         </div>
                                         <div class="col-6">
-                                            <input name="{{$val->name}}__end" placeholder="{{$val->placeholder}}" value="{{$val->value[1]??''}}" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
+                                            <input name="{{$val->name}}__end" placeholder="{{is_array($val->placeholder) ? $val->placeholder[1] : $val->placeholder}}" value="{{$val->value[1]??''}}" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}">
                                         </div>
                                     </div>
                                 @else

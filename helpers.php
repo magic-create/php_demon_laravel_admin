@@ -55,14 +55,8 @@ function admin_html()
             case 'entity':
                 return $html->entity($parm[1] ?? '');
                 break;
-            case 'card':
-                return $html->card($parm[1] ?? '', $parm[2] ?? '');
-                break;
             case 'button':
                 return $html->button($parm[1] ?? '', $parm[2] ?? [], $parm[3] ?? 'a', $parm[4] ?? 'btn-sm btn-primary');
-                break;
-            case 'input':
-                return $html->input($parm[1] ?? '', $parm[2] ?? [], $parm[3] ?? 'text', $parm[4] ?? '');
                 break;
             case 'switch':
                 return $html->switch($parm[1] ?? [], $parm[2] ?? [], $parm[3] ?? 'switch hidden');
@@ -71,7 +65,7 @@ function admin_html()
                 return $html->fast($parm[1] ?? '', $parm[2] ?? [], $parm[3] ?? 'span', $parm[4] ?? '');
                 break;
             case 'image':
-                return $html->image($parm[1] ?? '', $parm[2] ?? 50, $parm[3] ?? 50, $parm[4] ?? '');
+                return $html->image($parm[1] ?? '', $parm[2] ?? [], $parm[3] ?? '30px', $parm[4] ?? '');
                 break;
             case 'search':
                 return $html->search($parm[1] ?? null, $parm[2] ?? '', $parm[3] ?? []);

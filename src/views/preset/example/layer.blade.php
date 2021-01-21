@@ -230,7 +230,7 @@ $('#alert-dark').click(function() {
         });
         var avatar = function(){
             var list = [];
-            for(var i = 1; i <= 5; i++) list.push({alt:'avatar-1', pid:i, src:'/static/admin/images/avatar/' + i + '.jpg'});
+            for(var i = 1; i <= 5; i++) list.push({alt:'avatar-' + i, pid:i, src:'/static/admin/images/avatar/' + i + '.jpg'});
             return list;
         };
         $('#photos').click(function(){ $.admin.layer.photos({anim:5, photos:{title:'Photos', data:avatar()}}); });

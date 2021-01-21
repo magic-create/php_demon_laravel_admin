@@ -149,7 +149,7 @@ $.validator.addMethod('function', function(value, element, params){return params
             //  primary, secondary, success, danger, warning, info, light, dark
             type:'primary',
             //  c, t, r, b , l, lt, lb, rt, rb
-            pos:'t',
+            pos:'rt',
             //  append, prepend
             appendType:'append',
             closeBtn:false,
@@ -162,6 +162,7 @@ $.validator.addMethod('function', function(value, element, params){return params
         },
         open:function(options){
             options = $.extend({}, alert.options, options);
+            options.pos = options.pos || 'rt';
             var container = $('#popper-alert-' + options.pos);
             if(!container.length){
                 container = $('<div id="popper-alert-' + options.pos + '" class="popper-alert" style="z-index:' + options.zIndex + '"></div>');
@@ -311,8 +312,11 @@ $.validator.addMethod('function', function(value, element, params){return params
             else self.$toolbar.append(html);
             //  搜索表单
             var formId = '#' + self.options.searchForm;
+            var template = $('#' + self.options.searchTemplate).prop('outerHTML');
+            $('#' + self.options.searchTemplate).remove();
+            self.$toolbar.before(template);
             //  面板展开或隐藏
-            $('body').on('click', '[name="' + self.options.searchTemplate + '"]', function(){ $('#' + self.options.searchTemplate).toggleClass('d-block'); });
+            setTimeout(function(){ $('body').on('click', '[name="' + self.options.searchTemplate + '"]', function(){$('#' + self.options.searchTemplate).toggleClass('d-block'); });}, 0);
             //  是否默认展开
             if(self.options.searchPanelOpen) $('#' + self.options.searchTemplate).addClass('d-block');
             //  时间控件渲染
@@ -352,6 +356,11 @@ $.validator.addMethod('function', function(value, element, params){return params
                         }]);
                     }
                 }
+            });
+            //  关于图片的特殊处理
+            $('#' + self.options.id + ' [data-bind="image"]').on('click', function(e){
+                var name = $(this).attr('name') || '';
+                $.admin.layer.photos({anim:5, photos:{title:name, data:[{alt:name, pid:0, src:$(this).attr('src')}]}});
             });
             if(data) eval(self.options.namespace).onDraw(data);
         });
@@ -403,7 +412,7 @@ $.validator.addMethod('function', function(value, element, params){return params
         cropper.image = cropper.image || cropper.placeholder;
         cropper.lock = cropper.lock || true;
         var rand = 'cropper-avatar-' + (new Date).getTime() + '' + parseInt(Math.random() * 1e5) + 1;
-        var html = '<div class="row cropper-avatar" id="' + rand + '"><div class="col-sm-9 cropper-left"><div class="cropper-box"><img class="cropper" src="' + cropper.image + '"><div class="m-t-2 cropper-tool"><button type="button" class="btn btn-sm btn-secondary" data-action="file"><i class="m-b-0 fa fa-image"></i></button>\n<input type="file" style="display:none" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"><button type="button" class="btn btn-sm btn-secondary" data-action="reset"><i class="m-b-0 fa fa-sync"></i></button>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="zoom+"><i class="m-b-0 fa fa-search-plus"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="zoom-"><i class="m-b-0 fa fa-search-minus"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_left"><i class="m-b-0 fa fa-undo"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_right"><i class="m-b-0 fa fa-redo"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="move_up"><i class="m-b-0 fa fa-arrow-up"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_down"><i class="m-b-0 fa fa-arrow-down"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_left"><i class="m-b-0 fa fa-arrow-left"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_right"><i class="m-b-0 fa fa-arrow-right"></i></button></div>\n</div></div></div><div class="col cropper-right p-l-sm-2"><div class="row no-gutters"><div class="cropper-preview"></div><div class="cropper-preview rounded m-l-3 m-l-sm-0 m-t-sm-2"></div><div class="cropper-preview rounded-circle m-l-3 m-l-sm-0 m-t-sm-2"></div></div></div></div>';
+        var html = '<div class="row cropper-avatar" id="' + rand + '"><div class="col-sm-9 cropper-left"><div class="cropper-box"><img class="cropper" src="' + cropper.image + '"><div class="mt-2 cropper-tool"><button type="button" class="btn btn-sm btn-secondary" data-action="file"><i class="mb-0 fa fa-image"></i></button>\n<input type="file" style="display:none" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"><button type="button" class="btn btn-sm btn-secondary" data-action="reset"><i class="mb-0 fa fa-sync"></i></button>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="zoom+"><i class="mb-0 fa fa-search-plus"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="zoom-"><i class="mb-0 fa fa-search-minus"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_left"><i class="mb-0 fa fa-undo"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_right"><i class="mb-0 fa fa-redo"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="move_up"><i class="mb-0 fa fa-arrow-up"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_down"><i class="mb-0 fa fa-arrow-down"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_left"><i class="mb-0 fa fa-arrow-left"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_right"><i class="mb-0 fa fa-arrow-right"></i></button></div>\n</div></div></div><div class="col cropper-right pl-sm-2"><div class="row no-gutters"><div class="cropper-preview"></div><div class="cropper-preview rounded ml-3 ml-sm-0 mt-sm-2"></div><div class="cropper-preview rounded-circle ml-3 ml-sm-0 mt-sm-2"></div></div></div></div>';
         cropper = $.extend({viewMode:1, toggleDragModeOnDblclick:false, aspectRatio:1}, cropper, {
             preview:'#' + rand + ' .cropper-preview', ready:function(e){
                 ready(e);
@@ -468,7 +477,8 @@ $.validator.addMethod('function', function(value, element, params){return params
         options = options || {};
         if(typeof options === 'function') yes = options;
         var success = options.success || function(){};
-        options = $.extend({area:window.innerWidth < 600 ? '95%' : '600px', title:'avatar'}, options, {
+        var size = window.innerWidth < 600;
+        options = $.extend({area:[size ? '100%' : '600px', size ? '100%' : 'auto'], title:'avatar'}, options, {
             success:function(layero, index){
                 if(cropper.lock) $(layero).find('[data-action="file"]').remove();
                 success(layero, index);
@@ -491,7 +501,7 @@ $.validator.addMethod('function', function(value, element, params){return params
         cropper.image = cropper.image || cropper.placeholder;
         cropper.lock = cropper.lock || true;
         var rand = 'cropper-image-' + (new Date).getTime() + '' + parseInt(Math.random() * 1e5) + 1;
-        var html = '<div class="cropper-image" id="' + rand + '"><div class="cropper-box"><img class="cropper" src="' + cropper.image + '"><div class="m-t-2 cropper-tool"><button type="button" class="btn btn-sm btn-secondary" data-action="file"><i class="m-b-0 fa fa-image"></i></button>\n<input type="file" style="display:none" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"><button type="button" class="btn btn-sm btn-secondary" data-action="reset"><i class="m-b-0 fa fa-sync"></i></button>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="zoom+"><i class="m-b-0 fa fa-search-plus"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="zoom-"><i class="m-b-0 fa fa-search-minus"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_left"><i class="m-b-0 fa fa-undo"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_right"><i class="m-b-0 fa fa-redo"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="move_up"><i class="m-b-0 fa fa-arrow-up"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_down"><i class="m-b-0 fa fa-arrow-down"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_left"><i class="m-b-0 fa fa-arrow-left"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_right"><i class="m-b-0 fa fa-arrow-right"></i></button></div>\n</div></div></div>';
+        var html = '<div class="cropper-image" id="' + rand + '"><div class="cropper-box"><img class="cropper" src="' + cropper.image + '"><div class="mt-2 cropper-tool"><button type="button" class="btn btn-sm btn-secondary" data-action="file"><i class="mb-0 fa fa-image"></i></button>\n<input type="file" style="display:none" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"><button type="button" class="btn btn-sm btn-secondary" data-action="reset"><i class="mb-0 fa fa-sync"></i></button>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="zoom+"><i class="mb-0 fa fa-search-plus"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="zoom-"><i class="mb-0 fa fa-search-minus"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_left"><i class="mb-0 fa fa-undo"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_right"><i class="mb-0 fa fa-redo"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="move_up"><i class="mb-0 fa fa-arrow-up"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_down"><i class="mb-0 fa fa-arrow-down"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_left"><i class="mb-0 fa fa-arrow-left"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_right"><i class="mb-0 fa fa-arrow-right"></i></button></div>\n</div></div></div>';
         cropper = $.extend({toggleDragModeOnDblclick:false}, cropper, {
             ready:function(e){
                 ready(e);
@@ -556,7 +566,8 @@ $.validator.addMethod('function', function(value, element, params){return params
         options = options || {};
         if(typeof options === 'function') yes = options;
         var success = options.success || function(){};
-        options = $.extend({area:[window.innerWidth < 600 ? '95%' : '500px', '500px'], title:'cropper'}, options, {
+        var size = window.innerWidth < 600;
+        options = $.extend({area:[size ? '100%' : '500px', size ? '100%' : '500px'], title:'cropper'}, options, {
             success:function(layero, index){
                 if(cropper.lock) $(layero).find('[data-action="file"]').remove();
                 success(layero, index);
@@ -592,7 +603,8 @@ $.validator.addMethod('function', function(value, element, params){return params
         options = options || {};
         if(typeof options === 'function') yes = options;
         var success = options.success || function(){};
-        options = $.extend({area:[window.innerWidth < 600 ? '95%' : '600px'], title:'image'}, options, {
+        var size = window.innerWidth < 600;
+        options = $.extend({area:size ? '100%' : '600px', title:'image'}, options, {
             success:function(layero, index){
                 success(layero, index);
                 imageLayer = layero;
@@ -690,7 +702,48 @@ $.validator.addMethod('function', function(value, element, params){return params
                     }
                     if(callback) return callback(info, this);
                     $.admin.layer.closeAll('loading');
-                    if(alert) $.admin.alert.danger(message, {pos:(typeof (alert) == 'string' && alert.length <= 2) ? alert : 'rt'});
+                    if(alert) $.admin.alert.danger(message, {pos:(typeof (alert) == 'string' && alert.length <= 2) ? alert : null});
+                },
+                open:function(title, url, options, yes, report){
+                    options = options || {};
+                    if(typeof options === 'function'){
+                        report = yes;
+                        yes = options;
+                    }
+                    var success = options.success || function(){};
+                    options.success = function(layero, index){
+                        layero.body = layer.getChildFrame('body', index);
+                        layero.iframe = window[layero.find('iframe')[0]['name']];
+                        layero.body.find('a').remove();
+                        layero.body.find('footer').remove();
+                        success(layero, index);
+                    };
+                    options.yes = function(index, layero){
+                        yes(index, layero);
+                    };
+                    var btn = options.btn || (report ? ['ok', 'cancel'] : ['ok']);
+                    var size = window.innerWidth < 800;
+                    var open = $.admin.layer.open($.extend({title:title, type:2, maxmin:true, resize:true, area:[size ? '100%' : '800px', size ? '100%' : '600px'], content:url, btn:btn}, options));
+                    if(report){
+                        $.admin.layer.report = $.admin.layer.report || {};
+                        $.admin.layer.report['layui-layer-iframe' + open] = report;
+                    }
+                    return open;
+                },
+                report:function(data, status, xhr){
+                    if(typeof (status) == 'string' && typeof (xhr) == 'string'){
+                        status = false;
+                        xhr = data;
+                    }else status = true;
+                    if(typeof (data) != 'object' || Object.prototype.toString.call(data).toLowerCase() != '[object object]'){
+                        status = false;
+                        xhr = $.extend(xhr, {status:510, statusText:'Not a JSON'});
+                    }
+                    if(parent.$.admin.layer.report && parent.$.admin.layer.report[window.name]){
+                        var res = parent.$.admin.layer.report[window.name](parent.$.admin.layer.getFrameIndex(window.name), {data:data, status:status, xhr:xhr});
+                        if(res) delete parent.$.admin.layer.report[window.name];
+                        return res;
+                    }
                 }
             },
             select:function(selector, options){
@@ -783,13 +836,24 @@ $.validator.addMethod('function', function(value, element, params){return params
                 options.messages = options.messages || {};
                 options.errors = options.errors || true;
                 options.debug = options.debug || false;
-                options.protect = options.protect || 300;
+                options.protect = options.protect || 500;
                 //  回调
                 options.callback = options.callback || {complete:null, right:null, fail:null, build:null};
                 options.callback.complete = options.callback.complete || null;
                 options.callback.success = options.callback.success || null;
                 options.callback.fail = options.callback.fail || null;
                 options.callback.build = options.callback.build || null;
+                options.render = options.render || false;
+                if(options.render){
+                    $(selector).find('.radio').each(function(k, v){ $.admin.radio(v, $(v).attr('disabled', $(v).attr('disabled') || $(v).attr('readonly')).data());});
+                    $(selector).find('.switch').each(function(k, v){ $.admin.switch(v, $(v).attr('disabled', $(v).attr('disabled') || $(v).attr('readonly')).data());});
+                    $(selector).find('.checkbox').each(function(k, v){ $.admin.checkbox(v, $(v).data());});
+                    $(selector).find('.select').each(function(k, v){ $.admin.select(v, $(v).attr('disabled', $(v).attr('disabled') || $(v).attr('readonly')).data());});
+                    $(selector).find('.color').each(function(k, v){ $.admin.color(v, $(v).attr('disabled', $(v).attr('disabled') || $(v).attr('readonly')).data());});
+                    $(selector).find('.file').each(function(k, v){ $.admin.file(v, $(v).attr('disabled', $(v).attr('disabled') || $(v).attr('readonly')).data());});
+                    $(selector).find('.slider').each(function(k, v){ $.admin.slider(v, $.extend({disable:$(v).attr('disabled') || $(v).attr('readonly')}, $(v).data()));});
+                    $(selector).find('.date').each(function(k, v){ $.admin.date(v, $(v).data());});
+                }
                 //  列表拆解
                 if(Object.keys(options.list).length){
                     $.each(options.list, function(i, v){

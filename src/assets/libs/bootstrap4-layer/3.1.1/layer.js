@@ -1262,7 +1262,7 @@
                     return [imgarea[0] + 'px', imgarea[1] + 'px'];
                 }(),
                 title:false,
-                shade:0.9,
+                shade:0.5,
                 shadeClose:true,
                 closeBtn:false,
                 move:'.layui-layer-phimg img',
@@ -1274,10 +1274,10 @@
                 skin:'layui-layer-photos' + skin('photos'),
                 content:'<div class="layui-layer-phimg">'
                     + '<img src="' + data[start].src + '" alt="' + (data[start].alt || '') + '" layer-pid="' + data[start].pid + '">'
-                    + '<div class="layui-layer-imgsee">'
+                    + ((data.length > 1  || (data[start].alt || '' ))? '<div class="layui-layer-imgsee">'
                     + (data.length > 1 ? '<span class="layui-layer-imguide"><a href="javascript:;" class="layui-layer-iconext layui-layer-imgprev"></a><a href="javascript:;" class="layui-layer-iconext layui-layer-imgnext"></a></span>' : '')
-                    + '<div class="layui-layer-imgbar" style="display:' + (key ? 'block' : '') + '"><span class="layui-layer-imgtit"><a href="javascript:;">' + (data[start].alt || '') + '</a><em>' + dict.imgIndex + '/' + data.length + '</em></span></div>'
-                    + '</div>'
+                    + '<div class="layui-layer-imgbar" style="display:' + (key ? 'block' : '') + '"><span class="layui-layer-imgtit"><a href="javascript:;">' + (data[start].alt || '') + '</a>' + (data.length > 1 ? '<em>' + dict.imgIndex + '/' + data.length + '</em>' : '') + '</span></div>'
+                    + '</div>' : '')
                     + '</div>',
                 success:function(layero, index){
                     dict.bigimg = layero.find('.layui-layer-phimg');
@@ -1292,13 +1292,16 @@
             }, options));
         }, function(){
             layer.close(dict.loadi); // @todo hack 修改语言包
-            layer.msg(ready.config.lang.errpic(), {
-                time:30000,
-                btn:[ready.config.lang.nextpic(), ready.config.lang.closepic()],
-                yes:function(){
-                    data.length > 1 && dict.imgnext(true, true);
-                }
-            });
+            if(data.length > 1)
+                layer.msg(ready.config.lang.errspic(), {
+                    time:30000,
+                    btn:[ready.config.lang.nextpic(), ready.config.lang.closepic()],
+                    yes:function(){
+                        data.length > 1 && dict.imgnext(true, true);
+                    }
+                });
+            else
+                layer.msg(ready.config.lang.errpic(), {time:1000});
         });
     };
 

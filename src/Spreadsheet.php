@@ -74,11 +74,19 @@ class Spreadsheet
         $data = ['title' => [], 'width' => [], 'format' => []];
         foreach ($list as $key => $val) {
             //  可以简写
-            if (!is_array($val))
+            if (!is_array($val)) {
                 $val = [$val];
+            }
             //  如果键非数字
-            if (!is_numeric($key))
+            if (!is_numeric($key)) {
+                if (count($val) == 1) {
+                    if (is_numeric($val[0]))
+                        array_push($val, 'string');
+                    else
+                        array_unshift($val, 20);
+                }
                 array_unshift($val, $key);
+            }
             $data['title'][] = $val[0] ?? '';
             $data['width'][] = $val[1] ?? ($val['width'] ?? 20);
             $data['format'][] = $val[2] ?? ($val['format'] ?? 'string');

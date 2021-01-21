@@ -259,9 +259,10 @@ class DBTable
         foreach ($array as $key => &$val) {
             //  操作列强制设定
             if ($val['action'] ?? false) {
-                $val['custom'] = true;
-                $val['clickToSelect'] = $val['reorder'] = $val['export'] = $val['search'] = $val['print'] = false;
-
+                $val['custom'] = $val['custom'] ?? true;
+                $val['clickToSelect'] = $val['clickToSelect'] ?? false;
+                $val['export'] = $val['export'] ?? false;
+                $val['print'] = $val['print'] ?? false;
             }
             //  处理宽度
             if ($val['width'] ?? null) {

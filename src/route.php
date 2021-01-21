@@ -47,10 +47,19 @@ app('router')->group([
     $router->match(['get', 'post'], '/auth/{act?}', function($act = 'login') use ($func) { return $func('common', 'auth', $act); });
     //  实例展示
     $router->match(['get', 'post'], '/example/{act?}', function($act = 'index') {
-        $control = App::make(Controller::class);
-        if (method_exists($control, $act))
-            return App::call([$control, $act]);
-        else response(null, 404);
+        try {
+            $control = App::make(Controller::class);
+            if (method_exists($control, $act))
+                return App::call([$control, $act]);
+            else response(null, 404);
+        } catch (HttpException $exception) {
+            $view = 'admin::preset.error.' . $exception->getStatusCode();
+            if (!request()->ajax()) {
+                if ($view = view()->exists($view) ? $view : 'admin::preset.error.unknown')
+                    return view($view, compact('exception'));
+            }
+            throw $exception;
+        }
     });
     //  外链图片
     $router->get('/extend/image/url', function() {

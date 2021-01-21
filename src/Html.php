@@ -47,60 +47,59 @@ class Html
     }
 
     /**
-     * 自动生成卡片头部内容
-     *
-     * @param string $title
-     * @param string $content
-     *
-     * @return string
-     * @copyright 魔网天创信息科技
-     * @author    ComingDemon
-     */
-    public function card($title = '', $content = '')
-    {
-        return "<h5>{$title}<small>{$content}</small></h5><div class='ibox-tools'><a class='collapse-link'><i class='fa fa-chevron-up'></i></a></div>";
-    }
-
-    /**
      * 自动生成快速标签
      *
      * @param string $title
      * @param array  $attribute
-     * @param string $type
+     * @param string $tag
      * @param string $class
      *
      * @return string
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
-    public function fast($title = '', $attribute = [], $type = 'a', $class = '')
+    public function fast($title = '', $attribute = [], $tag = 'a', $class = '')
     {
         //  属性列表
         $append = '';
-        foreach ($attribute as $key => $val) {
+        foreach ($attribute as $key => $val)
             $append .= "{$key}='{$val}' ";
-        }
         //  相同内容
         $common = "class='{$class}' {$append}";
 
         //  生成内容
-        return "<{$type} {$common}>{$title}</{$type}>" . PHP_EOL;
+        return "<{$tag} {$common}>{$title}</{$tag}>" . PHP_EOL;
     }
 
     /**
      * 生成图片元素
      *
-     * @param     $url
-     * @param int $width
-     * @param int $height
+     * @param        $url
+     * @param array  $attribute
+     * @param int[]  $size
+     * @param string $class
      *
      * @return string
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function image($url, $width = 50, $height = 50, $class = '')
+    public function image($url, $attribute = [], $size = ['30px', '30px'], $class = '')
     {
-        return "<img class='{$class}' src='{$url}' style='width:{$width}px;height:{$height}px;' data-type='image'/>" . PHP_EOL;
+        //  属性列表
+        $append = '';
+        foreach ($attribute as $key => $val)
+            $append .= "{$key}='{$val}' ";
+        //  相同内容
+        $common = "class='{$class}' {$append}";
+        if (is_array($size)) {
+            $width = $size[0] ?? '30px';
+            $height = $size[1] ?? $width;
+        }
+        else  $width = $height = $size;
+
+        //  生成内容
+        return "<img {$common} src='{$url}' style='width:{$width};height:{$height};' data-bind='image'/>" . PHP_EOL;
     }
 
     /**
@@ -130,28 +129,6 @@ class Html
     }
 
     /**
-     * 自动生成复选标签
-     *
-     * @param array  $attribute
-     * @param string $class
-     *
-     * @return string
-     * @copyright 魔网天创信息科技
-     * @author    ComingDemon
-     */
-    public function batch($attribute = [], $class = 'i-checks hidden')
-    {
-        //  属性列表
-        $append = '';
-        foreach ($attribute as $key => $val) {
-            $append .= "{$key}='{$val}' ";
-        }
-
-        //  生成内容
-        return "<input type='checkbox' class='{$class}' data-bind='batch' {$append}>" . PHP_EOL;
-    }
-
-    /**
      * 自动生成开关标签
      *
      * @param array  $attribute
@@ -172,33 +149,6 @@ class Html
 
         //  生成内容
         return "<input class='{$class}' type='checkbox' data-bind='switch' {$append}>" . PHP_EOL;
-    }
-
-    /**
-     * 自动生成Input标签
-     *
-     * @param string $title
-     * @param array  $attribute
-     * @param string $type
-     * @param string $class
-     *
-     * @return string
-     * @copyright 魔网天创信息科技
-     * @author    ComingDemon
-     */
-    public function input($title = '', $attribute = [], $type = 'text', $class = '')
-    {
-        //  属性列表
-        $append = '';
-        foreach ($attribute as $key => $val) {
-            $append .= "{$key}='{$val}' ";
-        }
-
-        //  生成内容
-        if ($title)
-            return "<label class='{$class}';><input type='{$type}' {$append}>{$title}</label>" . PHP_EOL;
-        else
-            return "<input type='{$type}' class='{$class}' {$append}>" . PHP_EOL;
     }
 
     /**
@@ -227,25 +177,34 @@ class Html
                 }
                 // 强制变更为数组
                 $data = object_to_array($data);
-                $keys = $parm['bind'] ?? '';
+                $title = $parm['title'] ?? '';
+                $bind = $parm['bind'] ?? '';
                 foreach ($data as $key => $val) {
                     // 如果是对象处理
                     if (is_object($data)) {
                         // 如果是一维对象的话，则直接转换为数组
                         if (!is_object($val))
-                            $newData[$keys ? $val : $key] = $val;
+                            $newData[$title ? $val : $key] = $val;
                         // 如果是二维对象的话，转成数组，值由指定的成员名来获取
-                        else if ($keys && is_object($val))
-                            $newData[$key] = $val->{$keys};
+                        else if ($title && is_object($val)) {
+                            if ($bind)
+                                $newData[$val->{$bind}] = $val->{$title};
+                            else
+                                $newData[$key] = $val->{$title};
+                        }
                     }
                     // 如果是数组处理
                     else if (is_array($data)) {
                         // 如果是一维数组的话，则直接保留结构
                         if (bomber()->arrayLevel($data) == 1)
-                            $newData[$keys ? $val : $key] = $val;
+                            $newData[$title ? $val : $key] = $val;
                         // 如果是二维数组的话，和对象相同的处理
-                        else if ($keys && bomber()->arrayLevel($data) == 2)
-                            $newData[$key] = $val[$keys];
+                        else if ($title && bomber()->arrayLevel($data) == 2) {
+                            if ($bind)
+                                $newData[$val[$bind]] = $val[$title];
+                            else
+                                $newData[$key] = $val[$title];
+                        }
                     }
                 }
                 break;

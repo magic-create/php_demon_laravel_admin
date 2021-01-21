@@ -28,7 +28,7 @@ return [
     'search' => true,
     'searchOnEnterKey' => true,
     'searchPanel' => true,
-    'searchPanelOpen' => true,
+    'searchPanelOpen' => false,
     'searchTemplate' => 'dbSearchTemplate',
     'loadingFontSize' => 20,
     'ajax' => '$.admin.table.ajax',

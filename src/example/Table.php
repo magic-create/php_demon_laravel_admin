@@ -47,6 +47,7 @@ class Table extends Tables
     {
         return [
             'export' => ['class' => 'btn btn-info', 'text' => '服务端导出', 'icon' => 'fa fa-file-download'],
+            'add' => ['class' => 'btn btn-success', 'text' => '新增用户', 'icon' => 'fa fa-plus'],
         ];
     }
 
@@ -69,17 +70,18 @@ class Table extends Tables
         return array_merge([
             ['data' => 'a.uid', 'title' => 'UID', 'placeholder' => '精准UID，多个可用 , 分隔', 'where' => 'in'],
             ['data' => 'a.phone', 'title' => '手机号', 'where' => 'like'],
-            ['data' => 'a.nickname', 'title' => '昵称', 'where' => 'like', 'type' => 'nickname', 'value' => '测'],
-            ['data' => 'a.sex', 'title' => '性别', 'type' => 'select', 'option' => ['list' => $this->store['sex']]],
+            ['data' => 'a.nickname', 'title' => '昵称', 'where' => 'like', 'type' => 'custom', 'value' => '测'],
+            ['data' => 'a.sex', 'title' => '性别', 'type' => 'select', 'placeholder' => '请选择性别', 'option' => ['list' => $this->store['sex']]],
             [
-                'data' => 'a.avatar', 'title' => '头像', 'type' => 'select', 'option' => ['list' => $this->store['avatar']],
+                'data' => 'a.avatar', 'title' => '头像', 'type' => 'select', 'placeholder' => '不限', 'option' => ['list' => $this->store['avatar']],
                 'where' => function($field, $value) {
                     return $value == 'have' ?
                         function($query) use ($field) { $query->whereNotNull($field)->whereOr($field, '!=', ''); } :
                         function($query) use ($field) { $query->whereNull($field)->whereOr($field, ''); };
                 }
             ],
-            ['data' => 'a.level', 'title' => '等级', 'type' => 'select', 'where' => 'range', 'option' => ['bind' => 'name', 'list' => $this->store['level']], 'attr' => ['data-select' => true]],
+            ['data' => 'a.level', 'title' => '等级', 'type' => 'select', 'placeholder' => ['不限制最小等级', '不限制最大等级'], 'where' => 'range', 'option' => ['title' => 'name', 'list' => $this->store['level']], 'attr' => ['data-select' => true]],
+            ['data' => 'a.hobby', 'title' => '爱好', 'type' => 'select', 'placeholder' => '全部', 'option' => ['bind' => 'id', 'title' => 'title', 'list' => $this->store['hobby']], 'attr' => ['data-select' => true]],
             ['data' => 'a.birthday', 'title' => '生日', 'type' => 'time', 'where' => 'range', 'attr' => ['data-time' => 'YYYY-MM-DD']],
             ['data' => 'a.activeTime', 'title' => '活跃时间', 'type' => 'time', 'where' => 'range', 'attr' => ['data-time' => null]],
             ['data' => 'a.signDate', 'title' => '签到日期', 'type' => 'time', 'where' => 'range', 'format' => function($value) { return date('Ymd', strtotime($value)); }, 'attr' => ['data-time' => 'YYYY-MM-DD']],
@@ -123,9 +125,10 @@ class Table extends Tables
             ['data' => 'a.uid', 'title' => 'UID', 'reorder' => true],
             ['data' => 'phone', 'title' => '手机号'],
             ['data' => 'nickname', 'title' => '昵称', 'width' => '10%', 'search' => true],
-            ['data' => 'avatar', 'title' => '头像', 'width' => '60px'],
+            ['data' => 'avatar', 'title' => '头像', 'width' => '60px', 'action' => true],
             ['data' => 'sex', 'title' => '性别'],
-            ['data' => 'level', 'title' => '等级', 'reorder' => true]
+            ['data' => 'level', 'title' => '等级', 'reorder' => true],
+            ['data' => 'hobby', 'title' => '爱好']
         ], $credit, [
             ['data' => 'a.birthday', 'title' => '生日', 'reorder' => true],
             ['data' => 'a.activeTime', 'title' => '活跃时间', 'reorder' => true],
@@ -148,7 +151,7 @@ class Table extends Tables
      */
     public function setField()
     {
-        return ['a.data'];
+        return ['a.avatar', 'a.data'];
     }
 
     /**
@@ -206,8 +209,22 @@ class Table extends Tables
             $credit[$v['alias']] = function($val) use ($v) { return bomber()->doublePrecision($val->{$v['alias']}, $v['decimals']); };
 
         return [
+                'avatar' => function($val) { return admin_html('image', $val->avatar, ['name' => $val->nickname]); },
                 'sex' => function($val) { return $this->store['sex'][$val->sex]; },
                 'level' => function($val) { return $this->store['level'][$val->level]->name ?? '未知'; },
+                'hobby' => function($val) {
+                    $html = '';
+                    foreach (explode(',', $val->hobby) as $k => $v) {
+                        if ($k >= 2) {
+                            $html .= admin_html('fast', '...', [], 'span', 'badge badge-secondary');
+                            break;
+                        }
+                        if ($hobby = $this->store['hobby']->where('id', $v)->first())
+                            $html .= admin_html('fast', $hobby->title, [], 'span', 'badge badge-info');
+                    }
+
+                    return $html ? : null;
+                },
                 'signDate' => function($val) { return $val->signDate ? date('Y-m-d', strtotime($val->signDate)) : null; },
                 'loginTime' => function($val) { return $val->loginTime ? date('Y-m-d H:i:s', strtotime($val->loginTime)) : null; },
                 'createTime' => function($val) { return $val->createTime ? msdate('Y-m-d', $val->createTime) : null; },
@@ -243,21 +260,37 @@ class Table extends Tables
             return '导出数据较大，请精准搜索条件后导出';
         //  获取数据源
         $this->format = [
+            'avatar' => function($val) { return $val->avatar; },
+            'hobby' => function($val) {
+                $list = [];
+                foreach (explode(',', $val->hobby) as $k => $v) {
+                    if ($hobby = $this->store['hobby']->where('id', $v)->first())
+                        $list[] = $hobby->title;
+                }
+
+                return $list ? implode(',', $list) : null;
+            },
             'status' => function($val) { return $this->store['status'][$val->status]; },
             '_action' => ['type' => 'remove']
         ];
         $list = $this->getFormat($this->get());
         //  设置表头
         $column = [
-            'UID', '手机号', '昵称', '头像' => [30, 'image'],
-            '性别', '等级', '积分', '余额',
+            'UID', '手机号', '昵称', '头像' => 'image',
+            '性别', '等级', '爱好', '积分', '余额',
             '生日', '活跃时间' => 30, '签到日期', '登录时间',
             '注册日期', '更新日期', '状态', '附加',
         ];
         //  遍历数据
         $data = [];
-        foreach ($list as $key => $val)
-            $data[] = array_values(object_to_array($val));
+        foreach ($list as $key => $val) {
+            $data[] = [
+                $val->uid, $val->phone, $val->nickname, $val->avatar,
+                $val->sex, $val->level, $val->hobby, $val->credit, $val->balance,
+                $val->birthday, $val->activeTime, $val->signDate, $val->loginTime,
+                $val->createTime, $val->updateTime, $val->status, $val->data,
+            ];
+        }
 
         //  导出文件
         return (new Spreadsheet())->download($name . '.xls', ['sheet' => $name, 'column' => $column, 'height' => 50], $data);
