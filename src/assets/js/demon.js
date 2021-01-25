@@ -325,8 +325,13 @@ $.validator.addMethod('function', function(value, element, params){return params
             $(formId + ' [data-select]').each(function(){$.admin.select(formId + ' [name="' + $(this).attr('name') + '"]', {dropdownAutoWidth:true, width:'100%'});});
             $('#' + self.options.searchTemplate + '_button button[type="submit"]').html(self.options.searchSubmitText || 'Submit');
             $('#' + self.options.searchTemplate + '_button button[type="reset"]').html(self.options.searchResetText || 'Reset');
+            //  创建好面板事件
+            $(formId).trigger('search:created', [{$elem:$(formId), table:self}]);
             //  表单提交搜索;
-            $('body').on('submit', formId, function(){ self.refresh({pageNumber:1}); });
+            $('body').on('submit', formId, function(){
+                $(formId).trigger('search:submit', [{$elem:$(formId), table:self}]);
+                self.refresh({pageNumber:1});
+            });
             //  增加参数
             self.options.queryParams = function(data){
                 var searchs = search();
@@ -408,9 +413,9 @@ $.validator.addMethod('function', function(value, element, params){return params
     layer.avatar = function(cropper, options, yes){
         cropper = cropper || [];
         var ready = cropper.ready || function(){};
-        cropper.placeholder = cropper.placeholder || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAtJREFUCNdjIBEAAAAwAAFletZ8AAAAAElFTkSuQmCC';
+        cropper.placeholder = cropper.placeholder || 'data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4Ij48cGF0aCBkPSJNMTAyNCA1MTJDMTAyNCAyMzAuNCA3OTMuNiAwIDUxMiAwUzAgMjMwLjQgMCA1MTJzMjMwLjQgNTEyIDUxMiA1MTIgNTEyLTIzMC40IDUxMi01MTJ6TTUxMiA5NjBDMjYyLjQgOTYwIDY0IDc2MS42IDY0IDUxMlMyNjIuNCA2NCA1MTIgNjRzNDQ4IDE5OC40IDQ0OCA0NDgtMTk4LjQgNDQ4LTQ0OCA0NDh6IiBmaWxsPSIjMDAwMDAwIiBvcGFjaXR5PSIwLjEiPjwvcGF0aD48cGF0aCBkPSJNNjI3LjIgNTA1LjZDNjcyIDQ2Ny4yIDcwNCA0MTYgNzA0IDM1MmMwLTEwOC44LTgzLjItMTkyLTE5Mi0xOTJzLTE5MiA4My4yLTE5MiAxOTJjMCA2NCAzMiAxMTUuMiA3Ni44IDE1My42QzI5NC40IDU1MC40IDIyNCA2NTIuOCAyMjQgNzY4YzAgMTkuMiAxMi44IDMyIDMyIDMyczMyLTEyLjggMzItMzJjMC0xMjEuNiAxMDIuNC0yMjQgMjI0LTIyNHMyMjQgMTAyLjQgMjI0IDIyNGMwIDE5LjIgMTIuOCAzMiAzMiAzMnMzMi0xMi44IDMyLTMyYzAtMTE1LjItNzAuNC0yMTcuNi0xNzIuOC0yNjIuNHpNNTEyIDQ4MGMtNzAuNCAwLTEyOC01Ny42LTEyOC0xMjhzNTcuNi0xMjggMTI4LTEyOCAxMjggNTcuNiAxMjggMTI4LTU3LjYgMTI4LTEyOCAxMjh6IiBmaWxsPSIjMDAwMDAwIiBvcGFjaXR5PSIwLjEiPjwvcGF0aD48L3N2Zz4=';
         cropper.image = cropper.image || cropper.placeholder;
-        cropper.lock = cropper.lock || true;
+        cropper.lock = cropper.lock || false;
         var rand = 'cropper-avatar-' + (new Date).getTime() + '' + parseInt(Math.random() * 1e5) + 1;
         var html = '<div class="row cropper-avatar" id="' + rand + '"><div class="col-sm-9 cropper-left"><div class="cropper-box"><img class="cropper" src="' + cropper.image + '"><div class="mt-2 cropper-tool"><button type="button" class="btn btn-sm btn-secondary" data-action="file"><i class="mb-0 fa fa-image"></i></button>\n<input type="file" style="display:none" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"><button type="button" class="btn btn-sm btn-secondary" data-action="reset"><i class="mb-0 fa fa-sync"></i></button>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="zoom+"><i class="mb-0 fa fa-search-plus"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="zoom-"><i class="mb-0 fa fa-search-minus"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_left"><i class="mb-0 fa fa-undo"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_right"><i class="mb-0 fa fa-redo"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="move_up"><i class="mb-0 fa fa-arrow-up"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_down"><i class="mb-0 fa fa-arrow-down"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_left"><i class="mb-0 fa fa-arrow-left"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_right"><i class="mb-0 fa fa-arrow-right"></i></button></div>\n</div></div></div><div class="col cropper-right pl-sm-2"><div class="row no-gutters"><div class="cropper-preview"></div><div class="cropper-preview rounded ml-3 ml-sm-0 mt-sm-2"></div><div class="cropper-preview rounded-circle ml-3 ml-sm-0 mt-sm-2"></div></div></div></div>';
         cropper = $.extend({viewMode:1, toggleDragModeOnDblclick:false, aspectRatio:1}, cropper, {
@@ -487,7 +492,7 @@ $.validator.addMethod('function', function(value, element, params){return params
                 avatarLayer.cropper.selectImage = function(){ $('#' + rand).find('input[type="file"]').trigger('click'); };
             },
             yes:function(index, layero){
-                yes(index, layero);
+                if(typeof (yes) == 'function') return yes(index, layero);
             }
         });
 
@@ -497,9 +502,13 @@ $.validator.addMethod('function', function(value, element, params){return params
     layer.cropper = function(cropper, options, yes){
         cropper = cropper || [];
         var ready = cropper.ready || function(){};
-        cropper.placeholder = cropper.placeholder || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAAtJREFUCNdjIBEAAAAwAAFletZ8AAAAAElFTkSuQmCC';
+        cropper.placeholder = cropper.placeholder || 'data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEyNjIgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4Ij48cGF0aCBkPSJNMTE3MS42ODY0IDBDMTIyMi4wMzMwNjcgMCAxMjYyLjk5MzA2NyAzOS43MzEyIDEyNjIuOTkzMDY3IDg4LjU0MTg2N3Y4NDYuOTE2MjY2QzEyNjIuOTkzMDY3IDk4NC4yNjg4IDEyMjIuMDMzMDY3IDEwMjQgMTE3MS42ODY0IDEwMjRIOTEuMzY2NGMtNy45MTg5MzMgMC0xNS41OTg5MzMtMC45ODk4NjctMjIuOTAzNDY3LTIuODMzMDY3QTgzLjkzMzg2NyA4My45MzM4NjcgMCAwIDEgMC4wNTk3MzMgOTM1LjQ1ODEzM1Y4OC41NDE4NjdDMC4wNTk3MzMgMzkuNzMxMiA0MS4wMTk3MzMgMCA5MS4zNjY0IDBoMTA4MC4zMnogbS01NC4yNzIgMTEzLjIyMDI2N0gxNDIuMDIwMjY3Yy0xNS45NDAyNjcgMC0yOC45NDUwNjcgMTIuMjg4LTI4Ljk0NTA2NyAyNy4yNzI1MzNsLTAuMDM0MTMzIDY0NC40MzczMzMgMjI0LjMyNDI2Ni0yNDUuMDc3MzMzYzMzLjk5NjgtMzcuMTM3MDY3IDkzLjU1OTQ2Ny0zNy4xMzcwNjcgMTI3LjY1ODY2NyAwbDIyNy44MDU4NjcgMjQ4LjU5MzA2NyAyMDMuNzQxODY2LTI1MS42OTkyYzI2LjcyNjQtMzMuMDA2OTMzIDczLjU5MTQ2Ny0zMy4wMDY5MzMgMTAwLjMxNzg2NyAwbDE0OS40Njk4NjcgMTg0LjU1ODkzM1YxNDAuNDkyOGMwLTE1LjAxODY2Ny0xMy4wMDQ4LTI3LjI3MjUzMy0yOC45NDUwNjctMjcuMjcyNTMzeiBtLTM1Ni42OTMzMzMgNzYuNDkyOGExNDQuNjU3MDY3IDE0NC42NTcwNjcgMCAwIDEgMTQzLjQ5NjUzMyAwIDE0MS45OTQ2NjcgMTQxLjk5NDY2NyAwIDAgMSA3MS43NDgyNjcgMTIzLjE4NzIgMTQxLjk5NDY2NyAxNDEuOTk0NjY3IDAgMCAxLTcxLjc0ODI2NyAxMjMuMTUzMDY2IDE0NC42NTcwNjcgMTQ0LjY1NzA2NyAwIDAgMS0xNDMuNTMwNjY3IDAgMTQxLjk5NDY2NyAxNDEuOTk0NjY3IDAgMCAxLTcxLjc0ODI2Ni0xMjMuMTUzMDY2IDE0MS45OTQ2NjcgMTQxLjk5NDY2NyAwIDAgMSA3MS43NDgyNjYtMTIzLjE4NzJ6IiBmaWxsPSIjMDAwMDAwIiBvcGFjaXR5PSIwLjEiPjwvcGF0aD48L3N2Zz4=';
         cropper.image = cropper.image || cropper.placeholder;
-        cropper.lock = cropper.lock || true;
+        cropper.lock = typeof (cropper.lock) != 'undefined' ? cropper.lock : true;
+        cropper.base64 = cropper.base64 || false;
+        cropper.aspectRatio = cropper.aspectRatio || null;
+        if(typeof (cropper.aspectRatio) != 'number')
+            delete cropper.aspectRatio;
         var rand = 'cropper-image-' + (new Date).getTime() + '' + parseInt(Math.random() * 1e5) + 1;
         var html = '<div class="cropper-image" id="' + rand + '"><div class="cropper-box"><img class="cropper" src="' + cropper.image + '"><div class="mt-2 cropper-tool"><button type="button" class="btn btn-sm btn-secondary" data-action="file"><i class="mb-0 fa fa-image"></i></button>\n<input type="file" style="display:none" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"><button type="button" class="btn btn-sm btn-secondary" data-action="reset"><i class="mb-0 fa fa-sync"></i></button>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="zoom+"><i class="mb-0 fa fa-search-plus"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="zoom-"><i class="mb-0 fa fa-search-minus"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_left"><i class="mb-0 fa fa-undo"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="rotate_right"><i class="mb-0 fa fa-redo"></i></button></div>\n<div class="btn-group"><button type="button" class="btn btn-sm btn-secondary" data-action="move_up"><i class="mb-0 fa fa-arrow-up"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_down"><i class="mb-0 fa fa-arrow-down"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_left"><i class="mb-0 fa fa-arrow-left"></i></button><button type="button" class="btn btn-sm btn-secondary" data-action="move_right"><i class="mb-0 fa fa-arrow-right"></i></button></div>\n</div></div></div>';
         cropper = $.extend({toggleDragModeOnDblclick:false}, cropper, {
@@ -576,7 +585,7 @@ $.validator.addMethod('function', function(value, element, params){return params
                 avatarLayer.cropper.selectImage = function(){ $('#' + rand).find('input[type="file"]').trigger('click'); };
             },
             yes:function(index, layero){
-                yes(index, layero);
+                if(typeof (yes) == 'function') return yes(index, layero);
             }
         });
 
@@ -586,88 +595,144 @@ $.validator.addMethod('function', function(value, element, params){return params
     layer.image = function(choose, options, yes){
         choose = choose || [];
         var change = choose.change || function(){};
-        choose.placeholder = choose.placeholder || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxMDB2MTAwSDB6Ii8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTlFOUU5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTMwKSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iIzk4OTY5NyIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgzMCAxMDUuOTggNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjOUI5OTlBIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc1Ljk4IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0EzQTFBMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCA2NSA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNBQkE5QUEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDU4LjY2IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0IyQjJCMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgxNTAgNTQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjQkFCOEI5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCA1MCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDMkMwQzEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1MCA0NS45OCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDQkNCQ0IiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA0MS4zNCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNEMkQyRDIiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDM1IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0RBREFEQSIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNjAgMjQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTJFMkUyIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtNS45OCA2NSkiLz48L3N2Zz4=';
+        choose.loading = choose.loading || 'data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4Ij48cGF0aCBkPSJNNDg3LjM2MTMwNSAxOTMuNzU2ODYzaC00Ni4xODAzOTJ2MzU2LjM5MjE1N2wzMzEuMjk0MTE4IDE2OC42NTg4MjMgMjEuMDgyMzUzLTQxLjE2MDc4NC0zMDcuMi0xNTUuNjA3ODQzdi0zMjguMjgyMzUzeiBtNDQyLjcyOTQxMiAxMjcuNDk4MDM5bDQyLjE2NDcwNi0xOC4wNzA1ODhjLTQuMDE1Njg2LTkuMDM1Mjk0LTguMDMxMzczLTE4LjA3MDU4OC0xMy4wNTA5ODEtMjcuMTA1ODgzbC00MS4xNjA3ODQgMjAuMDc4NDMyYzQuMDE1Njg2IDkuMDM1Mjk0IDguMDMxMzczIDE3LjA2NjY2NyAxMi4wNDcwNTkgMjUuMDk4MDM5eiBtMzcuMTQ1MDk4IDE0OS41ODQzMTRsNDYuMTgwMzkyLTMuMDExNzY1Yy0xLjAwMzkyMi0xMC4wMzkyMTYtMi4wMDc4NDMtMjEuMDgyMzUzLTMuMDExNzY1LTMxLjEyMTU2OWwtNDUuMTc2NDcgNi4wMjM1M2MxLjAwMzkyMiAxMC4wMzkyMTYgMi4wMDc4NDMgMTkuMDc0NTEgMi4wMDc4NDMgMjguMTA5ODA0eiBtLTExMS40MzUyOTQtMzMwLjI5MDE5NmwtMzEuMTIxNTY5IDM0LjEzMzMzM2M2LjAyMzUyOSA2LjAyMzUyOSAxMy4wNTA5OCAxMi4wNDcwNTkgMTkuMDc0NTEgMTkuMDc0NTFsMzQuMTMzMzMzLTMxLjEyMTU2OWMtNi4wMjM1MjktOC4wMzEzNzMtMTMuMDUwOTgtMTUuMDU4ODI0LTIyLjA4NjI3NC0yMi4wODYyNzR6IG05Ni4zNzY0NyA0ODQuODk0MTE3bDQ0LjE3MjU0OSAxNC4wNTQ5MDJjMy4wMTE3NjUtMTAuMDM5MjE2IDYuMDIzNTI5LTIwLjA3ODQzMSA3LjAyNzQ1MS0zMS4xMjE1NjhsLTQ1LjE3NjQ3LTkuMDM1Mjk1Yy0yLjAwNzg0MyA5LjAzNTI5NC00LjAxNTY4NiAxOC4wNzA1ODgtNi4wMjM1MyAyNi4xMDE5NjF6IG0tMzYwLjQwNzg0My02MjEuNDI3NDUxYy0xMC4wMzkyMTYtMS4wMDM5MjItMjAuMDc4NDMxLTIuMDA3ODQzLTI5LjExMzcyNS0zLjAxMTc2NGgtMS4wMDM5MjJsLTQuMDE1Njg2IDQ1LjE3NjQ3aDEuMDAzOTIxYzkuMDM1Mjk0IDEuMDAzOTIyIDE4LjA3MDU4OCAyLjAwNzg0MyAyNy4xMDU4ODMgMi4wMDc4NDMgMCAxLjAwMzkyMiA2LjAyMzUyOS00NC4xNzI1NDkgNi4wMjM1MjktNDQuMTcyNTQ5eiBtMTQ5LjU4NDMxNCA1Ny4yMjM1M2MtOS4wMzUyOTQtNC4wMTU2ODYtMTguMDcwNTg4LTkuMDM1Mjk0LTI3LjEwNTg4Mi0xMi4wNDcwNTlsLTEuMDAzOTIyLTEuMDAzOTIyLTE4LjA3MDU4OCA0Mi4xNjQ3MDYgMS4wMDM5MjEgMS4wMDM5MjJjOS4wMzUyOTQgMy4wMTE3NjUgMTcuMDY2NjY3IDcuMDI3NDUxIDI1LjA5ODA0IDExLjA0MzEzN2wyMC4wNzg0MzEtNDEuMTYwNzg0eiBtMTYyLjYzNTI5NCA2NzguNjUwOThjLTMuMDExNzY1IDMuMDExNzY1LTEuMDAzOTIyIDIuMDA3ODQzLTIuMDA3ODQzIDQuMDE1Njg2bC0xLjAwMzkyMiAxLjAwMzkyMmMtNS4wMTk2MDggOS4wMzUyOTQtMTAuMDM5MjE2IDE2LjA2Mjc0NS0xNC4wNTQ5MDIgMjMuMDkwMTk2bDM3LjE0NTA5OCAyNy4xMDU4ODJjNi4wMjM1MjktOC4wMzEzNzMgMTEuMDQzMTM3LTE2LjA2Mjc0NSAxNy4wNjY2NjctMjYuMTAxOTYgMS4wMDM5MjItMS4wMDM5MjIgMS4wMDM5MjItMS4wMDM5MjIgMS4wMDM5MjItMi4wMDc4NDRsLTEuMDAzOTIyIDEuMDAzOTIyLTM3LjE0NTA5OC0yOC4xMDk4MDR6IiBmaWxsPSIjYmZiZmJmIiBwLWlkPSIxNTIwMCI+PC9wYXRoPjxwYXRoIGQ9Ik00MTMuMDcxMTA5IDIyLjMyNzIxNmMtOTUuMzcyNTQ5IDIxLjA4MjM1My0xODEuNzA5ODA0IDY4LjI2NjY2Ny0yNTAuOTgwMzkyIDEzOC41NDExNzZhNTE5LjgzMDU4OCA1MTkuODMwNTg4IDAgMCAwLTE0Mi41NTY4NjMgMjY2LjAzOTIxNmwtMS4wMDM5MjEgMi4wMDc4NDNjLTExLjA0MzEzNyA1OC4yMjc0NTEtMTIuMDQ3MDU5IDExNi40NTQ5MDItMi4wMDc4NDQgMTczLjY3ODQzMSAyMS4wODIzNTMgMTMyLjUxNzY0NyA5My4zNjQ3MDYgMjQ2Ljk2NDcwNiAyMDIuNzkyMTU3IDMyMy4yNjI3NDUgMTA5LjQyNzQ1MSA3Ni4yOTgwMzkgMjQxLjk0NTA5OCAxMDQuNDA3ODQzIDM3NC40NjI3NDUgODEuMzE3NjQ4IDE4LjA3MDU4OC0zLjAxMTc2NSAzNi4xNDExNzYtNy4wMjc0NTEgNTIuMjAzOTIyLTEyLjA0NzA1OWw5LjAzNTI5NC0yLjAwNzg0MyAxLjAwMzkyMi0xLjAwMzkyMmM3LjAyNzQ1MS0yLjAwNzg0MyAxMy4wNTA5OC01LjAxOTYwOCAyMC4wNzg0MzEtNy4wMjc0NTFoMS4wMDM5MjJsNC4wMTU2ODYtMi4wMDc4NDNjNDEuMTYwNzg0LTE1LjA1ODgyNCA4MC4zMTM3MjUtMzYuMTQxMTc2IDExNS40NTA5OC02MC4yMzUyOTRsLTI2LjEwMTk2MS0zOC4xNDkwMmMtMzAuMTE3NjQ3IDIxLjA4MjM1My02NC4yNTA5OCA0MC4xNTY4NjMtMTAwLjM5MjE1NiA1My4yMDc4NDNoLTYuMDIzNTNsLTMuMDExNzY1IDMuMDExNzY1Yy03LjAyNzQ1MSAyLjAwNzg0My0xNC4wNTQ5MDIgNS4wMTk2MDgtMjEuMDgyMzUyIDcuMDI3NDUxbC02LjAyMzUzIDEuMDAzOTIyLTEuMDAzOTIxIDEuMDAzOTIxYy0xNC4wNTQ5MDIgNC4wMTU2ODYtMjkuMTEzNzI1IDcuMDI3NDUxLTQ1LjE3NjQ3MSAxMC4wMzkyMTYtMTIwLjQ3MDU4OCAyMS4wODIzNTMtMjQwLjk0MTE3Ni01LjAxOTYwOC0zMzkuMzI1NDktNzMuMjg2Mjc1LTk5LjM4ODIzNS02OC4yNjY2NjctMTYzLjYzOTIxNi0xNzIuNjc0NTEtMTgyLjcxMzcyNi0yOTIuMTQxMTc2LTkuMDM1Mjk0LTUyLjIwMzkyMi04LjAzMTM3My0xMDQuNDA3ODQzIDIuMDA3ODQzLTE1Ny42MTU2ODZsMS4wMDM5MjItMi4wMDc4NDRjMTguMDcwNTg4LTkyLjM2MDc4NCA2Mi4yNDMxMzctMTc1LjY4NjI3NSAxMjkuNTA1ODgyLTI0Mi45NDkwMTkgNjMuMjQ3MDU5LTYzLjI0NzA1OSAxNDIuNTU2ODYzLTEwNi40MTU2ODYgMjI4Ljg5NDExOC0xMjUuNDkwMTk2bC0xNC4wNTQ5MDItNDQuMTcyNTQ5eiIgZmlsbD0iIzAwMDAwMCIgb3BhY2l0eT0iMC4xIj48L3BhdGg+PC9zdmc+';
+        choose.placeholder = choose.placeholder || 'data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEyNjIgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4Ij48cGF0aCBkPSJNMTE3MS42ODY0IDBDMTIyMi4wMzMwNjcgMCAxMjYyLjk5MzA2NyAzOS43MzEyIDEyNjIuOTkzMDY3IDg4LjU0MTg2N3Y4NDYuOTE2MjY2QzEyNjIuOTkzMDY3IDk4NC4yNjg4IDEyMjIuMDMzMDY3IDEwMjQgMTE3MS42ODY0IDEwMjRIOTEuMzY2NGMtNy45MTg5MzMgMC0xNS41OTg5MzMtMC45ODk4NjctMjIuOTAzNDY3LTIuODMzMDY3QTgzLjkzMzg2NyA4My45MzM4NjcgMCAwIDEgMC4wNTk3MzMgOTM1LjQ1ODEzM1Y4OC41NDE4NjdDMC4wNTk3MzMgMzkuNzMxMiA0MS4wMTk3MzMgMCA5MS4zNjY0IDBoMTA4MC4zMnogbS01NC4yNzIgMTEzLjIyMDI2N0gxNDIuMDIwMjY3Yy0xNS45NDAyNjcgMC0yOC45NDUwNjcgMTIuMjg4LTI4Ljk0NTA2NyAyNy4yNzI1MzNsLTAuMDM0MTMzIDY0NC40MzczMzMgMjI0LjMyNDI2Ni0yNDUuMDc3MzMzYzMzLjk5NjgtMzcuMTM3MDY3IDkzLjU1OTQ2Ny0zNy4xMzcwNjcgMTI3LjY1ODY2NyAwbDIyNy44MDU4NjcgMjQ4LjU5MzA2NyAyMDMuNzQxODY2LTI1MS42OTkyYzI2LjcyNjQtMzMuMDA2OTMzIDczLjU5MTQ2Ny0zMy4wMDY5MzMgMTAwLjMxNzg2NyAwbDE0OS40Njk4NjcgMTg0LjU1ODkzM1YxNDAuNDkyOGMwLTE1LjAxODY2Ny0xMy4wMDQ4LTI3LjI3MjUzMy0yOC45NDUwNjctMjcuMjcyNTMzeiBtLTM1Ni42OTMzMzMgNzYuNDkyOGExNDQuNjU3MDY3IDE0NC42NTcwNjcgMCAwIDEgMTQzLjQ5NjUzMyAwIDE0MS45OTQ2NjcgMTQxLjk5NDY2NyAwIDAgMSA3MS43NDgyNjcgMTIzLjE4NzIgMTQxLjk5NDY2NyAxNDEuOTk0NjY3IDAgMCAxLTcxLjc0ODI2NyAxMjMuMTUzMDY2IDE0NC42NTcwNjcgMTQ0LjY1NzA2NyAwIDAgMS0xNDMuNTMwNjY3IDAgMTQxLjk5NDY2NyAxNDEuOTk0NjY3IDAgMCAxLTcxLjc0ODI2Ni0xMjMuMTUzMDY2IDE0MS45OTQ2NjcgMTQxLjk5NDY2NyAwIDAgMSA3MS43NDgyNjYtMTIzLjE4NzJ6IiBmaWxsPSIjMDAwMDAwIiBvcGFjaXR5PSIwLjEiPjwvcGF0aD48L3N2Zz4=';
         choose.image = choose.image || '';
-        choose.local = choose.local || true;
+        choose.local = typeof (choose.local) != 'undefined' ? choose.local : true;
         choose.dump = choose.dump || '';
-        choose.dispose = choose.dispose || true;
+        choose.dispose = typeof (choose.dispose) != 'undefined' ? choose.dispose : true;
         choose.quality = choose.quality || 0.9;
-        choose.force = choose.force || false;
-        choose.scale = choose.scale || false;
+        choose.aspectRatio = typeof (choose.aspectRatio) != 'undefined' ? choose.aspectRatio : true;
         choose.width = choose.width || 0;
         choose.height = choose.height || 0;
+        choose.maxWidth = choose.maxWidth || Infinity;
+        choose.maxHeight = choose.maxHeight || Infinity;
+        choose.minWidth = choose.minWidth || 0;
+        choose.minHeight = choose.minHeight || 0;
         choose.type = choose.type || '';
+        choose.base64 = choose.base64 || false;
+        choose.cropper = choose.cropper || false;
+        choose.uploader = choose.uploader || null;
         var appendClass = [!choose.local ? 'hidden-local' : '', !choose.dump ? 'hidden-url' : ''];
-        var html = '<div class="layer-image-select ' + appendClass.join(' ') + '"><div class="form-group"><div class="preview"><img src="' + (choose.image || choose.placeholder) + '"><i></i></div></div><div class="form-group input-file"><label>' + ($.bootstrapModaler.options.lang.file || 'Select File') + '</label><input type="file" name="file" class="form-control file" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"></div><div class="form-group input-url"><label>' + ($.bootstrapModaler.options.lang.imageUrl || 'Image Url') + '</label><div class="input-group"><input type="url" name="url" class="form-control" value="' + choose.image + '"><span class="input-group-append"><button type="reset" class="btn btn-secondary">' + ($.bootstrapModaler.options.lang.reset || 'Reset') + '</button><button type="button" class="btn btn-secondary url-dump">' + ($.bootstrapModaler.options.lang.imageDump || 'Image Dump') + '</button></span></div></div></div>';
-        var imageLayer = null;
+        var html = '<div class="layer-image-select ' + appendClass.join(' ') + '"><div class="form-group"><div class="preview"><div class="alert alert-danger" style="position:absolute;right:10px;display:none" role="alert"></div><img src="' + (choose.image || choose.placeholder) + '"><i></i></div></div><div class="form-group input-file"><label>' + ($.bootstrapModaler.options.lang.file || 'Select File') + '</label><input type="file" name="file" class="form-control file" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpg,image/jpeg,image/gif,image/webp"></div><form class="form-group input-url"><label>' + ($.bootstrapModaler.options.lang.imageUrl || 'Image Url') + '</label><div class="input-group"><input type="url" name="url" class="form-control" value="' + choose.image + '"><span class="input-group-append"><button type="reset" class="btn btn-secondary">' + ($.bootstrapModaler.options.lang.reset || 'Reset') + '</button><button type="button" class="btn btn-secondary url-dump">' + ($.bootstrapModaler.options.lang.imageDump || 'Image Dump') + '</button></span></form></div></div>';
+        var imageLayer, imagePreview, imageAlert;
         options = options || {};
         if(typeof options === 'function') yes = options;
         var success = options.success || function(){};
         var size = window.innerWidth < 600;
+        var error = function(status){
+            imageLayer.preview = '';
+            if(status) imagePreview.attr('src', choose[status]);
+            imageAlert.html($.bootstrapModaler.options.lang.imageNone || 'Image None').show().fadeOut(2000);
+        };
         options = $.extend({area:size ? '100%' : '600px', title:'image'}, options, {
             success:function(layero, index){
                 success(layero, index);
                 imageLayer = layero;
-                var imagePreview = $(layero).find('img');
-                imageLayer.preview = imagePreview, imageLayer.canvas;
+                imageLayer.preview = '';
+                imageLayer.name = '';
+                imageLayer.canvas = null;
+                imageLayer.result = null;
+                imagePreview = $(layero).find('img');
+                imageAlert = $(layero).find('.alert');
                 var fileInput = $(layero).find('input[type="file"]');
                 var urlInput = $(layero).find('input[name="url"]');
                 var urlDump = $(layero).find('button.url-dump');
-                var file, src, data, canvas, mime;
+                var src, data, canvas, mime;
                 var isImageFile = function(file){
                     if(file.type) return /^image\/\w+$/.test(file.type);
                     else return /\.(jpg|jpeg|png|gif|webp)$/.test(file);
                 };
                 if(choose.type && !isImageFile('.' + choose.type)) choose.type = 'jpeg';
                 var dump = function(url){
-                    imagePreview.attr('src', choose.placeholder);
-                    $.get(choose.dump, {url:url}, function(data, status, xhr){
-                        src = this.url;
-                        fileInput.val('');
-                        imageLayer.data = {type:'url', value:url};
+                    imageLayer.preview = '';
+                    imagePreview.attr('src', choose.loading);
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', choose.dump + (choose.dump.indexOf('?') < 0 ? '?' : '&') + 'url=' + url);
+                    xhr.responseType = 'blob';
+                    xhr.onload = function(){
+                        imageLayer.result = xhr.response;
                         mime = xhr.getResponseHeader('Content-Type');
+                        imageLayer.data = {type:'url', value:url, mime:choose.type || mime, quality:choose.quality};
+                        src = URL.createObjectURL(imageLayer.result);
+                        imageLayer.name = url.replace(/(.*\/)*([^.]+)/i, '$2');
+                        fileInput.val('');
                         dispose();
-                    }).fail(function(e){
+                    };
+                    xhr.onerror = function(){
                         urlInput.val('');
-                    });
+                        error('placeholder');
+                    };
+                    xhr.onloadend = function(){
+                        if(xhr.status != 200){
+                            urlInput.val('');
+                            error('placeholder');
+                        }
+                    };
+                    xhr.send();
+                };
+                var preview = function(obj){
+                    imageLayer.result = data = obj;
+                    imageLayer.preview = typeof (data) == 'object' ? URL.createObjectURL(data) : data;
+                    imagePreview.attr('src', imageLayer.preview);
                 };
                 var dispose = function(){
                     var type = typeof (choose.dispose);
-                    if(type != 'function'){
+                    if(type == 'boolean' && choose.dispose){
                         var img = new Image;
                         canvas = document.createElement('canvas');
                         var drawer = canvas.getContext('2d');
                         img.src = src;
+                        img.onerror = function(){error('placeholder');};
                         img.onload = function(){
-                            canvas.width = choose.width ? (choose.force ? choose.width : Math.min(choose.width, img.width)) : img.width;
-                            if(choose.scale) canvas.height = choose.width * (img.height / img.width);
-                            else canvas.height = choose.height ? (choose.force ? choose.height : Math.min(choose.height, img.height)) : img.height;
+                            //  获取纵横比
+                            var aspectRatio = img.width / img.height;
+                            //  获取最终宽度
+                            var width = Math.max(Math.min(choose.width ? choose.width : img.width, choose.maxWidth), choose.minWidth);
+                            //  限制最大高度
+                            var height = Math.min(choose.height ? choose.height : img.height, choose.maxHeight);
+                            //  需要保持比例
+                            if(choose.aspectRatio)
+                                height = typeof (choose.aspectRatio) == 'boolean' ? width / aspectRatio : width * choose.aspectRatio;
+                            //  限制最低高度
+                            height = Math.max(height, choose.minHeight);
+                            //  设置画布尺寸
+                            canvas.width = width;
+                            canvas.height = height;
                             drawer.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            if(choose.dispose && (choose.type || mime)) var src = canvas.toDataURL((choose.type ? 'image/' + choose.type : mime), choose.quality);
-                            else var src = canvas.toDataURL();
+                            if(choose.base64){
+                                if(choose.type || mime) preview(canvas.toDataURL((choose.type ? 'image/' + choose.type : mime), choose.quality));
+                                else preview(canvas.toDataURL());
+                            }else{
+                                if(choose.type || mime) canvas.toBlob(preview, (choose.type ? 'image/' + choose.type : mime), choose.quality);
+                                else canvas.toBlob(preview);
+                            }
                             imageLayer.canvas = canvas;
-                            imagePreview.attr('src', src);
                         };
-                    }else if(type == 'function') imagePreview.attr('src', choose.dispose(url));
+                    }else if(type == 'function') preview(choose.dispose(imageLayer.result));
+                    else preview(imageLayer.result);
                 };
-                if(choose.image && choose.dump) dump(choose.image);
+                if(choose.image && choose.image != choose.placeholder && choose.dump) dump(choose.image);
                 if(choose.local){
                     fileInput.filestyle();
                     $(layero).find('.bootstrap-filestyle .group-span-filestyle').removeClass('input-group-btn').addClass('input-group-append');
                     fileInput.on('change', function(){
                         var fileList = $(this).prop('files');
                         if(typeof (fileList) == 'object' && fileList.length > 0){
+                            imageLayer.preview = '';
+                            imagePreview.attr('src', choose.loading);
                             var fileContent = fileList[0];
                             if(isImageFile(fileContent)){
-                                imagePreview.attr('src', choose.placeholder);
                                 if(this.url) URL.revokeObjectURL(this.url);
                                 this.url = URL.createObjectURL(fileContent);
-                                imageLayer.data = {type:'file', value:fileContent};
-                                src = this.url;
+                                imageLayer.result = fileContent;
                                 mime = fileContent.type;
+                                imageLayer.data = {type:'file', value:fileContent, mime:choose.type || mime, quality:choose.quality};
+                                src = this.url;
+                                imageLayer.name = fileContent.name;
                                 urlInput.val('');
                                 dispose();
-                            }
+                            }else error('placeholder');
                         }
                     });
                 }else $(layero).find('.input-file').remove();
@@ -676,11 +741,25 @@ $.validator.addMethod('function', function(value, element, params){return params
                 }else $(layero).find('.input-url').remove();
             },
             yes:function(index, layero){
-                yes(index, layero);
+                if(layero.preview){
+                    if(choose.cropper){
+                        $.admin.layer.cropper(
+                            $.extend({viewMode:1}, choose, typeof (choose.cropper) == 'object' ? choose.cropper : {}, {image:layero.preview, lock:true}),
+                            function(index, layero){
+                                if(typeof (yes) == 'function'){
+                                    layero.name = imageLayer.name;
+                                    layero.data = imageLayer.data;
+                                    return yes(index, layero);
+                                }
+                            }
+                        );
+                        $.admin.layer.close(index);
+                    }else if(typeof (yes) == 'function') return yes(index, layero);
+                }else error();
             }
         });
 
-        return layer.confirm(html, options);
+        return layer.open($.extend({btn:['ok', 'cancel']}, options, {content:html}));
     };
     //  扩展方法
     $.extend($, {
@@ -722,13 +801,27 @@ $.validator.addMethod('function', function(value, element, params){return params
                         yes(index, layero);
                     };
                     var btn = options.btn || (report ? ['ok', 'cancel'] : ['ok']);
-                    var size = window.innerWidth < 800;
-                    var open = $.admin.layer.open($.extend({title:title, type:2, maxmin:true, resize:true, area:[size ? '100%' : '800px', size ? '100%' : '600px'], content:url, btn:btn}, options));
+                    var size = window.innerWidth < 960;
+                    var open = $.admin.layer.open($.extend({title:title, type:2, maxmin:true, resize:true, area:[size ? '100%' : '960px', size ? '100%' : '720px'], content:url, btn:btn}, options));
                     if(report){
                         $.admin.layer.report = $.admin.layer.report || {};
                         $.admin.layer.report['layui-layer-iframe' + open] = report;
                     }
                     return open;
+                },
+                upload:function(url, data, callback){
+                    var formData = new FormData();
+                    var blob = data.blob || null;
+                    delete data.blob;
+                    if(!(blob instanceof Blob))
+                        return $.admin.api.fail({code:400, message:$.bootstrapModaler.options.lang.fileNone || 'File None'});
+                    var name = data.name || '';
+                    delete data.name;
+                    var key = data.key || 'file';
+                    delete data.key;
+                    $.each(data, function(k, v){ formData.append(k, v);});
+                    formData.append(key, blob, name);
+                    $.ajax({type:'POST', url:url, data:formData, processData:false, contentType:false, success:function(data){ callback(data); }}).fail($.admin.api.fail);
                 },
                 report:function(data, status, xhr){
                     if(typeof (status) == 'string' && typeof (xhr) == 'string'){
@@ -791,9 +884,9 @@ $.validator.addMethod('function', function(value, element, params){return params
                 //  组合参数
                 options = options || {};
                 options.format = options.format || 'YYYY-MM-DD HH:mm:ss';
-                options.showTodayButton = options.showTodayButton || true;
-                options.showClear = options.showClear || true;
-                options.showClose = options.showClose || true;
+                options.showTodayButton = typeof (options.showTodayButton) != 'undefined' ? options.showTodayButton : true;
+                options.showClear = typeof (options.showClear) != 'undefined' ? options.showClear : true;
+                options.showClose = typeof (options.showClose) != 'undefined' ? options.showClose : true;
                 options.icons = options.icons || {
                     time:'far fa-clock',
                     date:'far fa-calendar',
@@ -828,13 +921,34 @@ $.validator.addMethod('function', function(value, element, params){return params
                 options.input_values_separator = options.input_values_separator || ',';
                 return $(selector).ionRangeSlider(options);
             },
+            editor:function(selector, options){
+                //  组合参数
+                options = $.extend({
+                    branding:false,
+                    statusbar:false,
+                    convert_urls:false,
+                    toolbar_mode:'floating',
+                    plugins:'preview fullscreen lists advlist table autolink link dimage hr',
+                    menubar:'file edit insert format table',
+                    toolbar:'styleselect | bullist numlist outdent indent | dimage | preview fullscreen',
+                    contextmenu:'',
+                    table_responsive_width:true,
+                    readonly:$(selector).attr('readonly') || $(selector).attr('disabled')
+                }, options || {});
+                var setup = options.setup || function(){};
+                options.setup = function(editor){
+                    editor.on('change', function(){ editor.save(); });
+                    setup(editor);
+                };
+                return tinymce.init($.extend({selector:selector}, options));
+            },
             form:function(selector, options){
                 //  选项
                 options = options || {rules:{}, message:{}, commit:function(){}};
                 options.list = options.list || {};
                 options.rules = options.rules || {};
                 options.messages = options.messages || {};
-                options.errors = options.errors || true;
+                options.errors = typeof (options.errors) != 'undefined' ? options.errors : true;
                 options.debug = options.debug || false;
                 options.protect = options.protect || 500;
                 //  回调

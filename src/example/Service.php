@@ -50,7 +50,7 @@ class Service
             'hobby' => collect(array_to_object([['id' => 1, 'title' => '运动'], ['id' => 2, 'title' => '娱乐'], ['id' => 3, 'title' => '收藏'], ['id' => 4, 'title' => '乐器'], ['id' => 5, 'title' => '文艺'], ['id' => 6, 'title' => '社交']])),
         ];
         for ($i = 0; $i <= 100; $i++)
-            $store['level'][$i] = array_to_object(['name' => bomber()->strFill(3, $i)]);
+            $store['level'][$i] = array_to_object(['name' => 'LV.' . bomber()->strFill(3, $i)]);
 
         return $field ? ($store[$field] ?? null) : $store;
     }
@@ -103,10 +103,25 @@ class Service
     {
         if (!$uid)
             return null;
-
-        $info = DB::connection(self::connection)->table(self::MasterModel)->where('uid', $uid)->first();
-        if ($info)
+        $field = ['a.*'];
+        $query = DB::connection(self::connection)
+                   ->table(self::MasterModel, 'a')
+                   ->where('a.uid', $uid);
+        $credit = self::fieldStore('credit');
+        foreach ($credit as $type => $v) {
+            $alias = 'c_' . $type;
+            $field[] = "{$alias}.value as {$v['alias']}";
+            $query->leftJoin(Service::SlaveModel . ' as ' . $alias, function($query) use ($alias, $type) {
+                $query->on($alias . '.uid', '=', 'a.uid')->where($alias . '.type', $type);
+            });
+        }
+        $info = $query->first($field);
+        if ($info) {
+            $info->avatar = $info->avatar ? : bomber()->strImage($info->nickname, 'svg', ['calc' => true, 'substr' => true]);
             $info->hobby = explode(',', $info->hobby);
+            foreach ($credit as $type => $v)
+                $info->{$v['alias']} = bomber()->doublePrecision($info->{$v['alias']}, $v['decimals']);
+        }
 
         return $info;
     }
@@ -135,13 +150,19 @@ class Service
         ], [], [], $data);
         if (!error_check($reData))
             return $reData;
+        //  验证字段
+        if (($reData['phone'] ?? null) && !bomber()->regexp($reData['phone'], 'mobile'))
+            return error_build('手机号码格式有误');
         //  过滤字段
-        $hobbys = bomber()->objectKeys(bomber()->arrayIndex($store['hobby'], 'id'));
-        foreach ($reData['hobby'] as $key => $val) {
-            if (!in_array($val, $hobbys))
-                unset($reData['hobby'][$key]);
+        if ($reData['hobby'] ?? []) {
+            $hobbys = bomber()->objectKeys(bomber()->arrayIndex($store['hobby'], 'id'));
+            foreach ($reData['hobby'] as $key => $val) {
+                if (!in_array($val, $hobbys))
+                    unset($reData['hobby'][$key]);
+            }
+            $reData['hobby'] = implode(',', $reData['hobby'] ?? []);
         }
-        $reData['hobby'] = implode(',', $reData['hobby'] ?? []);
+        //  过滤无效字段
         $field = self::fieldList();
         foreach ($reData as $key => $val) {
             if (!in_array($key, $field))
@@ -203,5 +224,52 @@ class Service
 
         //  返回执行结果
         return DB::connection(self::connection)->table(self::MasterModel)->where('uid', $uid)->update($reData) ? true : DEMON_CODE_DATA;
+    }
+
+    /**
+     * 变更积分
+     *
+     * @param $uid
+     * @param $type
+     * @param $change
+     *
+     * @return bool|int|string
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public static function credit($uid, $type, $change)
+    {
+        //  无变化
+        if (!$change)
+            return error_build('无变化');
+        //  积分信息
+        $credit = self::fieldStore('credit')[$type] ?? null;
+        if (!$credit)
+            return error_build('积分类型错误');
+        //  获取当前数据，如果没有则创建
+        $now = DB::connection(self::connection)->table(self::SlaveModel)->where(['uid' => $uid, 'type' => $type])->first();
+        if (!$now) {
+            $foo = DB::connection(self::connection)->table(self::SlaveModel)->insertGetId(['uid' => $uid, 'type' => $type, 'createTime' => mstime()]);
+            if (!$foo)
+                return DEMON_CODE_DATA;
+
+            return self::credit($uid, $type, $change);
+        }
+        //  构造器
+        $query = DB::connection(self::connection)->table(self::SlaveModel)->where('id', $now->id);
+        //  变更数量绝对值
+        $num = bcadd(0, abs($change), $credit['decimals']);
+        //  扣除
+        if ($change < 0) {
+            //  如果是减少则判断是否足够
+            if ($now->value < $num)
+                return error_build($credit['name'] . '数量不足');
+
+            return $query->where('value', '>=', $num)->update(['updateTime' => mstime(), 'value' => DB::raw("value-{$num}")]) ? true : DEMON_CODE_DATA;
+        }
+        //  增加
+        else
+            return $query->update(['updateTime' => mstime(), 'value' => DB::raw("value+{$num}")]) ? true : DEMON_CODE_DATA;
     }
 }

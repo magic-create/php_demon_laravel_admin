@@ -1,7 +1,4 @@
 @extends('admin::preset.blank')
-@section('container.link')
-    @php($assetUrl = config('admin.web.cdnUrl') ?: '/static/admin/libs')
-@endsection
 @section('container.style')
     <style>#layer pre {max-height:480px;overflow-y:auto;margin-bottom:0;padding:10px;border-top:1px solid var(--primary);}</style>
 @endsection
@@ -238,7 +235,7 @@ $('#alert-dark').click(function() {
         $('#media').click(function(){ $.admin.layer.open({title:false, type:2, closeBtn:0, shade:0.8, content:'//player.youku.com/embed/XNDA5NzM5MTY1Ng', shadeClose:true, area:['630px', '360px'], anim:5}); });
         $('#avatar').click(function(){
             $.admin.layer.avatar({image:'/static/admin/images/avatar/1.jpg', lock:false}, function(index, o){
-                $.admin.modal.alert('<div style="margin:0 auto;width:100px;"><img class="rounded" style="width:100%;height:100%" src="' + o.cropper.getCroppedCanvas().toDataURL() + '"></div>', {title:'头像裁剪结果'});
+                $.admin.modal.alert('<div style="margin:0 auto;width:100px;"><img class="rounded" style="width:100%;height:100%" src="' + o.cropper.getCroppedCanvas({width:256, height:256}).toDataURL() + '"></div>', {title:'头像裁剪结果'});
                 $.admin.layer.close(index);
             });
         });
@@ -249,11 +246,8 @@ $('#alert-dark').click(function() {
             });
         });
         $('#image').click(function(){
-            $.admin.layer.image({image:'{{url('/static/admin/images/avatar/9.jpg')}}', dump:'{{admin_url('extend/image/url')}}', dispose:false}, function(index, o){
-                $.admin.layer.cropper({image:$(o.preview).attr('src')}, function(index, o){
-                    $.admin.modal.alert('<div style="margin:0 auto;width:320px;max-height:500px;text-align:center"><img class="rounded" style="max-width:80%;" src="' + o.cropper.getCroppedCanvas().toDataURL() + '"></div>', {title:'图片裁剪结果'});
-                    $.admin.layer.close(index);
-                });
+            $.admin.layer.image({image:'{{url('/static/admin/images/avatar/9.jpg')}}', dump:'{{admin_url('extend/image/url')}}', cropper:true, dispose:false}, function(index, o){
+                $.admin.modal.alert('<div style="margin:0 auto;width:320px;max-height:500px;text-align:center"><img class="rounded" style="max-width:80%;" src="' + o.cropper.getCroppedCanvas().toDataURL() + '"></div>', {title:'图片裁剪结果'});
                 $.admin.layer.close(index);
             });
         });

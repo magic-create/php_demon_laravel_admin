@@ -135,13 +135,13 @@ function admin_button($action = '', $type = '', $parm = [])
         //  默认
         default:
             $theme = $parm['theme'] ?? 'secondary';
-            if (!$title)
+            if ($title === '')
                 $icon = $parm['icon'] ?? 'fa fa-question';
             break;
     }
 
     //  返回内容
     return admin_html()->button(($icon ? admin_html()->fast('', [], 'i', $icon) : '') . $text, [
-        'action' => $action, 'title' => $title, 'data-toggle' => 'tooltip', 'data-trigger' => 'hover'
-    ], $tag, "btn-{$size} btn-{$theme} " . ($parm['class'] ?? ''));
+            'action' => $action, 'title' => $title, 'data-toggle' => 'tooltip', 'data-trigger' => 'hover'
+        ] + ($parm['attr'] ?? []), $tag, "btn-{$size} btn-{$theme} " . ($parm['class'] ?? ''));
 }

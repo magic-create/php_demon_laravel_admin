@@ -35,6 +35,7 @@
     <script src="{{$assetUrl}}/bootstrap-table/1.18.1/bootstrap-table.min.js"></script>
     <script src="{{$assetUrl}}/bootstrap-table/1.18.1/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
     <script src="{{$assetUrl}}/bootstrap-table/1.18.1/extensions/page-jump-to/bootstrap-table-page-jump-to.min.js"></script>
+    <script src="{{$staticUrl}}/libs/tinymce/5.6.2/tinymce.min.js"></script>
     <script src="{{$assetUrl}}/cropperjs/1.5.9/cropper.min.js"></script>
     <script src="{{$staticUrl}}/libs/bootstrap4-layer/3.1.1/layer.min.js"></script>
     {{--启动应用--}}

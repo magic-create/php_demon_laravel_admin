@@ -259,10 +259,12 @@ class DBTable
         foreach ($array as $key => &$val) {
             //  操作列强制设定
             if ($val['action'] ?? false) {
-                $val['custom'] = $val['custom'] ?? true;
                 $val['clickToSelect'] = $val['clickToSelect'] ?? false;
-                $val['export'] = $val['export'] ?? false;
-                $val['print'] = $val['print'] ?? false;
+                if ($val['action'] == 'group') {
+                    $val['custom'] = $val['custom'] ?? true;
+                    $val['export'] = $val['export'] ?? false;
+                    $val['print'] = $val['print'] ?? false;
+                }
             }
             //  处理宽度
             if ($val['width'] ?? null) {
@@ -528,7 +530,7 @@ class DBTable
             //  遍历规则
             foreach ($list as $val) {
                 //  where和format可能是匿名函数所以特殊处理一下
-                $whereCall = $val['where'] ?? '';
+                $whereCall = $val['where'] ?? '=';
                 $formatCall = $val['format'] ?? '';
                 $val = array_to_object($val);
                 //  重新赋值where和format

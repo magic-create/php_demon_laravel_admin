@@ -1,7 +1,4 @@
 @extends('admin::preset.blank')
-@section('container.link')
-    @php($assetUrl = config('admin.web.cdnUrl') ?: '/static/admin/libs')
-@endsection
 @section('container.content')
     <div class="col-lg-6">
         <div class="card mb-2">

@@ -255,6 +255,9 @@ class Spreadsheet
                 //  数字转换
                 if ((is_numeric($value) || is_double($value) || is_float($value)) && $value >= 1e10)
                     $value = (string)$value;
+                //  非HTML转换
+                if ($format != 'html')
+                    $value = str_replace(["\r", "\n", "\r\n", PHP_EOL, '&nbsp;'], '', trim(strip_tags((string)nl2br($value))));
                 $object->setCellValue($skeyName, $value);
                 //  URL转换
                 if ($format == 'url') {

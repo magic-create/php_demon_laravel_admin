@@ -51,7 +51,7 @@ app('router')->group([
             $control = App::make(Controller::class);
             if (method_exists($control, $act))
                 return App::call([$control, $act]);
-            else response(null, 404);
+            else abort(404);
         } catch (HttpException $exception) {
             $view = 'admin::preset.error.' . $exception->getStatusCode();
             if (!request()->ajax()) {
@@ -62,19 +62,46 @@ app('router')->group([
         }
     });
     //  外链图片
-    $router->get('/extend/image/url', function() {
-        //  获取参数
-        $url = request()->get('url');
-        if (!$url || filter_var($url, FILTER_VALIDATE_URL) === false)
-            return response(null, 404);
-        //  Curl请求
-        bomber()->curl($url, [], ['method' => 'file'], function($result, $status) use (&$content, &$type) {
-            $content = ($status['http_code'] ?? 0) == 200 ? $result : null;
-            $type = $status['content_type'];
-        });
+    $router->match(['get', 'post'], '/extend/image/{act?}', function($act = '') {
+        //  操作类型
+        switch ($act) {
+            //  外链转本地
+            case 'url':
+                //  获取参数
+                $url = request()->get('url');
+                if (!$url || filter_var($url, FILTER_VALIDATE_URL) === false)
+                    return response(null, 404);
+                //  Curl请求
+                bomber()->curl($url, [], ['method' => 'file'], function($result, $status) use (&$content, &$type) {
+                    $content = ($status['http_code'] ?? 0) == 200 ? $result : null;
+                    $type = $status['content_type'];
+                });
 
-        //  响应结果
-        return response($content, $type ? 200 : 404, ['Content-Type' => $type]);
+                //  响应结果
+                return response($content, $type ? 200 : 404, ['Content-Type' => $type]);
+                break;
+            //  图片上传
+            case 'upload':
+                if (!$_FILES)
+                    abort(400);
+                $dir = arguer('dir', 'upload/admin/example/' . date('Ymd'));
+                $path = public_path($dir);
+                //  如果目录不存在则创建
+                if (!is_dir($path))
+                    bomber()->dirMake($dir);
+                //  将文件移动到这里
+                $response = [];
+                foreach ($_FILES as $key => $file) {
+                    $name = $file['name'] . '.' . sha1(mstime() . $file['name']) . '.' . str_replace('image/', '', $file['type']);
+                    $response[$key] = move_uploaded_file($file['tmp_name'], $path . '/' . $name) ? url($dir . '/' . $name) : false;
+                }
+
+                return response($response);
+                break;
+            default:
+                abort(404);
+                break;
+        }
     });
     //  一级解析
     $router->match(['get', 'post'], '/{mod?}', function($mod) use ($func) { return $func($mod); });

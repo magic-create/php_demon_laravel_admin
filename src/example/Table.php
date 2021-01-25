@@ -118,7 +118,7 @@ class Table extends Tables
         $credit = [];
         foreach ($this->store['credit'] as $type => $v) {
             $alias = 'c_' . $type;
-            $credit[] = ['data' => $v['alias'], 'origin' => 'c_' . $type . '.value', 'title' => $v['name'], 'reorder' => true];
+            $credit[] = ['data' => $v['alias'], 'origin' => 'c_' . $type . '.value', 'title' => $v['name'], 'action' => true, 'reorder' => true];
         }
 
         return array_merge([
@@ -133,11 +133,12 @@ class Table extends Tables
             ['data' => 'a.birthday', 'title' => '生日', 'reorder' => true],
             ['data' => 'a.activeTime', 'title' => '活跃时间', 'reorder' => true],
             ['data' => 'a.signDate', 'title' => '签到日期', 'reorder' => true],
+            ['data' => 'a.loginIpv4i', 'title' => '登录IP'],
             ['data' => 'a.loginTime', 'title' => '登录时间', 'reorder' => true],
             ['data' => 'a.createTime', 'title' => '注册日期', 'reorder' => true],
             ['data' => 'a.updateTime', 'title' => '更新日期', 'reorder' => true],
             ['data' => 'a.status', 'title' => '状态', 'action' => true, 'reorder' => true],
-            ['data' => '_action', 'title' => '操作', 'action' => true],
+            ['data' => '_action', 'title' => '操作', 'action' => 'group'],
         ]);
     }
 
@@ -206,10 +207,17 @@ class Table extends Tables
     {
         $credit = [];
         foreach ($this->store['credit'] as $type => $v)
-            $credit[$v['alias']] = function($val) use ($v) { return bomber()->doublePrecision($val->{$v['alias']}, $v['decimals']); };
+            $credit[$v['alias']] = function($val) use ($type, $v) {
+                return admin_button('credit', '', [
+                    'title' => "点击变更{$v['name']}",
+                    'text' => bomber()->doublePrecision($val->{$v['alias']}, $v['decimals']),
+                    'theme' => 'success',
+                    'attr' => ['data-type' => $type, 'data-name' => $v['name']]
+                ]);
+            };
 
         return [
-                'avatar' => function($val) { return admin_html('image', $val->avatar, ['name' => $val->nickname]); },
+                'avatar' => function($val) { return admin_html('image', $val->avatar ? : bomber()->strImage($val->nickname, 'svg', ['calc' => true, 'substr' => true]), ['name' => $val->nickname]); },
                 'sex' => function($val) { return $this->store['sex'][$val->sex]; },
                 'level' => function($val) { return $this->store['level'][$val->level]->name ?? '未知'; },
                 'hobby' => function($val) {
@@ -226,15 +234,15 @@ class Table extends Tables
                     return $html ? : null;
                 },
                 'signDate' => function($val) { return $val->signDate ? date('Y-m-d', strtotime($val->signDate)) : null; },
-                'loginTime' => function($val) { return $val->loginTime ? date('Y-m-d H:i:s', strtotime($val->loginTime)) : null; },
+                'loginIpv4i' => function($val) { return $val->loginIpv4i ? long2ip($val->loginIpv4i) : null; },
+                'loginTime' => function($val) { return $val->loginTime ? date('Y-m-d H:i:s', $val->loginTime) : null; },
                 'createTime' => function($val) { return $val->createTime ? msdate('Y-m-d', $val->createTime) : null; },
                 'updateTime' => function($val) { return $val->updateTime ? msdate('Y-m-d', $val->updateTime) : null; },
                 'status' => function($val) { return admin_html('switch', ['action' => 'status'], $val->status); },
                 '_action' => [
                     'type' => 'add',
                     'callback' => function() {
-                        return admin_button('add', 'add', ['text' => '测试按钮']) .
-                            admin_button('edit', 'edit') .
+                        return admin_button('edit', 'edit') .
                             admin_button('del', 'del', ['title' => '测试按钮']) .
                             admin_button('get', 'get') .
                             admin_button('test');
@@ -278,7 +286,7 @@ class Table extends Tables
         $column = [
             'UID', '手机号', '昵称', '头像' => 'image',
             '性别', '等级', '爱好', '积分', '余额',
-            '生日', '活跃时间' => 30, '签到日期', '登录时间',
+            '生日', '活跃时间' => 30, '签到日期', '登录IP', '登录时间',
             '注册日期', '更新日期', '状态', '附加',
         ];
         //  遍历数据
@@ -287,7 +295,7 @@ class Table extends Tables
             $data[] = [
                 $val->uid, $val->phone, $val->nickname, $val->avatar,
                 $val->sex, $val->level, $val->hobby, $val->credit, $val->balance,
-                $val->birthday, $val->activeTime, $val->signDate, $val->loginTime,
+                $val->birthday, $val->activeTime, $val->signDate, $val->loginIpv4i, $val->loginTime,
                 $val->createTime, $val->updateTime, $val->status, $val->data,
             ];
         }

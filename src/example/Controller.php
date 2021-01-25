@@ -50,6 +50,23 @@ class Controller extends Controllers
                 else
                     return view('admin::preset.example.table_info', ['store' => Service::fieldStore()]);
                 break;
+            //  积分
+            case 'credit':
+                $parm = $this->api->validator([
+                    'uid' => ['rule' => 'required|numeric', 'message' => '请选择正确的用户'],
+                    'type' => ['rule' => 'required|numeric', 'message' => '请选择正确的类型'],
+                ]);
+                $info = Service::find($parm['uid']);
+                if (!$info)
+                    abort(DEMON_CODE_PARAM);
+                if (DEMON_SUBMIT) {
+                    $this->api->check(Service::credit($parm['uid'], $parm['type'], arguer('change', 0, 'double')));
+
+                    return $this->api->send();
+                }
+                else
+                    return view('admin::preset.example.table_credit', ['info' => $info, 'type' => $parm['type'], 'credit' => Service::fieldStore('credit')]);
+                break;
             //  编辑
             case 'edit':
                 $uid = arguer('uid', 0, 'abs');
@@ -140,6 +157,19 @@ class Controller extends Controllers
     public function widget()
     {
         return view('admin::preset.example.widget');
+    }
+
+    /**
+     * 富文本编辑
+     *
+     * @return mixed
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function editor()
+    {
+        return view('admin::preset.example.editor');
     }
 
     /**
