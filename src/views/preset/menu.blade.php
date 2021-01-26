@@ -46,6 +46,7 @@
                     ['title' => 'Table', 'path' => admin_url('example/table')],
                     ['title' => 'Widget', 'path' => admin_url('example/widget')],
                     ['title' => 'Editor', 'path' => admin_url('example/editor')],
+                    ['title' => 'Markdown', 'path' => admin_url('example/markdown')],
                 ]
             ]
         ];

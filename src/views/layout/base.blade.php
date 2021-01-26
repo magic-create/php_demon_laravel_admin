@@ -35,12 +35,13 @@
     <script src="{{$assetUrl}}/bootstrap-table/1.18.1/bootstrap-table.min.js"></script>
     <script src="{{$assetUrl}}/bootstrap-table/1.18.1/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
     <script src="{{$assetUrl}}/bootstrap-table/1.18.1/extensions/page-jump-to/bootstrap-table-page-jump-to.min.js"></script>
-    <script src="{{$staticUrl}}/libs/tinymce/5.6.2/tinymce.min.js"></script>
     <script src="{{$assetUrl}}/cropperjs/1.5.9/cropper.min.js"></script>
     <script src="{{$staticUrl}}/libs/bootstrap4-layer/3.1.1/layer.min.js"></script>
+    {{--前置引入区域--}}
+    @yield('link.before')
     {{--启动应用--}}
     <script src="{{$staticUrl}}/js/app.js"></script>
-    <script src="{{$staticUrl}}/js/demon.js"></script>
+    <script src="{{$staticUrl}}/js/demon.min.js"></script>
     <script src="{{$staticUrl}}/js/lang/zh-CN.js"></script>
     {{--加载脚本--}}
     <script src="{{$assetUrl}}/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
@@ -55,7 +56,7 @@
     <link href="{{$staticUrl}}/css/theme_{{config('admin.theme')}}.css" rel="stylesheet" type="text/css">
     <link href="{{$assetUrl}}/node-waves/0.7.6/waves.min.css" rel="stylesheet" type="text/css">
     {{--挂载引入区域--}}
-    @yield('link')
+    @yield('link.after')
     <script>
         window._token = '{{function_exists('csrf_token') ? csrf_token() : ''}}';
         $.ajaxSetup({headers:{'X-CSRF-TOKEN':window._token}});

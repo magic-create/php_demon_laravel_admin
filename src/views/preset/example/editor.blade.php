@@ -1,4 +1,8 @@
 @extends('admin::preset.container')
+@section('container.link.before')
+    @php($staticUrl = config('admin.static'))
+    <script src="{{$staticUrl}}/libs/tinymce/5.6.2/tinymce.min.js"></script>
+@endsection
 @section('container.content')
     <h4 class="mt-0 header-title">Rich Text Editor</h4>
     <p class="text-muted mb-4">使用$.admin.editor来构建（基于TinyMCE）</p>

@@ -1,4 +1,8 @@
 @extends('admin::preset.layer')
+@section('container.link.before')
+    @php($staticUrl = config('admin.static'))
+    <script src="{{$staticUrl}}/libs/tinymce/5.6.2/tinymce.min.js"></script>
+@endsection
 @section('container.content')
     <div class="card-body layer-card-bg">
         <form id="validate">

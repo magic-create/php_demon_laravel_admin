@@ -1,8 +1,12 @@
 {{--引入框架--}}
 @extends('admin::layout.base')
 {{--传递引入信息--}}
-@section('link')
-    @yield('container.link')
+@section('link.before')
+    @yield('container.link.before')
+@endsection
+{{--传递引入信息--}}
+@section('link.after')
+    @yield('container.link.after')
 @endsection
 {{--传递样式信息--}}
 @section('style')
