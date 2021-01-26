@@ -2,15 +2,15 @@
 
 namespace Demon\AdminLaravel\example;
 
-use App\Admin\Tables\Table as Tables;
 use App\Models\Central\MemberModel;
 use App\Redis\Central\LevelRedis;
 use App\Redis\Central\VipRedis;
 use App\Services\Central\ConfigService;
+use Demon\AdminLaravel\DBTable;
 use Demon\AdminLaravel\Spreadsheet;
 use Illuminate\Support\Facades\DB;
 
-class Table extends Tables
+class Table extends DBTable
 {
     /**
      * Table constructor.
