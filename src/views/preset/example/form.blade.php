@@ -1,140 +1,142 @@
 @extends('admin::preset.blank')
 @section('container.content')
-    <div class="col-lg-6">
-        <div class="card mb-2">
-            <div class="card-body">
-                <h4 class="header-title">Form Validation</h4>
-                <p class="text-muted mb-3">使用$.admin.form来验证（基于jquery.validate）</p>
-                <form id="validate">
-                    <div class="form-group">
-                        <label>必填内容</label>
-                        <input type="text" name="required" class="form-control" placeholder="请输入任意内容"/>
-                    </div>
-                    <div class="form-group">
-                        <label>正整数</label>
-                        <input type="number" name="digits" class="form-control" placeholder="请输入任意正整数"/>
-                    </div>
-                    <div class="form-group">
-                        <label>最大值限制</label>
-                        <input type="number" name="max" class="form-control" placeholder="请输入不大于10的数字"/>
-                    </div>
-                    <div class="form-group">
-                        <label>长度范围</label>
-                        <textarea name="rangelength" class="form-control" rows="5" placeholder="请输入10至30个字之间的任意内容"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>URL链接</label>
-                        <input type="url" name="url" class="form-control" placeholder="请输入http开头的URL地址"/>
-                    </div>
-                    <div class="form-group">
-                        <label>二次确认密码</label>
-                        <div><input type="password" name="ref" class="form-control" placeholder="请输入任意密码"/></div>
-                        <div class="mt-1"><input type="password" name="password" class="form-control" placeholder="请再次输入相同的密码"/></div>
-                    </div>
-                    <div class="form-group">
-                        <label>开关</label>
-                        <div class="check-group"><input name="switch" class="switch" type="checkbox"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>复选框</label>
-                        <div class="check-group">
-                            @for($i=1;$i<=10;$i++)
-                                <label><input name="checkbox[]" class="checkbox" type="checkbox" value="{{$i}}">选项-{{$i}}</label>
-                            @endfor
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h4 class="header-title">Form Validation</h4>
+                    <p class="text-muted mb-3">使用$.admin.form来验证（基于jquery.validate）</p>
+                    <form id="validate">
+                        <div class="form-group">
+                            <label>必填内容</label>
+                            <input type="text" name="required" class="form-control" placeholder="请输入任意内容"/>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>单选框</label>
-                        <div class="check-group">
-                            @for($i=1;$i<=5;$i++)
-                                <label><input name="radio" class="radio" type="radio" value="{{$i}}">选项-{{$i}}</label>
-                            @endfor
+                        <div class="form-group">
+                            <label>正整数</label>
+                            <input type="number" name="digits" class="form-control" placeholder="请输入任意正整数"/>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>下拉框</label>
-                        <select name="select" class="form-control select">
-                            <option value="">请选择</option>
-                            @for($i=1;$i<=10;$i++)
-                                <option value="{{$i}}">选项-{{$i}}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>多选下拉框</label>
-                        <select name="selects" class="form-control select" multiple>
-                            @for($i=1;$i<=10;$i++)
-                                <option value="{{$i}}">选项-{{$i}}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>自定义</label>
-                        <input type="text" name="custom" class="form-control" placeholder="请输入当前年份，如：2021"/>
-                    </div>
-                    <div class="form-group">
-                        <label>后台校验</label>
-                        <input type="text" name="api" class="form-control" placeholder="输入任意内容，不输入的话由后台校验"/>
-                    </div>
-                    <div class="form-group mb-0">
-                        <button type="submit" class="btn btn-primary waves-effect waves-light mr-1">提交</button>
-                        <button type="reset" class="btn btn-secondary waves-effect">重置</button>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label>最大值限制</label>
+                            <input type="number" name="max" class="form-control" placeholder="请输入不大于10的数字"/>
+                        </div>
+                        <div class="form-group">
+                            <label>长度范围</label>
+                            <textarea name="rangelength" class="form-control" rows="5" placeholder="请输入10至30个字之间的任意内容"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>URL链接</label>
+                            <input type="url" name="url" class="form-control" placeholder="请输入http开头的URL地址"/>
+                        </div>
+                        <div class="form-group">
+                            <label>二次确认密码</label>
+                            <div><input type="password" name="ref" class="form-control" placeholder="请输入任意密码"/></div>
+                            <div class="mt-1"><input type="password" name="password" class="form-control" placeholder="请再次输入相同的密码"/></div>
+                        </div>
+                        <div class="form-group">
+                            <label>开关</label>
+                            <div class="check-group"><input name="switch" class="switch" type="checkbox"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>复选框</label>
+                            <div class="check-group">
+                                @for($i=1;$i<=10;$i++)
+                                    <label><input name="checkbox[]" class="checkbox" type="checkbox" value="{{$i}}">选项-{{$i}}</label>
+                                @endfor
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>单选框</label>
+                            <div class="check-group">
+                                @for($i=1;$i<=5;$i++)
+                                    <label><input name="radio" class="radio" type="radio" value="{{$i}}">选项-{{$i}}</label>
+                                @endfor
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>下拉框</label>
+                            <select name="select" class="form-control select">
+                                <option value="">请选择</option>
+                                @for($i=1;$i<=10;$i++)
+                                    <option value="{{$i}}">选项-{{$i}}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>多选下拉框</label>
+                            <select name="selects" class="form-control select" multiple>
+                                @for($i=1;$i<=10;$i++)
+                                    <option value="{{$i}}">选项-{{$i}}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>自定义</label>
+                            <input type="text" name="custom" class="form-control" placeholder="请输入当前年份，如：2021"/>
+                        </div>
+                        <div class="form-group">
+                            <label>后台校验</label>
+                            <input type="text" name="api" class="form-control" placeholder="输入任意内容，不输入的话由后台校验"/>
+                        </div>
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-primary waves-effect waves-light mr-1">提交</button>
+                            <button type="reset" class="btn btn-secondary waves-effect">重置</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="card mb-2">
-            <div class="card-body">
-                <h4 class="header-title">More Advanced</h4>
-                <p class="text-muted mb-3">扩展表单元素（基于各类jquery插件）</p>
-                <form id="advanced">
-                    <div class="form-group">
-                        <label>日期选择</label>
-                        <input type="text" name="date" class="form-control date" placeholder="点击选择日期"/>
-                    </div>
-                    <div class="form-group">
-                        <label>日期和时间选择</label>
-                        <input type="text" name="datetime" class="form-control date" placeholder="点击选择日期和时间"/>
-                    </div>
-                    <div class="form-group">
-                        <label>时间选择</label>
-                        <input type="text" name="time" class="form-control date" placeholder="点击选择时间"/>
-                    </div>
-                    <div class="form-group">
-                        <label>颜色选择</label>
-                        <div class="input-group color">
-                            <input type="text" class="form-control" value="#000" placeholder="点击选择颜色"/>
-                            <div class="input-group-append"><span class="input-group-text color-addon"></span></div>
+        <div class="col-lg-6">
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h4 class="header-title">More Advanced</h4>
+                    <p class="text-muted mb-3">扩展表单元素（基于各类jquery插件）</p>
+                    <form id="advanced">
+                        <div class="form-group">
+                            <label>日期选择</label>
+                            <input type="text" name="date" class="form-control date" placeholder="点击选择日期"/>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>文件选择</label>
-                        <input type="file" name="file" class="form-control file">
-                    </div>
-                    <div class="form-group">
-                        <label>数字滑块</label>
-                        <input type="text" name="slider" class="form-control slider"/>
-                    </div>
-                    <div class="form-group">
-                        <label>区间滑块</label>
-                        <input type="text" name="sliders" class="form-control slider"/>
-                    </div>
-                    <div class="form-group">
-                        <label>Markdown</label>
-                        <div class="row">
-                            <div class="col-6">
-                                <textarea name="markdown" class="form-control markdown" rows="15" placeholder="请输入Markdown代码"></textarea>
+                        <div class="form-group">
+                            <label>日期和时间选择</label>
+                            <input type="text" name="datetime" class="form-control date" placeholder="点击选择日期和时间"/>
+                        </div>
+                        <div class="form-group">
+                            <label>时间选择</label>
+                            <input type="text" name="time" class="form-control date" placeholder="点击选择时间"/>
+                        </div>
+                        <div class="form-group">
+                            <label>颜色选择</label>
+                            <div class="input-group color">
+                                <input type="text" class="form-control" value="#000" placeholder="点击选择颜色"/>
+                                <div class="input-group-append"><span class="input-group-text color-addon"></span></div>
                             </div>
-                            <div id="markdown" class="col-6"></div>
                         </div>
-                    </div>
-                    <div class="form-group mb-0">
-                        <button type="submit" class="btn btn-primary waves-effect waves-light mr-1">提交</button>
-                        <button type="reset" class="btn btn-secondary waves-effect">重置</button>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label>文件选择</label>
+                            <input type="file" name="file" class="form-control file">
+                        </div>
+                        <div class="form-group">
+                            <label>数字滑块</label>
+                            <input type="text" name="slider" class="form-control slider"/>
+                        </div>
+                        <div class="form-group">
+                            <label>区间滑块</label>
+                            <input type="text" name="sliders" class="form-control slider"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Markdown</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <textarea name="markdown" class="form-control markdown" rows="15" placeholder="请输入Markdown代码"></textarea>
+                                </div>
+                                <div id="markdown" class="col-6"></div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-primary waves-effect waves-light mr-1">提交</button>
+                            <button type="reset" class="btn btn-secondary waves-effect">重置</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

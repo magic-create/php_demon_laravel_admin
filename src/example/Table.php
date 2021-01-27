@@ -32,7 +32,7 @@ class Table extends DBTable
      */
     public function setConfig()
     {
-        return ['batch' => true, 'key' => Service::MasterKey, 'reorder' => ['level', 'desc']];
+        return ['batch' => true, 'key' => Service::MasterKey, 'reorder' => ['uid', 'desc']];
     }
 
     /**
@@ -70,7 +70,7 @@ class Table extends DBTable
         return array_merge([
             ['data' => 'a.uid', 'title' => 'UID', 'placeholder' => '精准UID，多个可用 , 分隔', 'where' => 'in'],
             ['data' => 'a.phone', 'title' => '手机号', 'where' => 'like'],
-            ['data' => 'a.nickname', 'title' => '昵称', 'where' => 'like', 'type' => 'custom', 'value' => '测'],
+            ['data' => 'a.nickname', 'title' => '昵称', 'where' => 'like', 'type' => 'custom'],
             ['data' => 'a.sex', 'title' => '性别', 'type' => 'select', 'placeholder' => '请选择性别', 'option' => ['list' => $this->store['sex']]],
             [
                 'data' => 'a.avatar', 'title' => '头像', 'type' => 'select', 'placeholder' => '不限', 'option' => ['list' => $this->store['avatar']],
@@ -80,7 +80,9 @@ class Table extends DBTable
                         function($query) use ($field) { $query->whereNull($field)->whereOr($field, ''); };
                 }
             ],
-            ['data' => 'a.level', 'title' => '等级', 'type' => 'select', 'placeholder' => ['不限制最小等级', '不限制最大等级'], 'where' => 'range', 'option' => ['title' => 'name', 'list' => $this->store['level']], 'attr' => ['data-select' => true]],
+            ['data' => 'a.code', 'title' => '邀请码', 'where' => 'like'],
+            ['data' => 'a.inviteUid', 'title' => '邀请人UID', 'placeholder' => '精准UID，多个可用 , 分隔', 'where' => 'in', 'value' => arguer('inviteUid')],
+            ['data' => 'a.level', 'title' => '等级', 'type' => 'select', 'value' => [0, count($this->store['level']) - 2], 'placeholder' => ['不限制最小等级', '不限制最大等级'], 'where' => 'range', 'option' => ['title' => 'name', 'list' => $this->store['level']], 'attr' => ['data-select' => true]],
             ['data' => 'a.hobby', 'title' => '爱好', 'type' => 'select', 'placeholder' => '全部', 'option' => ['bind' => 'id', 'title' => 'title', 'list' => $this->store['hobby']], 'attr' => ['data-select' => true]],
             ['data' => 'a.birthday', 'title' => '生日', 'type' => 'time', 'where' => 'range', 'attr' => ['data-time' => 'YYYY-MM-DD']],
             ['data' => 'a.activeTime', 'title' => '活跃时间', 'type' => 'time', 'where' => 'range', 'attr' => ['data-time' => null]],
@@ -93,7 +95,7 @@ class Table extends DBTable
     }
 
     /**
-     * 设置排序
+     * 设置后置排序
      *
      * @return array|string[]
      *
@@ -102,7 +104,7 @@ class Table extends DBTable
      */
     public function setOrder()
     {
-        return ['a.uid' => 'desc'];
+        return ['a.uid' => 'asc'];
     }
 
     /**
@@ -123,12 +125,15 @@ class Table extends DBTable
 
         return array_merge([
             ['data' => 'a.uid', 'title' => 'UID', 'reorder' => true],
-            ['data' => 'phone', 'title' => '手机号'],
-            ['data' => 'nickname', 'title' => '昵称', 'width' => '10%', 'search' => true],
-            ['data' => 'avatar', 'title' => '头像', 'width' => '60px', 'action' => true],
-            ['data' => 'sex', 'title' => '性别'],
-            ['data' => 'level', 'title' => '等级', 'reorder' => true],
-            ['data' => 'hobby', 'title' => '爱好']
+            ['data' => 'a.phone', 'title' => '手机号', 'search' => true],
+            ['data' => 'a.nickname', 'title' => '昵称', 'width' => '10%', 'search' => true],
+            ['data' => 'a.code', 'title' => '邀请码', 'width' => '10%', 'search' => true],
+            ['data' => 'c.inviteCount', 'title' => '已邀请人数', 'reorder' => true, 'action' => true],
+            ['data' => 'a.inviteUid', 'title' => '邀请人信息', 'width' => '15%'],
+            ['data' => 'a.avatar', 'title' => '头像', 'width' => '60px', 'action' => true],
+            ['data' => 'a.sex', 'title' => '性别'],
+            ['data' => 'a.level', 'title' => '等级', 'reorder' => true],
+            ['data' => 'a.hobby', 'title' => '爱好']
         ], $credit, [
             ['data' => 'a.birthday', 'title' => '生日', 'reorder' => true],
             ['data' => 'a.activeTime', 'title' => '活跃时间', 'reorder' => true],
@@ -152,7 +157,7 @@ class Table extends DBTable
      */
     public function setField()
     {
-        return ['a.avatar', 'a.data'];
+        return ['a.avatar', 'a.data', 'b.nickname as inviteNickname'];
     }
 
     /**
@@ -166,6 +171,9 @@ class Table extends DBTable
     public function setQuery()
     {
         $query = DB::connection(Service::connection)->table(Service::MasterModel . ' as a')->where('a.status', '>=', 0);
+        $query->leftJoin(Service::MasterModel . ' as b', 'b.uid', '=', 'a.inviteUid');
+        $inviteCount = DB::table(Service::MasterModel)->select(DB::raw('count(1) as inviteCount,inviteUid'))->groupBy('inviteUid');
+        $query->leftJoinSub($inviteCount, 'c', 'c.inviteUid', '=', 'a.uid');
         foreach ($this->store['credit'] as $type => $name) {
             $alias = 'c_' . $type;
             $query->leftJoin(Service::SlaveModel . ' as ' . $alias, function($query) use ($alias, $type) {
@@ -217,8 +225,10 @@ class Table extends DBTable
             };
 
         return [
+                'inviteCount' => function($val) { return $val->inviteCount ? admin_button('invited', '', ['title' => "点击查看列表", 'text' => $val->inviteCount, 'theme' => 'info']) : null; },
+                'inviteUid' => function($val) { return $val->inviteUid ? "{$val->inviteNickname}[{$val->inviteUid}]" : null; },
                 'avatar' => function($val) { return admin_html('image', $val->avatar ? : bomber()->strImage($val->nickname, 'svg', ['calc' => true, 'substr' => true]), ['name' => $val->nickname]); },
-                'sex' => function($val) { return $this->store['sex'][$val->sex]; },
+                'sex' => function($val) { return $this->store['sex'][$val->sex] ?? '未知'; },
                 'level' => function($val) { return $this->store['level'][$val->level]->name ?? '未知'; },
                 'hobby' => function($val) {
                     $html = '';
@@ -243,9 +253,9 @@ class Table extends DBTable
                     'type' => 'add',
                     'callback' => function() {
                         return admin_button('edit', 'edit') .
-                            admin_button('del', 'del', ['title' => '测试按钮']) .
+                            admin_button('del', 'del', ['title' => '删除用户']) .
                             admin_button('get', 'get') .
-                            admin_button('test');
+                            admin_button('invite', '', ['title' => '模拟邀请注册', 'icon' => 'fa fa-hands-helping']);
                     }
                 ],
             ] + $credit;
@@ -284,8 +294,8 @@ class Table extends DBTable
         $list = $this->getFormat($this->get());
         //  设置表头
         $column = [
-            'UID', '手机号', '昵称', '头像' => 'image',
-            '性别', '等级', '爱好', '积分', '余额',
+            'UID', '手机号', '昵称' => 50, '头像' => 'image', '邀请码', '已邀请人数',
+            '性别', '等级', '爱好', '邀请人' => 60, '积分', '余额',
             '生日', '活跃时间' => 30, '签到日期', '登录IP', '登录时间',
             '注册日期', '更新日期', '状态', '附加',
         ];
@@ -293,8 +303,8 @@ class Table extends DBTable
         $data = [];
         foreach ($list as $key => $val) {
             $data[] = [
-                $val->uid, $val->phone, $val->nickname, $val->avatar,
-                $val->sex, $val->level, $val->hobby, $val->credit, $val->balance,
+                $val->uid, $val->phone, $val->nickname, $val->avatar, $val->code, $val->inviteCount,
+                $val->sex, $val->level, $val->hobby, $val->inviteUid, $val->credit, $val->balance,
                 $val->birthday, $val->activeTime, $val->signDate, $val->loginIpv4i, $val->loginTime,
                 $val->createTime, $val->updateTime, $val->status, $val->data,
             ];

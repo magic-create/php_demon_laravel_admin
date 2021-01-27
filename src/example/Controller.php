@@ -21,7 +21,101 @@ class Controller extends Controllers
      */
     public function index()
     {
-        return view('admin::preset.example.index');
+        //  操作动作
+        switch (arguer('_action')) {
+            //  图表
+            case 'charts':
+                $pie = function() {
+                    return [
+                        ['name' => 'Test 1.st', 'value' => rand(1e3, 9e5)],
+                        ['name' => 'Test 2.nd', 'value' => rand(1e3, 9e5)],
+                        ['name' => 'Test 3.rd', 'value' => rand(1e3, 9e5)],
+                        ['name' => 'Test 4.th', 'value' => rand(1e3, 9e5)]
+                    ];
+                };
+                $line = function() {
+                    $date = [];
+                    for ($i = 30; $i >= 0; $i--)
+                        $date[] = msdate('Y-m-d', bomber()->timeBuild("-{$i} day", 'Y-m-d'));
+                    $item = ['Test 1.st', 'Test 2.nd', 'Test 3.rd', 'Test 4.th'];
+                    $data = [];
+                    foreach ($item as $key => $val) {
+                        foreach ($date as $v)
+                            $data[$key][] = rand(6e4 * (1 + $key * 0.5), 9e4 * (1 + $key * 0.5));
+                    }
+
+                    return compact('item', 'date', 'data');
+                };
+                $bar = function() {
+                    $date = [];
+                    for ($i = 7; $i >= 0; $i--)
+                        $date[] = msdate('Y-m-d', bomber()->timeBuild("-{$i} day", 'Y-m-d'));
+                    $item = ['Test 1.st', 'Test 2.nd', 'Test 3.rd', 'Test 4.th'];
+                    $data = [];
+                    foreach ($item as $key => $val) {
+                        foreach ($date as $v)
+                            $data[$key][] = rand(1e3, 9e4);
+                    }
+
+                    return compact('item', 'date', 'data');
+                };
+
+                return $this->api->setData(['pie' => $pie(), 'line' => $line(), 'bar' => $bar()])->send();
+                break;
+            default:
+                //  随机统计数据
+                $stat = [
+                    'User' => ['icon' => 'user', 'data' => rand(1e3, 9e5), 'ratio' => bomber()->doubleRand(0, 2, 3) - 1],
+                    'Order' => ['icon' => 'receipt', 'data' => rand(1e3, 9e5), 'ratio' => bomber()->doubleRand(0, 2, 3) - 1],
+                    'Revenue' => ['icon' => 'calculator', 'data' => rand(1e3, 9e5), 'ratio' => bomber()->doubleRand(0, 2, 3) - 1],
+                    'Product' => ['icon' => 'tags', 'data' => rand(1e3, 9e5), 'ratio' => bomber()->doubleRand(0, 2, 3) - 1],
+                ];
+
+                //  最近消息
+                $message = [];
+                $lastTime = DEMON_TIME;
+                for ($i = rand(0, 10); $i >= 0; $i--) {
+                    $lastTime -= rand(10, 60 * 60 * 3);
+                    $message[] = [
+                        'avatar' => '/static/admin/images/avatar/' . rand(1, 10) . '.jpg',
+                        'nickname' => bomber()->rand(rand(2, 6), 'chinese'),
+                        'content' => bomber()->rand(rand(16, 64), 'chinese'),
+                        'time' => $lastTime
+                    ];
+                }
+
+                //  活动安排
+                $activity = [];
+                $lastTime += 86400 * 90;
+                for ($i = rand(0, 8); $i >= 0; $i--) {
+                    $lastTime -= rand(86400, 86400 * 7);
+                    $activity[] = [
+                        'content' => bomber()->rand(rand(16, 64), 'chinese'),
+                        'time' => $lastTime
+                    ];
+                }
+
+                //  最新消息
+                $notice = [
+                    'avatar' => '/static/admin/images/avatar/' . rand(1, 10) . '.jpg',
+                    'nickname' => bomber()->rand(rand(2, 6), 'chinese'),
+                    'content' => bomber()->rand(rand(16, 128), 'chinese'),
+                    'time' => DEMON_TIME - rand(10, 60 * 60 * 3),
+                    'url' => 'javascript:'
+                ];
+
+                //  代办
+                $todo = [];
+                for ($i = rand(0, 8); $i >= 0; $i--) {
+                    $todo[] = [
+                        'title' => bomber()->rand(rand(2, 6), 'chinese'),
+                        'tag' => rand(1, 9e3),
+                        'url' => 'javascript:'
+                    ];
+                }
+
+                return view('admin::preset.example.index', compact('stat', 'message', 'activity', 'notice', 'todo'));
+        }
     }
 
     /**
@@ -105,6 +199,16 @@ class Controller extends Controllers
                 $this->api->check(Service::updateStatus(arguer('uid'), -1));
 
                 return $this->api->send();
+                break;
+            //  邀请注册
+            case 'invite':
+                $this->api->check(Service::add(Service::randData(arguer())));
+
+                return $this->api->send();
+                break;
+            //  查看受邀人
+            case 'invited':
+                return $table->render('admin::preset.example.table', ['layer' => true]);
                 break;
             default:
                 return $table->render('admin::preset.example.table');

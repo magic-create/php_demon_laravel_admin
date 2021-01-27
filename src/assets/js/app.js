@@ -71,7 +71,7 @@ function localStorageSupport(){
                     $('.active').find('> ul').addClass('in');
                 }
             }
-            _delay = null;
+            _delay = clearTimeout(_delay);
         };
         _resize();
         $(window).resize(function(){

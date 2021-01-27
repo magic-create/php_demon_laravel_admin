@@ -30,6 +30,21 @@ class Service
     const SlaveKey = 'id';
 
     /**
+     * 邀请码编排
+     */
+    const InviteCodeKey = 'WHFBLUMYIAQNGDZOTRXPSEVKCJ';
+
+    /**
+     * 邀请码偏移量
+     */
+    const InviteCodeOffset = 1e5;
+
+    /**
+     * 受保护的字段
+     */
+    const ProtectedField = ['uid', 'code', 'inviteUid', 'createTime'];
+
+    /**
      * 字段规则
      *
      * @param string $field
@@ -103,9 +118,10 @@ class Service
     {
         if (!$uid)
             return null;
-        $field = ['a.*'];
+        $field = ['a.*', 'b.nickname as inviteNickname'];
         $query = DB::connection(self::connection)
                    ->table(self::MasterModel, 'a')
+                   ->leftJoin(self::MasterModel . ' as b', 'b.uid', '=', 'a.inviteUid')
                    ->where('a.uid', $uid);
         $credit = self::fieldStore('credit');
         foreach ($credit as $type => $v) {
@@ -150,17 +166,27 @@ class Service
         ], [], [], $data);
         if (!error_check($reData))
             return $reData;
+        //  Sex为enum类型需要特殊处理
+        $reData['sex'] = (string)$reData['sex'];
+        //  头像为Null
+        $reData['avatar'] = $reData['avatar'] ? : null;
         //  验证字段
         if (($reData['phone'] ?? null) && !bomber()->regexp($reData['phone'], 'mobile'))
             return error_build('手机号码格式有误');
+        //  验证邀请人
+        if ($reData['inviteCode'] ?? null) {
+            $reData['inviteUid'] = bomber()->inviteCode($reData['inviteCode'], 0, self::InviteCodeKey, self::InviteCodeOffset);
+            if ($reData['inviteUid'] < 1 || !self::find($reData['inviteUid']))
+                return error_build('邀请码错误');
+        }
         //  过滤字段
-        if ($reData['hobby'] ?? []) {
+        if (isset($reData['hobby'])) {
             $hobbys = bomber()->objectKeys(bomber()->arrayIndex($store['hobby'], 'id'));
             foreach ($reData['hobby'] as $key => $val) {
                 if (!in_array($val, $hobbys))
                     unset($reData['hobby'][$key]);
             }
-            $reData['hobby'] = implode(',', $reData['hobby'] ?? []);
+            $reData['hobby'] = implode(',', $reData['hobby'] ?? []) ? : null;
         }
         //  过滤无效字段
         $field = self::fieldList();
@@ -170,6 +196,34 @@ class Service
         }
 
         return $reData;
+    }
+
+    /**
+     * 随机生成数据
+     *
+     * @param array $preData
+     *
+     * @return array
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public static function randData($preData = [])
+    {
+        $store = self::fieldStore();
+        $hobby = array_filter(Service::fieldStore('hobby')->map(function($val) { return rand(0, 100) >= 80 ? $val->id : null; })->toArray());
+        shuffle($hobby);
+        $data = $preData + [
+                'nickname' => $preData['nickname'] ?? bomber()->rand(rand(2, 16), 'chinese'),
+                'sex' => $preData['sex'] ?? array_rand(array_flip(array_keys($store['sex']))),
+                'inviteCode' => $preData['inviteCode'] ?? (DB::connection(self::connection)->table(self::MasterModel)->orderByRaw('RAND()')->first()->code ?? null),
+                'level' => $preData['level'] ?? array_rand(array_flip(array_keys($store['level']))),
+                'birthday' => $preData['birthday'] ?? date('Y-m-d', rand(strtotime('1900-01-01'), strtotime('Ymd'))),
+                'intro' => $preData['intro'] ?? admin_html('fast', bomber()->rand(rand(16, 128), 'chinese'), [], 'p'),
+                'hobby' => $preData['hobby'] ?? $hobby,
+            ];
+
+        return $data;
     }
 
     /**
@@ -190,7 +244,19 @@ class Service
         $reData += ['createTime' => mstime()];
 
         //  返回执行结果
-        return DB::connection(self::connection)->table(self::MasterModel)->insertGetId($reData) ? true : DEMON_CODE_DATA;
+        $uid = DB::connection(self::connection)->table(self::MasterModel)->insertGetId($reData);
+        if ($uid) {
+            DB::connection(self::connection)->table(self::MasterModel)->where('uid', $uid)->update(['code' => bomber()->inviteCode($uid, 1, self::InviteCodeKey, self::InviteCodeOffset)]);
+            //  批量更新其他用户邀请码
+            /*
+            foreach (DB::connection(Service::connection)->table(Service::MasterModel)->get() as $key => $val)
+                DB::connection(Service::connection)->table(Service::MasterModel)->where('uid', $val->uid)->update(['code' => bomber()->inviteCode($val->uid, 1, Service::InviteCodeKey, Service::InviteCodeOffset)]);
+            */
+
+            return true;
+        }
+        else
+            return DEMON_CODE_DATA;
     }
 
     /**
@@ -215,6 +281,8 @@ class Service
         $reData = self::checkData($data);
         if (!error_check($reData))
             return $reData;
+        //  移除保护字段
+        bomber()->objectFilter($reData, self::ProtectedField, -1);
         $reData += ['updateTime' => mstime()];
         //  相同内容过滤
         foreach ($reData as $key => $val) {

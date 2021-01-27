@@ -40,7 +40,8 @@
             imageUrl:'图片地址',
             imageDump:'外链转换',
             imageNone:'没有图片',
-            fileNone:'没有文件'
+            fileNone:'没有文件',
+            loading:'加载中'
         };
     }
     //  Select2默认语言

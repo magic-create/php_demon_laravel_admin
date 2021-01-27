@@ -22,9 +22,7 @@
 @include('admin::preset.breadcrumb')
 {{--传递页面内容--}}
 @section('page')
-    <div class="row">
-        @yield('container.content',__('No Content'))
-    </div>
+    @yield('container.content',__('No Content'))
 @endsection
 {{--传递脚本信息--}}
 @section('script')

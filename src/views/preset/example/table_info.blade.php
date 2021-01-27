@@ -14,6 +14,12 @@
                 <label>手机号</label>
                 <input type="text" name="phone" class="form-control" placeholder="请输入手机号" value="{{$info->phone ?? ''}}" @if($readonly ?? false) readonly @endif/>
             </div>
+            @if(!($readonly ?? false))
+                <div class="form-group">
+                    <label>邀请人</label>
+                    <input type="text" name="inviteCode" class="form-control" placeholder="请输入邀请人的邀请码，会绑定邀请关系"/>
+                </div>
+            @endif
             <div class="form-group">
                 <label>生日</label>
                 <input type="text" name="birthday" class="form-control date" placeholder="点击选择生日" data-format="YYYY-MM-DD" value="{{$info->birthday ?? ''}}" @if($readonly ?? false) readonly @endif/>
@@ -50,6 +56,14 @@
                 <textarea name="intro" class="form-control" rows="5" placeholder="请输入500字以内的简介" @if($readonly ?? false) readonly @endif>{{$info->intro ?? ''}}</textarea>
             </div>
             @if($readonly ?? false)
+                <div class="form-group">
+                    <label>邀请码</label>
+                    <input type="text" class="form-control" value="{{($info->inviteCode ?? '')}}" readonly/>
+                </div>
+                <div class="form-group">
+                    <label>邀请人</label>
+                    <input type="text" class="form-control" value="{{($info->inviteUid ?? '') ? ("{$info->inviteNickname}[{$info->inviteUid}]") : ''}}" readonly/>
+                </div>
                 @foreach($store['credit'] as $v)
                     <div class="form-group">
                         <label>{{$v['name']}}</label>

@@ -236,9 +236,11 @@ class Spreadsheet
                 case 'time':
                     $object->getStyle($skeyName)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DATETIME);
                     break;
-                default:
                 case 'string':
                     $object->getStyle($skeyName)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+                    break;
+                default:
+                    $object->getStyle($skeyName)->getNumberFormat()->setFormatCode($format);
                     break;
             }
         }
@@ -252,12 +254,12 @@ class Spreadsheet
                 $format = strtolower($this->_config['format'][$k] ?? 'string');
                 //  设置内容
                 $value = $val[$k];
-                //  数字转换
-                if ((is_numeric($value) || is_double($value) || is_float($value)) && $value >= 1e10)
-                    $value = (string)$value;
                 //  非HTML转换
                 if ($format != 'html')
                     $value = str_replace(["\r", "\n", "\r\n", PHP_EOL, '&nbsp;'], '', trim(strip_tags((string)nl2br($value))));
+                //  数字转换
+                if ((is_numeric($value) || is_double($value) || is_float($value)) && $value >= 1e10)
+                    $value = (string)$value;
                 $object->setCellValue($skeyName, $value);
                 //  URL转换
                 if ($format == 'url') {
