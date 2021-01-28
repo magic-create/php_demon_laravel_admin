@@ -671,11 +671,7 @@
                     help:"使用帮助",
                     info:"关于" + editormd.title
                 },
-                buttons:{
-                    enter:"确定",
-                    cancel:"取消",
-                    close:"关闭"
-                },
+                buttons:{enter:"确定", cancel:"取消", close:"关闭"},
                 dialog:{
                     link:{
                         title:"添加链接",
@@ -723,15 +719,9 @@
                         unselectedLanguageAlert:"错误：请选择代码所属的语言类型。",
                         codeEmptyAlert:"错误：请填写代码内容。"
                     },
-                    htmlEntities:{
-                        title:"HTML 实体字符"
-                    },
-                    emoji:{
-                        title:"Emoji 表情"
-                    },
-                    help:{
-                        title:"使用帮助"
-                    },
+                    htmlEntities:{title:"HTML 实体字符"},
+                    emoji:{title:"Emoji 表情"},
+                    help:{title:"使用帮助"},
                     "goto-line":{
                         title:"跳转到行",
                         label:"请输入行号",

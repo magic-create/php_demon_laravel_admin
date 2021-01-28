@@ -1,4 +1,5 @@
 @section('header')
+    @php($staticUrl = config('admin.static'))
     {{--搜索区域--}}
     <li class="dropdown notification-list d-none d-smblock">
         {{--搜索表单--}}
@@ -25,7 +26,7 @@
     </li>
     {{--通知区域--}}
     <li class="dropdown notification-list">
-        @php $_notifications = rand(0,10) @endphp
+        @php($_notifications = rand(0,10))
         {{--显示图标和数字--}}
         <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="javascript:" role="button" aria-haspopup="false" aria-expanded="false">
             <i class="far fa-bell noti-icon"></i>
@@ -57,7 +58,7 @@
         <div class="dropdown notification-list nav-pro-img">
             {{--用户头像--}}
             <a class="dropdown-toggle nav-link arrow-none waves-effect nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                <img src="/static/admin/images/avatar/1.jpg" alt="user" class="rounded-circle">
+                <img src="{{$staticUrl}}/images/avatar/1.jpg" alt="user" class="rounded-circle">
             </a>
             {{--菜单部分--}}
             <div class="dropdown-menu dropdown-menu-right profile-dropdown">

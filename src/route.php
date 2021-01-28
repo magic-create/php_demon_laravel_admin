@@ -2,6 +2,8 @@
 
 use Demon\AdminLaravel\example\Controller;
 use Demon\AdminLaravel\Middleware;
+use Gregwar\Captcha\CaptchaBuilder;
+use Gregwar\Captcha\PhraseBuilder;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Session\Middleware\StartSession;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -65,6 +67,16 @@ app('router')->group([
     $router->match(['get', 'post'], '/extend/image/{act?}', function($act = '') {
         //  操作类型
         switch ($act) {
+            //  验证码
+            case 'captcha':
+                $phraseBuilder = new PhraseBuilder(config('admin.captcha.length'), config('admin.captcha.charset'));
+                $builder = new CaptchaBuilder(null, $phraseBuilder);
+                $builder->build(config('admin.captcha.width'), config('admin.captcha.height'));
+                session(['extend/image/captcha' => $builder->getPhrase()]);
+
+                //  响应结果
+                return response($builder->output(), 200, ['Content-Type' => 'image/jpeg']);
+                break;
             //  外链转本地
             case 'url':
                 //  获取参数

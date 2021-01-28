@@ -1,8 +1,12 @@
 {{--引入框架--}}
 @extends('admin::layout.base')
 {{--传递引入信息--}}
-@section('link')
-    @yield('container.link')
+@section('link.before')
+    @yield('container.link.before')
+@endsection
+{{--传递引入信息--}}
+@section('link.after')
+    @yield('container.link.after')
 @endsection
 {{--传递样式信息--}}
 @section('style')
@@ -10,8 +14,6 @@
 @endsection
 {{--加载预设尾部--}}
 @include('admin::preset.footer')
-{{--加载预设标题和面包屑导航--}}
-@include('admin::preset.breadcrumb')
 {{--传递页面内容--}}
 @section('frame')
     <div class="wrapper-page">

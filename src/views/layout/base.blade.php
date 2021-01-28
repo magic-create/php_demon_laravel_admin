@@ -39,8 +39,8 @@
     @yield('link.before')
     {{--启动应用--}}
     <script src="{{$staticUrl}}/js/app.js"></script>
-    <script src="{{$staticUrl}}/js/demon.js"></script>
-    <script src="{{$staticUrl}}/js/lang/zh-CN.js"></script>
+    <script src="{{$staticUrl}}/js/demon.min.js"></script>
+    <script src="{{$staticUrl}}/js/lang/{{App::getLocale()}}.js"></script>
     {{--加载脚本--}}
     <script src="{{$assetUrl}}/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js"></script>
     {{--加载样式--}}

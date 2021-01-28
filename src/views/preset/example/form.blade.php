@@ -171,11 +171,7 @@
                         var data = e.value();
                         if(value != data.custom) return $.admin.layer.alert('输入的内容和自定义的内容不相同', {icon:0});
                         $.admin.modal.close(prompt);
-                        $.post(location.href, data, function(data){
-                            $.admin.modal.alert(modalContent('success', data));
-                        }).fail(function(xhr){
-                            $.admin.modal.alert(modalContent('fail', JSON.parse(xhr.responseText)));
-                        });
+                        $.post('', data, function(data){$.admin.modal.alert(modalContent('success', data));}).fail(function(xhr){$.admin.modal.alert(modalContent('fail', JSON.parse(xhr.responseText)));});
                     }, function(){$.admin.layer.alert('取消提交', {icon:0});});
                 }
             }

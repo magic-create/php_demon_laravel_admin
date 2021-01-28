@@ -40,13 +40,14 @@
                 'title' => 'Example',
                 'active' => request()->route()->uri == config('admin.path') . '/example/{act?}',
                 'list' => [
-                    ['title' => 'Index', 'path' => admin_url('example/index')],
+                    ['title' => 'Index', 'path' => admin_url('example')],
                     ['title' => 'Form', 'path' => admin_url('example/form')],
                     ['title' => 'Layer', 'path' => admin_url('example/layer')],
                     ['title' => 'Table', 'path' => admin_url('example/table')],
                     ['title' => 'Widget', 'path' => admin_url('example/widget')],
                     ['title' => 'Editor', 'path' => admin_url('example/editor')],
                     ['title' => 'Markdown', 'path' => admin_url('example/markdown')],
+                    ['title' => 'Login', 'path' => admin_url('example/login')],
                 ]
             ]
         ];

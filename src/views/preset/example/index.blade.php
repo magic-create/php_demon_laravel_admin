@@ -63,9 +63,9 @@
         <div class="col-xl-4">
             <div class="card mb-4">
                 <div class="card-body">
-                    <h4 class="mt-0 m-b-30 header-title">Todo</h4>
+                    <h4 class="mt-0 mb-3">Todo</h4>
                     <div class="table-responsive">
-                        <table class="table table-vertical">
+                        <table class="table table-bottom">
                             <tbody>
                             @foreach($todo as $val)
                                 <tr>
@@ -85,7 +85,7 @@
         <div class="col-xl-4 col-lg-6">
             <div class="card mb-4">
                 <div class="card-body">
-                    <h4 class="mt-0 header-title mb-4">Activity</h4>
+                    <h4 class="mt-0 mb-3">Activity</h4>
                     <ol class="activity-feed mb-0">
                         @foreach($activity as $val)
                             <li class="feed-item">

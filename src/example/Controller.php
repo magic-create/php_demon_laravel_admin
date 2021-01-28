@@ -2,13 +2,46 @@
 
 namespace Demon\AdminLaravel\example;
 
+use Demon\AdminLaravel\Admin;
+use Demon\AdminLaravel\AdminServiceProvider;
 use Demon\AdminLaravel\Controller as Controllers;
+use Gregwar\Captcha\CaptchaBuilder;
+use Gregwar\Captcha\PhraseBuilder;
 
 class Controller extends Controllers
 {
     function __construct()
     {
         parent::__construct();
+    }
+
+    public function login()
+    {
+        if (DEMON_SUBMIT) {
+            $data = $this->api->arguer([
+                'account' => [
+                    'name' => __('admin::base.auth.account'),
+                    'rule' => 'required|string|in:admin',
+                    'message' => __('admin::base.auth.error_account')
+                ],
+                'password' => [
+                    'name' => __('admin::base.auth.password'),
+                    'rule' => 'required|string|size:32|in:' . bomber()->md5('demon', false),
+                    'message' => __('admin::base.auth.error_password')
+                ],
+                'captcha' => [
+                    'name' => __('admin::base.auth.captcha'),
+                    'rule' => 'required|in:' . session('extend/image/captcha'),
+                    'message' => __('admin::base.auth.error_captcha')
+                ]
+            ]);
+
+            return $this->api->setMessage('登录成功')->setData('url', admin_url('example'))->send();
+        }
+        else
+            return view('admin::preset.example.login', [
+                'backgroundImage' => app('admin')->getBackgroundImage(function($config) { return '//img.infinitynewtab.com/wallpaper/' . ($config['mode'] == 'random' ? mt_rand(1, 4049) : date('Ymd') % 4049) . '.jpg'; })
+            ]);
     }
 
     /**
@@ -104,7 +137,7 @@ class Controller extends Controllers
                     'url' => 'javascript:'
                 ];
 
-                //  代办
+                //  待办
                 $todo = [];
                 for ($i = rand(0, 8); $i >= 0; $i--) {
                     $todo[] = [

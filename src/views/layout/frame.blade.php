@@ -1,4 +1,5 @@
 @section('frame')
+    @php($staticUrl = config('admin.static'))
     @if(config('admin.layout') == 'vertical')
         {{--左侧导航布局--}}
         <div id="wrapper">
@@ -6,8 +7,8 @@
                 {{--顶部左侧--}}
                 <div class="topbar-left">
                     <a href="{{admin_url()}}" class="logo">
-                        <i><img src="/static/admin/images/logo/sm.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" height="22"></i>
-                        <span><img src="/static/admin/images/logo/{{config('admin.layout')}}-{{config('admin.theme')}}.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" height="18"></span>
+                        <i><img src="{{$staticUrl}}/images/logo/sm.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" height="22"></i>
+                        <span><img src="{{$staticUrl}}/images/logo/{{config('admin.layout')}}-{{config('admin.theme')}}.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" height="18"></span>
                     </a>
                 </div>
                 {{--自定义部分--}}
@@ -46,8 +47,8 @@
                     {{--顶部左侧--}}
                     <div class="logo">
                         <a href="{{admin_url()}}" class="logo">
-                            <img src="/static/admin/images/logo/sm.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" class="logo-small">
-                            <img src="/static/admin/images/logo/{{config('admin.layout')}}-{{config('admin.theme')}}.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" class="logo-large">
+                            <img src="{{$staticUrl}}/images/logo/sm.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" class="logo-small">
+                            <img src="{{$staticUrl}}/images/logo/{{config('admin.layout')}}-{{config('admin.theme')}}.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" class="logo-large">
                         </a>
                     </div>
                     {{--自定义部分--}}

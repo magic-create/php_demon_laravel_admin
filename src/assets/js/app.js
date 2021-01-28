@@ -1,8 +1,3 @@
-//判断浏览器是否支持html5本地存储
-function localStorageSupport(){
-    return (('localStorage' in window) && window['localStorage'] !== null);
-}
-
 //  启动JS
 !function($){
     //  启动严格模式
@@ -48,8 +43,7 @@ function localStorageSupport(){
     MainApp.prototype.initLeftMenuCollapse = function(){
         $('.button-menu-mobile').on('click', function(event){
             event.preventDefault();
-            if(localStorageSupport)
-                localStorage.setItem("admin.config.enlarged", !$('body').hasClass('enlarged') ? 'on' : 'off');
+            if(window.localStorage) localStorage.setItem("admin.config.enlarged", !$('body').hasClass('enlarged') ? 'on' : 'off');
             $('body').toggleClass('enlarged');
             if(!$('body').hasClass('enlarged'))
                 $('.active').find('> ul').addClass('in');
@@ -62,11 +56,11 @@ function localStorageSupport(){
         var _delay = 0;
         var _resize = function(){
             $('body').removeClass('d-none');
-            if($(window).width() < 1025 || (localStorageSupport && localStorage.getItem('admin.config.enlarged') == 'on')){
+            if($(window).width() < 1025 || (window.localStorage && localStorage.getItem('admin.config.enlarged') == 'on')){
                 $('body').addClass('enlarged');
                 $('.submenu').removeClass('in');
             }else{
-                if(localStorageSupport && localStorage.getItem('admin.config.enlarged') != 'on'){
+                if(window.localStorage && localStorage.getItem('admin.config.enlarged') != 'on'){
                     $('body').removeClass('enlarged');
                     $('.active').find('> ul').addClass('in');
                 }
