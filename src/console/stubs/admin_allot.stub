@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class Create{{tableClassName}}Table extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::connection('{{connection}}')
+              ->create('{{table}}', function(Blueprint $table) {
+                  $table->engine = 'MyISAM';
+                  $table->unsignedInteger('uid')->comment('管理员UID');
+                  $table->unsignedInteger('rid')->comment('角色RID');
+                  $table->unsignedBigInteger('createTime')->default(0)->comment('创建时间');
+              });
+        DB::connection('{{connection}}')
+          ->table('{{table}}')
+          ->insert([
+              ['uid' => 1, 'rid' => 1, 'createTime' => mstime()]
+          ]);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::connection('{{connection}}')->dropIfExists('{{table}}');
+    }
+}

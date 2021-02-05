@@ -74,6 +74,11 @@ class DBTable
     public $query = null;
 
     /**
+     * @var array 设置内容
+     */
+    public $data = [];
+
+    /**
      * @var array 按钮定义
      */
     public $button = [];
@@ -89,7 +94,9 @@ class DBTable
 
     /**
      * 表格配置定义
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -102,6 +109,7 @@ class DBTable
      * 表格配置定义
      *
      * @return array
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -144,6 +152,7 @@ class DBTable
      * @param null $val
      *
      * @return $this
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -161,7 +170,9 @@ class DBTable
 
     /**
      * 获取前置配置
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -172,29 +183,35 @@ class DBTable
 
     /**
      * 设置额外字段
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
-    public function setField()
+    public function setField($field)
     {
-        return [];
+        return $field;
     }
 
     /**
      * 设置字段
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
     public function getField()
     {
-        return $this->field = $this->field + $this->setField();
+        return $this->field = $this->setField($this->field);
     }
 
     /**
      * 表格按钮定义
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -205,7 +222,9 @@ class DBTable
 
     /**
      * 表格按钮定义
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -214,6 +233,10 @@ class DBTable
         //  循环处理
         $list = $this->setButton();
         foreach ($list as $key => &$val) {
+            if (!$val) {
+                unset($list[$key]);
+                continue;
+            }
             $val['text'] = $val['text'] ?? '';
             $val['class'] = ($val['class'] ?? '') ? : $this->config->toolbarButton ?? 'btn btn-secondary';
             $val['title'] = $val['title'] ?? '';
@@ -225,10 +248,36 @@ class DBTable
                 $val['attr']['data-toggle'] = 'tooltip';
                 $val['attr']['data-trigger'] = 'hover';
             }
+            $val['list'] = $val['list'] ?? null;
+            if ($val['list']) {
+                $val['attr']['data-toggle'] = 'dropdown';
+                $val['attr']['id'] = $val['attr']['id'] ?? $key . '-' . bomber()->md5($key . mstime() . rand(0, 9e3));
+            }
+            else
+                $val['attr']['data-button-key'] = $key;
             $attribute = '';
             foreach ($val['attr'] as $k => $v)
                 $attribute .= " {$k}='$v'";
-            $val['html'] = "<button class='{$val['class']}' {$attribute} data-button-key='{$key}'>{$val['text']}</button>";
+            //  如果是菜单但是没有内容就忽略
+            if ($val['list'] !== null && !$val['list']) {
+                unset($list[$key]);
+                continue;
+            }
+            //  如果是菜单
+            if ($val['list'])
+                $val['class'] .= ' dropdown-toggle';
+            //  生成内容
+            $val['html'] = "<button class='{$val['class']}' {$attribute}>{$val['text']}</button>";
+            //  如果是菜单
+            if ($val['list']) {
+                $val['html'] .= "<div class='dropdown-menu' aria-labelledby='{$val['attr']['id']}'>";
+                foreach ($val['list'] as $v) {
+                    $v['href'] = $v['href'] ?? 'javascript:';
+                    $v['data-button-key'] = $v['data-button-key'] ?? $key;
+                    $val['html'] .= is_array($v) ? admin_html()->fast($v['text'] ?? '', $v, 'a', 'dropdown-item') : $v;
+                }
+                $val['html'] .= '</div>';
+            }
         }
 
         return $this->button = array_to_object($list);
@@ -236,7 +285,9 @@ class DBTable
 
     /**
      * 表格标题定义
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -249,6 +300,7 @@ class DBTable
      * 获取字段构造
      *
      * @return array
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -260,7 +312,7 @@ class DBTable
             //  操作列强制设定
             if ($val['action'] ?? false) {
                 $val['clickToSelect'] = $val['clickToSelect'] ?? false;
-                if ($val['action'] == 'group') {
+                if ($val['action'] === 'group') {
                     $val['custom'] = $val['custom'] ?? true;
                     $val['export'] = $val['export'] ?? false;
                     $val['print'] = $val['print'] ?? false;
@@ -310,11 +362,14 @@ class DBTable
 
     /**
      * 设置格式化
+     *
+     * @param       $array
+     *
      * @return array
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
-    public function setFormat()
+    public function setFormat(&$data)
     {
         return [];
     }
@@ -334,7 +389,7 @@ class DBTable
         //  获取表字段
         $rawColumns = [];
         //  循环处理字段内容
-        foreach ($this->format + $this->setFormat() as $key => $val) {
+        foreach ($this->format + $this->setFormat($list) as $key => $val) {
             //  处理类型
             $type = is_array($val) ? ($val['type'] ?? '') : '';
             //  处理方法
@@ -366,7 +421,9 @@ class DBTable
 
     /**
      * 表格排序定义
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -377,7 +434,9 @@ class DBTable
 
     /**
      * 表格排序定义
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -388,7 +447,9 @@ class DBTable
 
     /**
      * 表格搜索获取
+     *
      * @return array
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -421,7 +482,7 @@ class DBTable
                 $data[$key]['name'] = $val['name'] = substr($name, $strrpos + 1);
             // 如果有预设默认值
             if (isset($val['value'])) {
-                if (($val['where'] ?? '') == 'range') {
+                if (($val['where'] ?? '') === 'range') {
                     $value[$val['name'] . '__start'] = $val['value'][0] ?? '';
                     $value[$val['name'] . '__end'] = $val['value'][1] ?? '';
                 }
@@ -492,12 +553,12 @@ class DBTable
      */
     public function setSearchs($array = [])
     {
+        //  初始化where条件
+        $where = [];
         if ($this->config->searchPanel ?? false) {
             //  获取配置规则
             $list = $this->setSearch();
             $searchs = $this->config->searchList ?? 'searchs';
-            //  初始化where条件
-            $where = [];
             //  规则内容转义
             $format = function($data, $config) {
                 if ($data !== '') {
@@ -507,7 +568,7 @@ class DBTable
                         case 'mstime':
                         case 'timestamp':
                             $data = strtotime($data);
-                            if ($config->format == 'mstime')
+                            if ($config->format === 'mstime')
                                 $data *= 1000;
                             break;
                         //  转换为数字IP
@@ -653,7 +714,9 @@ class DBTable
 
     /**
      * 查询构造器
+     *
      * @return Model|DB
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -677,14 +740,14 @@ class DBTable
         $this->query = $this->setQuery();
         //  是否为传统设置
         if ($this->config->queryParamsType == 'limit') {
-            $limit = arguer('limit', $this->config->pageSize ?? 15, 'abs');
+            $limit = arguer('limit', 0, 'abs');
             $offset = arguer('offset', 0, 'abs');
             $sortName = arguer('sort', $this->config->sortName ?? '', 'xss');
             $sortOrder = arguer('order', $this->config->sortOrder ?? 'asc', 'xss');
             $searchText = arguer('search', $this->config->searchText ?? '', 'xss');
         }
         else {
-            $limit = arguer('pageSize', $this->config->pageSize ?? 15, 'abs');
+            $limit = arguer('pageSize', 0, 'abs');
             $offset = (arguer('pageNumber', $this->config->pageNumber ?? 1, 'abs') - 1) * $limit;
             $sortName = arguer('sortName', $this->config->sortName ?? '', 'xss');
             $sortOrder = arguer('sortOrder', $this->config->sortOrder ?? 'asc', 'xss');
@@ -698,7 +761,7 @@ class DBTable
         if ($step == 0)
             return $this->query;
         //  分页限制
-        if ($step == 2) {
+        if ($step == 2 && $limit) {
             $limit = min($limit, max($this->config->pageList));
             $this->query->offset($offset)->limit($limit);
         }
@@ -820,6 +883,7 @@ class DBTable
      * 快捷输出表格
      *
      * @return string
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -830,8 +894,27 @@ class DBTable
     }
 
     /**
+     * 直接设置内容
+     *
+     * @param array $data
+     *
+     * @return $this
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setData($data = [])
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
      * 查询数据集并打包格式
+     *
      * @return JsonResponse
+     *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
@@ -839,12 +922,12 @@ class DBTable
     {
         $data = [$this->config->totalField => $this->count()];
         if (config('app.debug'))
-            $data['_debug'] = [$this->config->totalField => sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings())];
+            $data['_debug'] = [$this->config->totalField => !$this->data ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null];
         if ($statis = $this->getStatis($this->query))
             $data['statis'] = $statis;
         $data[$this->config->dataField] = $this->getFormat($this->get(2));
         if (config('app.debug'))
-            $data['_debug'][$this->config->dataField] = sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings());
+            $data['_debug'][$this->config->dataField] = !$this->data ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null;
 
         //  输出JSON
         return new JsonResponse($data);
@@ -860,7 +943,7 @@ class DBTable
      */
     public function count()
     {
-        return $this->getQuery(0)->count();
+        return $this->data ? count($this->data) : $this->getQuery(0)->count();
     }
 
     /**
@@ -875,7 +958,7 @@ class DBTable
      */
     public function get($step = 1)
     {
-        return $this->getQuery($step)->select(array_values($this->field))->get();
+        return $this->data ? collect($this->data) : $this->getQuery($step)->select(array_values($this->field))->get();
     }
 
     /**

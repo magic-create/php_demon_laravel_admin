@@ -1,5 +1,5 @@
 !function(){
-    $.locale = 'zh-CN';
+    $.locale = window._locale || 'zh-CN';
     //  Filestyle默认语言
     if(typeof ($.fn.filestyle) != 'undefined'){
         $.fn.filestyle.defaults.text = '选择文件';
@@ -22,7 +22,8 @@
                 closepic:function(){return '不看了';},
                 avatar:function(){return '选择头像';},
                 cropper:function(){return '裁剪图片';},
-                image:function(){return '选择图片';}
+                image:function(){return '选择图片';},
+                icon:function(){return '选择图标';},
             }
         });
     }

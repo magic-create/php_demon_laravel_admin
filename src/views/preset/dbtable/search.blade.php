@@ -1,5 +1,5 @@
 {{--搜索表单区域--}}
-<div id="{{$dbTableConfig->searchTemplate}}" class="dbTable_search">
+<div id="{{$dbTableConfig->searchTemplate}}" class="dbTable_search d-none">
     @if($dbTableConfig->searchPanel)
         <form id="{{$dbTableConfig->searchForm}}" class="row">
             {{--循环搜索表单--}}

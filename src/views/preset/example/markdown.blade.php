@@ -1,7 +1,6 @@
-@extends('admin::preset.container')
+@extends('admin::layout.vessel.container')
 @section('container.link.before')
-    @php($staticUrl = config('admin.static'))
-    <script src="{{$staticUrl}}/libs/bootstrap4-editormd/1.5.0/editormd.min.js"></script>
+    <script src="{{admin_static('libs/bootstrap4-editormd/1.5.0/editormd.min.js')}}"></script>
 @endsection
 @section('container.content')
     <h4 class="mt-0 header-title">Markdown Editor</h4>
@@ -23,7 +22,7 @@
 @endsection
 @section('container.script')
     <script>
-        var dimage = {dimageChoose:{maxWidth:800, cropper:true, dispose:true, dump:'{{admin_url('extend/image/url')}}'}};
+        var dimage = {dimageChoose:{maxWidth:800, cropper:true, dispose:true, dump:'{{admin_url('extend/image/dump')}}'}};
         $.admin.markdown('#validate [name="simple"]', $.extend({height:360, watch:false}, dimage));
         $.admin.markdown('#validate [name="complex"]', $.extend({height:480, toolbarIcons:'full'}, dimage));
         $.admin.form('#validate', {

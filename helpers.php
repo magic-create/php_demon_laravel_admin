@@ -37,6 +37,56 @@ function admin_url($path = null, $parameters = [], $secure = null)
 }
 
 /**
+ * 运维后台通过错误码获取错误翻译
+ *
+ * @param       $key
+ * @param array $replace
+ * @param null  $locale
+ *
+ * @return string
+ *
+ * @author    ComingDemon
+ * @copyright 魔网天创信息科技
+ */
+function admin_error($key, $replace = [], $locale = null)
+{
+    $name = "admin::base.error.{$key}";
+    $trans = __($name, $replace, $locale);
+
+    return $trans == $name ? "Error : {$key}" : $trans;
+}
+
+/**
+ * 运维后台CDN资源
+ *
+ * @param string $path
+ *
+ * @return string
+ *
+ * @author    ComingDemon
+ * @copyright 魔网天创信息科技
+ */
+function admin_cdn($path = '')
+{
+    return config('admin.assets') . $path;
+}
+
+/**
+ * 运维后台静态资源
+ *
+ * @param string $path
+ *
+ * @return string
+ *
+ * @author    ComingDemon
+ * @copyright 魔网天创信息科技
+ */
+function admin_static($path = '')
+{
+    return config('admin.static') . ($path ? '/' . ltrim($path, '/') : '');
+}
+
+/**
  * 运维后台快速生成HTML片段
  *
  * @return array|Html|object|string
@@ -98,7 +148,7 @@ function admin_button($action = '', $type = '', $parm = [])
     $size = $parm['size'] ?? 'sm';
     $theme = $parm['theme'] ?? 'secondary';
     $icon = $parm['icon'] ?? '';
-    $action = $action ?? $type;
+    $type = $type ? : $action;
     switch ($type) {
         //  新增
         case 'add':
@@ -127,8 +177,8 @@ function admin_button($action = '', $type = '', $parm = [])
         //  查询
         case 'get':
         case 'info':
-        case 'search':
-        case 'select':
+        case 'detail':
+        case 'content':
             $theme = $parm['theme'] ?? 'info';
             $icon = $parm['icon'] ?? 'fa fa-info';
             break;
@@ -141,7 +191,7 @@ function admin_button($action = '', $type = '', $parm = [])
     }
 
     //  返回内容
-    return admin_html()->button(($icon ? admin_html()->fast('', [], 'i', $icon) : '') . $text, [
+    return admin_html()->button(($icon ? admin_html()->fast('', [], 'i', $icon) : '') . $text, ($parm['attr'] ?? []) + [
             'action' => $action, 'title' => $title, 'data-toggle' => 'tooltip', 'data-trigger' => 'hover'
-        ] + ($parm['attr'] ?? []), $tag, "btn-{$size} btn-{$theme} " . ($parm['class'] ?? ''));
+        ], $tag, "btn-{$size} btn-{$theme} " . ($parm['class'] ?? ''));
 }

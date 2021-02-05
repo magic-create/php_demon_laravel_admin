@@ -1,7 +1,6 @@
-@extends('admin::preset.layer')
+@extends('admin::layout.vessel.layer')
 @section('container.link.before')
-    @php($staticUrl = config('admin.static'))
-    <script src="{{$staticUrl}}/libs/tinymce/5.6.2/tinymce.min.js"></script>
+    <script src="{{admin_static('libs/tinymce/5.6.2/tinymce.min.js')}}"></script>
 @endsection
 @section('container.content')
     <div class="card-body layer-card-bg">
@@ -111,7 +110,7 @@
                         self.attr('src', data.file);
                         $('#validate [name="avatar"]').val(data.file);
                     });
-                }, 'image/jpg');
+                }, 'image/jpeg');
             });
         });
         var dimage = {

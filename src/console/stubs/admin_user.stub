@@ -1,0 +1,49 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class Create{{tableClassName}}Table extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::connection('{{connection}}')
+              ->create('{{table}}', function(Blueprint $table) {
+                  $table->engine = 'InnoDB';
+                  $table->integerIncrements('uid')->comment('管理员UID');
+                  $table->string('username', 32)->nullable()->comment('账号名');
+                  $table->string('nickname', 32)->nullable()->comment('昵称');
+                  $table->text('avatar')->nullable()->comment('头像数据(base64)');
+                  $table->string('password', 64)->nullable()->comment('登录密码');
+                  $table->unsignedTinyInteger('system')->default(0)->comment('系统内置无法操作');
+                  $table->tinyInteger('status')->default(1)->comment('状态(-1:已删,0:禁用,1:正常)');
+                  $table->unsignedBigInteger('createTime')->default(0)->comment('创建时间');
+                  $table->unsignedBigInteger('updateTime')->default(0)->comment('更新时间');
+                  $table->unsignedBigInteger('loginTime')->default(0)->comment('最后登录时间');
+                  $table->unsignedBigInteger('activeTime')->default(0)->comment('最后活跃时间');
+                  $table->unique('username');
+              });
+        DB::connection('{{connection}}')
+          ->table('{{table}}')
+          ->insert([
+              ['uid' => 1, 'username' => 'admin', 'nickname' => 'Administrator', 'password' => bomber()->password(['action' => 'hash', 'content' => 'demon']), 'system' => 1, 'createTime' => mstime()]
+          ]);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::connection('{{connection}}')->dropIfExists('{{table}}');
+    }
+}

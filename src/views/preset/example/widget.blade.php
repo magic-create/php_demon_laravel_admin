@@ -1,4 +1,4 @@
-@extends('admin::preset.blank')
+@extends('admin::layout.vessel.blank')
 @section('container.content')
     <div class="row">
         <div class="col-lg-6">
@@ -77,7 +77,7 @@
                 <div class="card-body">
                     <h4 class="mt-0 header-title">Dropdowns</h4>
                     <p class="text-muted mb-4">Bootstrap 下拉菜单</p>
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled button-items">
                         <li class="btn-group">
                             <button class="btn btn-primary dropdown-toggle" id="dropdownMenu-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">默认效果</button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu-1">

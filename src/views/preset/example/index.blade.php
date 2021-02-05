@@ -1,4 +1,4 @@
-@extends('admin::preset.blank')
+@extends('admin::layout.vessel.blank')
 @section('container.link.before')
     <script src="//cdn.bootcdn.net/ajax/libs/echarts/5.0.1/echarts.min.js"></script>
 @endsection

@@ -1,7 +1,6 @@
-@extends('admin::preset.container')
+@extends('admin::layout.vessel.container')
 @section('container.link.before')
-    @php($staticUrl = config('admin.static'))
-    <script src="{{$staticUrl}}/libs/tinymce/5.6.2/tinymce.min.js"></script>
+    <script src="{{admin_static('libs/tinymce/5.6.2/tinymce.min.js')}}"></script>
 @endsection
 @section('container.content')
     <h4 class="mt-0 header-title">Rich Text Editor</h4>
@@ -23,7 +22,7 @@
 @endsection
 @section('container.script')
     <script>
-        var dimage = {dimageChoose:{maxWidth:800, cropper:true, dispose:true, dump:'{{admin_url('extend/image/url')}}'}};
+        var dimage = {dimageChoose:{maxWidth:800, cropper:true, dispose:true, dump:'{{admin_url('extend/image/dump')}}'}};
         $.admin.editor('#validate [name="simple"]', $.extend({menubar:false}, dimage));
         $.admin.editor('#validate [name="complex"]', $.extend({
             min_height:400,

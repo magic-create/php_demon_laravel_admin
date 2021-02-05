@@ -6,27 +6,21 @@
     var MainApp = function(){};
     //  菜单配置
     MainApp.prototype.initNavbar = function(){
-        $('.navbar-toggle').on('click', function(){
+        $('.topbar-toggle').on('click', function(){
             $(this).toggleClass('open');
-            $('#navigation').slideToggle(400);
-        });
-        $('.navigation-menu>li').slice(-2).addClass('last-elements');
-        $('.navigation-menu li.has-submenu a[href="javascript:"]').on('click', function(e){
-            if($(window).width() < 992){
-                e.preventDefault();
-                $(this).parent('li').toggleClass('open').find('.submenu:first').toggleClass('open');
-            }
+            $('.sidebar-body').slideToggle(350);
         });
     };
     MainApp.prototype.intSlimscrollmenu = function(){
-        $('.slimscroll-menu').slimscroll({
-            height:'auto',
-            position:'right',
-            size:"5px",
-            color:'#9ea5ab',
-            wheelStep:5,
-            touchScrollStep:50
-        });
+        if(window._layout == 'vertical')
+            $('.slimscroll-menu').slimscroll({
+                height:$(window).height() - 80,
+                position:'right',
+                size:"5px",
+                color:'#9ea5ab',
+                wheelStep:5,
+                touchScrollStep:50
+            });
     };
     MainApp.prototype.initSlimscroll = function(){
         $('.slimscroll').slimscroll({
@@ -38,35 +32,24 @@
         });
     };
     MainApp.prototype.initMetisMenu = function(){
-        $('#side-menu').metisMenu();
+        $('#side-menu').metisMenu({});
     };
     MainApp.prototype.initLeftMenuCollapse = function(){
-        $('.button-menu-mobile').on('click', function(event){
+        $('.enlarged-toggle').on('click', function(event){
             event.preventDefault();
-            if(window.localStorage) localStorage.setItem("admin.config.enlarged", !$('body').hasClass('enlarged') ? 'on' : 'off');
-            $('body').toggleClass('enlarged');
-            if(!$('body').hasClass('enlarged'))
-                $('.active').find('> ul').addClass('in');
-            else
-                $('.submenu').removeClass('in');
+            $('html').toggleClass('enlarged');
+            if(window.localStorage && $(window).width() >= 1025) localStorage.setItem("admin.config.enlarged", $('html').hasClass('enlarged') ? 'on' : 'off');
         });
     };
     //  响应式
     MainApp.prototype.initEnlarge = function(){
-        var _delay = 0;
+        var _delay;
         var _resize = function(){
-            $('body').removeClass('d-none');
-            if($(window).width() < 1025 || (window.localStorage && localStorage.getItem('admin.config.enlarged') == 'on')){
-                $('body').addClass('enlarged');
-                $('.submenu').removeClass('in');
-            }else{
-                if(window.localStorage && localStorage.getItem('admin.config.enlarged') != 'on'){
-                    $('body').removeClass('enlarged');
-                    $('.active').find('> ul').addClass('in');
-                }
-            }
+            if($(window).width() < 1025 || (window.localStorage && localStorage.getItem('admin.config.enlarged') == 'on')) $('html').addClass('enlarged');
+            else if(window.localStorage && localStorage.getItem('admin.config.enlarged') != 'on') $('html').removeClass('enlarged');
+            if($(window).width() > 991) $('.sidebar-body').show();
             _delay = clearTimeout(_delay);
-        };
+        }.bind(this);
         _resize();
         $(window).resize(function(){
             if(!_delay)
@@ -87,12 +70,12 @@
         this.initSlimscroll();
         this.initMetisMenu();
         this.initLeftMenuCollapse();
-        this.initEnlarge();
         this.initComponents();
         Waves.init();
     };
     //  初始化
     $.MainApp = new MainApp;
+    $.MainApp.initEnlarge();
     $.MainApp.Constructor = MainApp;
 }(window.jQuery);
 

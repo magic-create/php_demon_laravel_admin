@@ -1,0 +1,45 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class Create{{tableClassName}}Table extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::connection('{{connection}}')
+              ->create('{{table}}', function(Blueprint $table) {
+                  $table->engine = 'MyISAM';
+                  $table->integerIncrements('rid')->comment('角色RID');
+                  $table->string('name', 32)->comment('名称');
+                  $table->string('remark', 128)->nullable()->comment('备注');
+                  $table->unsignedTinyInteger('system')->default(0)->comment('系统内置无法操作');
+                  $table->unsignedTinyInteger('status')->default(1)->comment('状态(0:关闭,1:启用)');
+                  $table->text('mids')->nullable()->comment('菜单IDs');
+                  $table->unsignedBigInteger('createTime')->default(0)->comment('创建时间');
+                  $table->unsignedBigInteger('updateTime')->default(0)->comment('更新时间');
+              });
+        DB::connection('{{connection}}')
+          ->table('{{table}}')
+          ->insert([
+              ['rid' => 1, 'name' => '__base.access.admin', 'system' => 1, 'mids' => '*', 'createTime' => mstime()]
+          ]);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::connection('{{connection}}')->dropIfExists('{{table}}');
+    }
+}

@@ -10,16 +10,103 @@
 
 namespace Demon\AdminLaravel;
 
+use Demon\AdminLaravel\access\Service;
 use Exception;
+use Gregwar\Captcha\CaptchaBuilder;
+use Gregwar\Captcha\PhraseBuilder;
 use Illuminate\Config\Repository;
 
 class Admin
 {
+    /**
+     * @var array|mixed
+     */
     protected $config;
 
+    /**
+     * @var Service
+     */
+    public $access;
+
+    /**
+     * Admin constructor.
+     *
+     * @param Repository $config
+     */
     public function __construct(Repository $config)
     {
         $this->config = $config->get('admin');
+        $this->access = new Service();
+    }
+
+    /**
+     * 设置用户UID
+     *
+     * @param int $uid
+     *
+     * @return $this
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setUid(int $uid = 0)
+    {
+        $this->access->uid = $uid;
+
+        return $this;
+    }
+
+    /**
+     * 设置统计内容
+     *
+     * @param array $badge
+     *
+     * @return $this
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setBadge(array $badge = [])
+    {
+        $this->access->badge = $badge;
+
+        return $this;
+    }
+
+    /**
+     * 自动识别__开头的字符串获取翻译
+     *
+     * @param       $key
+     * @param array $replace
+     * @param null  $locale
+     *
+     * @return string
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function __($key, $replace = [], $locale = null)
+    {
+        $name = 'admin::' . $key;
+        $trans = __($name, $replace, $locale);
+
+        return $trans == $name ? $key : $trans;
+    }
+
+    /**
+     * 获取用户头像内容
+     *
+     * @param        $avatar
+     * @param string $nickname
+     *
+     * @return string
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function getUserAvatar($avatar, $nickname = '')
+    {
+        return $avatar ? $avatar : bomber()->strImage($nickname, 'svg', ['calc' => true, 'substr' => true]);
     }
 
     /**
@@ -55,5 +142,53 @@ class Admin
         } catch (Exception $e) {
             return null;
         }
+    }
+
+    /**
+     * 获取用户的导航代
+     *
+     * @return string
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function getUserMenuHtml()
+    {
+        return $this->access->getUserMenuHtml();
+    }
+
+    /**
+     * 生成或读取图形验证码
+     *
+     * @param mixed $parm
+     *
+     * @return CaptchaBuilder|string|bool
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function captcha($parm = null)
+    {
+        //  如果是数组
+        if (is_array($parm)) {
+            //  拼接默认参数
+            $parm += [
+                'length' => config('admin.captcha.length'),
+                'charset' => config('admin.captcha.charset'),
+                'width' => config('admin.captcha.width'),
+                'height' => config('admin.captcha.height'),
+            ];
+            $phraseBuilder = new PhraseBuilder($parm['length'], $parm['charset']);
+            $builder = new CaptchaBuilder(null, $phraseBuilder);
+            $builder->build($parm['width'], $parm['height']);
+            //  保存到Session中
+            session(['admin.captcha' => $builder->getPhrase()]);
+
+            //  返回生成器
+            return $builder;
+        }
+
+        //  如果不是数组则表示对比或者直接返回验证码
+        return $parm !== null ? $parm == session('admin.captcha') : session('admin.captcha');
     }
 }

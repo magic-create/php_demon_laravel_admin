@@ -1,0 +1,51 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class Create{{tableClassName}}Table extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::connection('{{connection}}')
+              ->create('{{table}}', function(Blueprint $table) {
+                  $table->engine = 'InnoDB';
+                  $table->integerIncrements('uid')->comment('UID');
+                  $table->char('phone', 18)->nullable()->comment('手机号');
+                  $table->string('nickname', 32)->comment('用户昵称');
+                  $table->string('code', 16)->nullable()->comment('用户码(邀请码)');
+                  $table->unsignedInteger('inviteUid')->default(0)->comment('邀请人UID');
+                  $table->enum('sex', ['-1', '0', '1'])->default(0)->comment('性别(-1:女,0:其他,1:男)');
+                  $table->string('avatar', 512)->nullable()->comment('头像图片地址');
+                  $table->unsignedTinyInteger('level')->default(0)->comment('等级');
+                  $table->json('data')->nullable()->comment('特殊数据');
+                  $table->text('intro')->nullable()->comment('简介(富文本)');
+                  $table->date('birthday')->default('1800-01-01')->comment('生日');
+                  $table->text('hobby')->nullable()->comment('爱好(用,分隔)');
+                  $table->timestamp('activeTime')->useCurrent()->comment('活动时间');
+                  $table->unsignedInteger('signDate')->default(0)->comment('签到日期');
+                  $table->unsignedInteger('loginTime')->default(0)->comment('登录时间');
+                  $table->unsignedInteger('loginIpv4i')->default(0)->comment('登录IPV4_整数');
+                  $table->string('loginIpv4s', 16)->nullable()->comment('登录IPV4_字符串');
+                  $table->unsignedBigInteger('createTime')->default(0)->comment('创建时间');
+                  $table->unsignedBigInteger('updateTime')->default(0)->comment('更新时间');
+                  $table->tinyInteger('status')->default(1)->comment('状态(-1:已删,0:隐藏,1:正常)');
+              });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::connection('{{connection}}')->dropIfExists('{{table}}');
+    }
+}

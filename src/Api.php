@@ -16,31 +16,47 @@ class Api
      * @var int 状态码
      */
     private $code = 0;
+
     /**
      * @var string 信息内容
      */
     private $message = 'success';
+
     /**
      * @var array 数据
      */
     private $data = [];
+
     /**
      * @var string[] 错误提示
      */
     private $default = [
-        DEMON_CODE_PARAM => '参数错误',
-        DEMON_CODE_AUTH => '会话失效',
-        DEMON_CODE_FORBID => '禁止使用',
-        DEMON_CODE_NONE => '非法请求',
-        DEMON_CODE_ACCESS => '没有权限',
-        DEMON_CODE_FAIL => '无法完成',
-        DEMON_CODE_TIME => '等待超时',
-        DEMON_CODE_COND => '条件错误',
-        DEMON_CODE_LARGE => '内容过大',
-        DEMON_CODE_MEDIA => '媒体错误',
-        DEMON_CODE_SERVER => '未知错误',
-        DEMON_CODE_DATA => '数据异常'
+        DEMON_CODE_PARAM,
+        DEMON_CODE_AUTH,
+        DEMON_CODE_FORBID,
+        DEMON_CODE_NONE,
+        DEMON_CODE_ACCESS,
+        DEMON_CODE_FAIL,
+        DEMON_CODE_TIME,
+        DEMON_CODE_COND,
+        DEMON_CODE_LARGE,
+        DEMON_CODE_MEDIA,
+        DEMON_CODE_EXPIRED,
+        DEMON_CODE_MANY,
+        DEMON_CODE_SERVER,
+        DEMON_CODE_DATA,
+        DEMON_CODE_SERVICE
     ];
+
+    /**
+     * Api constructor.
+     */
+    public function __construct()
+    {
+        $this->default = array_flip($this->default);
+        foreach (array_keys($this->default) as $code)
+            $this->default[$code] = admin_error($code);
+    }
 
     /**
      * 检查参数合法性

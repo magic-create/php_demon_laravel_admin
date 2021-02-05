@@ -1,5 +1,5 @@
 !function(){
-    $.locale = 'en';
+    $.locale = window._locale || 'en';
     //  Filestyle默认语言
     if(typeof ($.fn.filestyle) != 'undefined'){
         $.fn.filestyle.defaults.text = 'Choose file';
@@ -22,7 +22,8 @@
                 closepic:function(){return 'Leave';},
                 avatar:function(){return 'Avatar';},
                 cropper:function(){return 'Cropper';},
-                image:function(){return 'Image';}
+                image:function(){return 'Image';},
+                icon:function(){return 'Icon';}
             }
         });
     }
@@ -114,7 +115,7 @@
     }
     //  Moment默认语言
     if(typeof (moment) != 'undefined'){
-        moment.defineLocale($.locale, {
+        moment.updateLocale($.locale, {
             months:'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
             monthsShort:'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'),
             weekdays:'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_'),

@@ -1,4 +1,4 @@
-@extends('admin::preset.blank')
+@extends('admin::layout.vessel.blank')
 @section('container.content')
     <div class="row">
         <div class="col-lg-6">

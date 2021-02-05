@@ -1,5 +1,5 @@
 {{--引用布局--}}
-@extends('admin::preset.table')
+@extends('admin::layout.vessel.table')
 {{--扩展搜索--}}
 @section('search.custom.nickname')
     <input name="nickname" value="{{$dbTable->search->value->nickname??''}}" class="form-control">
@@ -25,7 +25,7 @@
         //  页面渲染完毕
         $(function(){
             //  表格数据加载完毕
-            $.admin.table.onDraw = function(data){ $('.page-statis').html('<div>' + JSON.stringify(data.statis) + '</div>'); };
+            $.admin.table.onLoadData = function(data){ $('.page-statis').html('<div>' + JSON.stringify(data.statis) + '</div>'); };
             //  工具栏点击
             $('body').on('toolbar:action', function(e, a){
                 switch(a.action){

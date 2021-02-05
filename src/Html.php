@@ -118,9 +118,8 @@ class Html
     {
         //  属性列表
         $append = '';
-        foreach ($attribute as $key => $val) {
+        foreach ($attribute as $key => $val)
             $append .= "{$key}='{$val}' ";
-        }
         //  相同内容
         $common = "class='btn {$class}' {$append}";
 
@@ -143,9 +142,8 @@ class Html
     {
         //  属性列表
         $append = ($status ? 'checked' : '');
-        foreach ($attribute as $key => $val) {
+        foreach ($attribute as $key => $val)
             $append .= " {$key}='{$val}'";
-        }
 
         //  生成内容
         return "<input class='{$class}' type='checkbox' data-bind='switch' {$append}>" . PHP_EOL;

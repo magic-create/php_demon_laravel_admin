@@ -13,7 +13,7 @@
     @yield('container.style')
 @endsection
 {{--加载预设尾部--}}
-@include('admin::preset.footer')
+@include('admin::layout.element.footer')
 {{--传递页面内容--}}
 @section('frame')
     <div class="wrapper-page">
@@ -21,7 +21,7 @@
             <div class="error-content text-center">
                 <h1>@yield('code')!</h1>
                 <h4>@yield('message')</h4><br>
-                <a class="btn btn-info mb-4 waves-effect waves-float" href="javascript:" onclick="goBack()"><i class="fa fa-backspace mr-2"></i>{{__('Back')}}</a>
+                <a class="btn btn-info mb-4 waves-effect waves-float" href="javascript:" onclick="goBack()"><i class="fa fa-backspace mr-2"></i>{{admin_error('back')}}</a>
             </div>
         </div>
         <footer class="mt-4 text-center">

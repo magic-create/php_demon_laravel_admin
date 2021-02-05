@@ -20,19 +20,19 @@ class Controller extends Controllers
         if (DEMON_SUBMIT) {
             $data = $this->api->arguer([
                 'account' => [
-                    'name' => __('admin::base.auth.account'),
+                    'name' => app('admin')->__('base.auth.account'),
                     'rule' => 'required|string|in:admin',
-                    'message' => __('admin::base.auth.error_account')
+                    'message' => app('admin')->__('base.auth.error_account')
                 ],
                 'password' => [
-                    'name' => __('admin::base.auth.password'),
+                    'name' => app('admin')->__('base.auth.password'),
                     'rule' => 'required|string|size:32|in:' . bomber()->md5('demon', false),
-                    'message' => __('admin::base.auth.error_password')
+                    'message' => app('admin')->__('base.auth.error_password')
                 ],
                 'captcha' => [
-                    'name' => __('admin::base.auth.captcha'),
+                    'name' => app('admin')->__('base.auth.captcha'),
                     'rule' => 'required|in:' . session('extend/image/captcha'),
-                    'message' => __('admin::base.auth.error_captcha')
+                    'message' => app('admin')->__('base.auth.error_captcha')
                 ]
             ]);
 

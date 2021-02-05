@@ -1,4 +1,4 @@
-@extends('admin::preset.blank')
+@extends('admin::layout.vessel.blank')
 @section('container.style')
     <style>#layer pre {max-height:480px;overflow-y:auto;margin-bottom:0;padding:10px;border-top:1px solid var(--primary);}</style>
 @endsection
@@ -248,7 +248,7 @@ $('#alert-dark').click(function() {
             });
         });
         $('#image').click(function(){
-            $.admin.layer.image({image:'{{url('/static/admin/images/avatar/9.jpg')}}', dump:'{{admin_url('extend/image/url')}}', cropper:true, dispose:false}, function(index, o){
+            $.admin.layer.image({image:'{{url('/static/admin/images/avatar/9.jpg')}}', dump:'{{admin_url('extend/image/dump')}}', cropper:true, dispose:false}, function(index, o){
                 $.admin.modal.alert('<div style="margin:0 auto;width:320px;max-height:500px;text-align:center"><img class="rounded" style="max-width:80%;" src="' + o.cropper.getCroppedCanvas().toDataURL() + '"></div>', {title:'图片裁剪结果'});
                 $.admin.layer.close(index);
             });

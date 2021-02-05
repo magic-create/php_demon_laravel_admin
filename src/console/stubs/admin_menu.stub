@@ -1,0 +1,82 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class Create{{tableClassName}}Table extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::connection('{{connection}}')
+              ->create('{{table}}', function(Blueprint $table) {
+                  $table->engine = 'MyISAM';
+                  $table->integerIncrements('mid')->comment('角色RID');
+                  $table->enum('type', ['menu', 'page', 'action'])->comment('类型(menu:菜单,page:页面,action:操作)');
+                  $table->unsignedInteger('upId')->default(0)->comment('父级ID');
+                  $table->string('title', 32)->nullable()->comment('标题');
+                  $table->string('path', 128)->nullable()->comment('路径');
+                  $table->string('icon', 128)->nullable()->comment('图标');
+                  $table->string('badgeColor', 32)->nullable()->comment('统计颜色(#开头的16进制颜色或样式名称)');
+                  $table->string('remark', 128)->nullable()->comment('备注');
+                  $table->unsignedInteger('weight')->default(0)->comment('权重(越大越优先)');
+                  $table->unsignedTinyInteger('system')->default(0)->comment('系统内置无法操作');
+                  $table->unsignedTinyInteger('status')->default(1)->comment('状态(0:关闭,1:启用)');
+                  $table->unsignedBigInteger('createTime')->default(0)->comment('创建时间');
+                  $table->unsignedBigInteger('updateTime')->default(0)->comment('更新时间');
+              });
+        DB::connection('{{connection}}')
+          ->table('{{table}}')
+          ->insert([
+              ['mid' => 1, 'type' => 'page', 'upId' => 0, 'title' => '__base.menu.dashboard', 'path' => '/', 'icon' => 'fa fa-tachometer-alt', 'weight' => 10000, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 2, 'type' => 'menu', 'upId' => 0, 'title' => '__base.menu.admin', 'path' => null, 'icon' => 'fa fa-server', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 3, 'type' => 'menu', 'upId' => 2, 'title' => '__base.menu.admin_access', 'path' => null, 'icon' => 'fa fa-memory', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 4, 'type' => 'page', 'upId' => 3, 'title' => '__base.menu.admin_access_user', 'path' => 'admin/access/user', 'icon' => 'fa fa-user-tie', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 5, 'type' => 'action', 'upId' => 4, 'title' => null, 'path' => 'admin/access/user/add', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 6, 'type' => 'action', 'upId' => 4, 'title' => null, 'path' => 'admin/access/user/status', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 7, 'type' => 'action', 'upId' => 4, 'title' => null, 'path' => 'admin/access/user/edit', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 8, 'type' => 'action', 'upId' => 4, 'title' => null, 'path' => 'admin/access/user/del', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 9, 'type' => 'action', 'upId' => 4, 'title' => null, 'path' => 'admin/access/user/info', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 10, 'type' => 'action', 'upId' => 4, 'title' => null, 'path' => 'admin/access/user/batch', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 11, 'type' => 'page', 'upId' => 3, 'title' => '__base.menu.admin_access_menu', 'path' => 'admin/access/menu', 'icon' => 'fa fa-network-wired', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 12, 'type' => 'action', 'upId' => 11, 'title' => null, 'path' => 'admin/access/menu/weight', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 13, 'type' => 'action', 'upId' => 11, 'title' => null, 'path' => 'admin/access/menu/del', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 14, 'type' => 'action', 'upId' => 11, 'title' => null, 'path' => 'admin/access/menu/edit', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 15, 'type' => 'action', 'upId' => 11, 'title' => null, 'path' => 'admin/access/menu/status', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 16, 'type' => 'action', 'upId' => 11, 'title' => null, 'path' => 'admin/access/menu/add', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 17, 'type' => 'action', 'upId' => 11, 'title' => null, 'path' => 'admin/access/menu/batch', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 18, 'type' => 'page', 'upId' => 3, 'title' => '__base.menu.admin_access_role', 'path' => 'admin/access/role', 'icon' => 'fa fa-map-signs', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 19, 'type' => 'action', 'upId' => 18, 'title' => null, 'path' => 'admin/access/role/status', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 20, 'type' => 'action', 'upId' => 18, 'title' => null, 'path' => 'admin/access/role/del', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 21, 'type' => 'action', 'upId' => 18, 'title' => null, 'path' => 'admin/access/role/edit', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 22, 'type' => 'action', 'upId' => 18, 'title' => null, 'path' => 'admin/access/role/add', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 23, 'type' => 'action', 'upId' => 18, 'title' => null, 'path' => 'admin/access/role/batch', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1000, 'type' => 'menu', 'upId' => 2, 'title' => '__base.menu.example', 'path' => null, 'icon' => 'fa fa-gifts', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1001, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_index', 'path' => 'example/index', 'icon' => 'fa fa-tachometer-alt', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1002, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_form', 'path' => 'example/form', 'icon' => 'fa fa-building', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1003, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_layer', 'path' => 'example/layer', 'icon' => 'fa fa-layer-group', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1004, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_table', 'path' => 'example/table', 'icon' => 'fa fa-table', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1005, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_widget', 'path' => 'example/widget', 'icon' => 'fa fa-magic', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1006, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_editor', 'path' => 'example/editor', 'icon' => 'fa fa-pen-fancy', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1007, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_markdown', 'path' => 'example/marker', 'icon' => 'fa fa-marker', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1008, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_login', 'path' => 'example/login', 'icon' => 'fa fa-user-check', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+          ]);
+        DB::connection('{{connection}}')->update('ALTER TABLE {{table}} AUTO_INCREMENT = 10000;');
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::connection('{{connection}}')->dropIfExists('{{table}}');
+    }
+}

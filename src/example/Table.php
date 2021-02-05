@@ -91,6 +91,7 @@ class Table extends DBTable
             ['data' => 'a.loginIpv4s', 'title' => '登录IP', 'where' => '%like'],
             ['data' => 'a.loginIpv4i', 'name' => 'loginIpv4', 'title' => '登录IP', 'type' => 'text', 'where' => 'between', 'format' => 'ip2long'],
             ['data' => 'a.createTime', 'title' => '注册时间', 'type' => 'time', 'where' => 'range', 'format' => 'mstime', 'attr' => ['data-time' => null]],
+            ['data' => 'a.status', 'title' => '状态', 'type' => 'select', 'placeholder' => '全部', 'option' => ['list' => $this->store['status']]],
         ], $credit);
     }
 
@@ -150,14 +151,16 @@ class Table extends DBTable
     /**
      * 设置字段
      *
+     * @param array|string[]
+     *
      * @return array|string[]
      *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function setField()
+    public function setField($field)
     {
-        return ['a.avatar', 'a.data', 'b.nickname as inviteNickname'];
+        return $field + ['a.data', 'b.nickname as inviteNickname'];
     }
 
     /**
@@ -170,7 +173,7 @@ class Table extends DBTable
      */
     public function setQuery()
     {
-        $query = DB::connection(Service::connection)->table(Service::MasterModel . ' as a')->where('a.status', '>=', 0);
+        $query = DB::connection(Service::$connection)->table(Service::MasterModel . ' as a')->where('a.status', '>=', 0);
         $query->leftJoin(Service::MasterModel . ' as b', 'b.uid', '=', 'a.inviteUid');
         $inviteCount = DB::table(Service::MasterModel)->select(DB::raw('count(1) as inviteCount,inviteUid'))->groupBy('inviteUid');
         $query->leftJoinSub($inviteCount, 'c', 'c.inviteUid', '=', 'a.uid');
@@ -211,7 +214,7 @@ class Table extends DBTable
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function setFormat()
+    public function setFormat(&$data)
     {
         $credit = [];
         foreach ($this->store['credit'] as $type => $v)

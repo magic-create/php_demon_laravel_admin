@@ -13,60 +13,57 @@
     @yield('container.style')
 @endsection
 {{--加载预设尾部--}}
-@include('admin::preset.footer')
+@include('admin::layout.element.footer')
 {{--传递页面内容--}}
 @section('frame')
-    @php($staticUrl = config('admin.static'))
     <div class="wrapper-page">
         <div class="card">
             <div class="card-body">
-                <h3 class="text-center m-0"><a href="javascript:" class="logo logo-admin"><img src="{{$staticUrl}}/images/logo/horizontal-{{config('admin.theme')}}.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" height="30"></a></h3>
+                <h3 class="text-center m-0"><a href="javascript:" class="logo logo-admin"><img src="{{admin_static('images/logo/horizontal-'.config('admin.theme'))}}.png" alt="{{config('admin.title')}}" title="{{config('admin.title')}}" height="30"></a></h3>
                 <div class="p-3">
                     <h4 class="font-18 mb-1 text-center">{{config('admin.title')}}</h4>
-                    <p class="text-center">{{__('admin::base.auth.subtitle')}}</p>
+                    <p class="text-center">{{app('admin')->__('base.auth.subtitle')}}</p>
                     <form id="validate" class="form-horizontal mt-2">
-                        <div class="alert alert-info">{{__('admin::base.auth.tips')}}</div>
+                        <div class="alert alert-info">{{app('admin')->__('base.auth.tips')}}</div>
                         <div class="form-group">
-                            <label>{{__('admin::base.auth.account')}}</label>
-                            <input type="text" name="account" class="form-control" placeholder="{{__('admin::base.auth.enter_account')}}">
+                            <label>{{app('admin')->__('base.auth.account')}}</label>
+                            <input type="text" name="account" class="form-control" placeholder="{{app('admin')->__('base.auth.enter_account')}}">
                         </div>
                         <div class="form-group">
-                            <label>{{__('admin::base.auth.password')}}</label>
-                            <input type="password" name="password" class="form-control" placeholder="{{__('admin::base.auth.enter_password')}}">
+                            <label>{{app('admin')->__('base.auth.password')}}</label>
+                            <input type="password" name="password" class="form-control" placeholder="{{app('admin')->__('base.auth.enter_password')}}">
                         </div>
                         <div class="form-group">
-                            <label>{{__('admin::base.auth.captcha')}}</label>
+                            <label>{{app('admin')->__('base.auth.captcha')}}</label>
                             <div class="input-group">
-                                <input type="text" name="captcha" class="form-control" placeholder="{{__('admin::base.auth.enter_captcha')}}">
+                                <input type="text" name="captcha" class="form-control" placeholder="{{app('admin')->__('base.auth.enter_captcha')}}">
                                 <div class="input-group-append">
                                     <img class="input-group-text image-captcha" src="{{admin_url('extend/image/captcha')}}" onclick="this.src='{{admin_url('extend/image/captcha')}}?_='+Math.random()">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="check-group"><label><input name="remember" class="checkbox" type="checkbox">{{__('admin::base.auth.remember')}}</label></div>
+                            <div class="check-group"><label><input name="remember" class="checkbox" type="checkbox">{{app('admin')->__('base.auth.remember')}}</label></div>
                         </div>
-                        <button class="mt-2 btn btn-lg btn-block btn-primary waves-effect waves-light" type="submit">{{__('admin::base.auth.login')}}</button>
+                        <button class="mt-2 btn btn-lg btn-block btn-primary waves-effect waves-light" type="submit">{{app('admin')->__('base.auth.login')}}</button>
                     </form>
                 </div>
             </div>
         </div>
-        <footer class="mt-4 text-center">
-            @yield('footer')
-        </footer>
+        <footer class="mt-4 text-center">@yield('footer')</footer>
     </div>
 @endsection
 {{--传递脚本信息--}}
 @section('script')
     <script>
-        var backgroundImage = '{{$backgroundImage}}';
+        var backgroundImage = '{{$backgroundImage ?? ''}}';
         if(backgroundImage) $('body').addClass('background').css({background:'url(' + backgroundImage + ')'});
         $.admin.form('#validate', {
             render:true,
             list:{
-                account:{required:{message:'{{__('admin::base.auth.error_account')}}'}},
-                password:{required:{message:'{{__('admin::base.auth.error_password')}}'}},
-                captcha:{function:{rule:function(e){return $(e).val().length == '{{config('admin.captcha.length')}}'; }, message:'{{__('admin::base.auth.error_captcha')}}'}}
+                account:{required:{message:'{{app('admin')->__('base.auth.error_account')}}'}},
+                password:{required:{message:'{{app('admin')->__('base.auth.error_password')}}'}},
+                captcha:{function:{rule:function(e){return $(e).val().length == '{{config('admin.captcha.length')}}'; }, message:'{{app('admin')->__('base.auth.error_captcha')}}'}}
             },
             callback:{
                 build:function(form){
