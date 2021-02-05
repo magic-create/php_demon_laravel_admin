@@ -5,6 +5,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Demon\AdminLaravel\access\middleware\SessionPost;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 app('router')->group([
     'namespace' => 'App\Admin\Controllers',
@@ -27,9 +28,17 @@ app('router')->group([
                     return $router->current()->run();
                 }
                 else abort(DEMON_CODE_NONE);
+            } catch (NotFoundHttpException $exception) {
+                if (!request()->ajax())
+                    return view('admin::preset.error.general', ['code' => $exception->getStatusCode(), 'message' => $exception->getMessage()]);
+                throw $exception;
             } catch (HttpException $exception) {
                 if (!request()->ajax())
-                    return view('admin::preset.error.general', compact('exception'));
+                    return view('admin::preset.error.general', ['code' => $exception->getStatusCode(), 'message' => $exception->getMessage()]);
+                throw $exception;
+            } catch (ErrorException $exception) {
+                if (!request()->ajax())
+                    return view('admin::preset.error.general', ['code' => DEMON_CODE_SERVER, 'message' => config('app.debug') ? $exception->getMessage() : admin_error(DEMON_CODE_SERVER)]);
                 throw $exception;
             }
         }

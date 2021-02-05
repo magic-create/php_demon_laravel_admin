@@ -38,6 +38,9 @@ class AdminServiceProvider extends ServiceProvider
         $langPath = admin_path('Lang');
         $localePath = $langPath . DIRECTORY_SEPARATOR . $this->app->getLocale();
         $this->loadTranslationsFrom(is_dir($localePath) && bomber()->dirList($localePath) ? $langPath : __DIR__ . DIRECTORY_SEPARATOR . 'directory/Lang', 'admin');
+        //  检查是否正确安装
+        if (!is_dir(admin_path('Controllers')) && !$this->app->runningInConsole())
+            abort(DEMON_CODE_SERVICE, 'Please install it correctly');
         //  加载视图
         $this->loadViewsFrom([__DIR__ . DIRECTORY_SEPARATOR . 'views', admin_path('Views')], 'admin');
         //  实例化更多

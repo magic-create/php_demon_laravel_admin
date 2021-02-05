@@ -6,6 +6,7 @@ use App\Admin\Controllers\Controller;
 
 class IndexController extends Controller
 {
+    protected $accessExcept = ['index'];
 
     function __construct()
     {
