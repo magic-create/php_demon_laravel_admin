@@ -3,6 +3,7 @@
 namespace Demon\AdminLaravel\example;
 
 use Demon\AdminLaravel\Api;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -357,6 +358,22 @@ class Service
      */
     public function setBadge()
     {
-        app('admin')->setBadge(['example/table' => [1, '#ff0000'], 'example/form' => 9]);
+        app('admin')->setBadge(['example/table' => [rand(0, 10), '#ff0000'], 'example/form' => rand(0, 10)]);
+    }
+
+    /**
+     * 设置通知内容
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setNotification()
+    {
+        rand(0, 2) ?
+            app('admin')->setNotification([
+                ['theme' => rand(0, 1) ? 'danger' : 'warning', 'icon' => 'fa fa-house-damage', 'title' => '__base.access.batch', 'content' => ['__base.access.batch_confirm', ['action' => 'Test', 'length' => rand(1, 99)]]],
+                ['theme' => rand(0, 1) ? 'info' : 'primary', 'title' => '__base.access.batch', 'content' => ['__base.access.batch_confirm', ['action' => 'Test', 'length' => rand(1, 99)]]],
+                ['icon' => 'fa fa-cloud-sun-rain', 'title' => '__base.access.batch', 'content' => ['__base.access.batch_confirm', ['action' => 'Test', 'length' => rand(1, 99)]]],
+            ]) : null;
     }
 }

@@ -17,6 +17,10 @@ class SessionPost
      */
     public function handle($request, Closure $next)
     {
+        //  Locale
+        $locale = session('locale') ? : app()->getLocale();
+        if (in_array($locale, array_keys(config('admin.locales'))))
+            app()->setLocale($locale);
         //  Access
         if (config('admin.access')) {
             //  Uid

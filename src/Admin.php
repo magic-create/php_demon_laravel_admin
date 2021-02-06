@@ -29,6 +29,11 @@ class Admin
     public $access;
 
     /**
+     * @var Object
+     */
+    public $user;
+
+    /**
      * Admin constructor.
      *
      * @param Repository $config
@@ -57,6 +62,49 @@ class Admin
     }
 
     /**
+     * 获取用户UID
+     *
+     * @return int
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function getUid()
+    {
+        return $this->access->uid;
+    }
+
+    /**
+     * 设置用户信息
+     *
+     * @param $user
+     *
+     * @return $this
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @return mixed
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
      * 设置统计内容
      *
      * @param array $badge
@@ -69,6 +117,40 @@ class Admin
     public function setBadge(array $badge = [])
     {
         $this->access->badge = $badge;
+
+        return $this;
+    }
+
+    /**
+     * 设置面包屑导航
+     *
+     * @param array $breadcrumb
+     *
+     * @return $this
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setBreadcrumb(array $breadcrumb = [])
+    {
+        $this->access->breadcrumb = $breadcrumb;
+
+        return $this;
+    }
+
+    /**
+     * 设置通知内容
+     *
+     * @param array $notification
+     *
+     * @return $this
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setNotification(array $notification = [])
+    {
+        $this->access->notification = $notification;
 
         return $this;
     }
@@ -87,10 +169,18 @@ class Admin
      */
     public function __($key, $replace = [], $locale = null)
     {
-        $name = 'admin::' . $key;
-        $trans = __($name, $replace, $locale);
+        if (mb_stripos($key, '__') === 0) {
+            $name = 'admin::' . mb_substr($key, 2);
+            $trans = __($name, $replace, $locale);
 
-        return $trans == $name ? $key : $trans;
+            return $trans == $name ? mb_substr($key, 2) : $trans;
+        }
+        else {
+            $name = 'admin::' . $key;
+            $trans = __($name, $replace, $locale);
+
+            return $trans == $name ? $key : $trans;
+        }
     }
 
     /**
@@ -155,6 +245,43 @@ class Admin
     public function getUserMenuHtml()
     {
         return $this->access->getUserMenuHtml();
+    }
+
+    /**
+     * 获取面包屑导航
+     *
+     * @return array
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function getBreadcrumb()
+    {
+        return $this->access->getBreadcrumb();
+    }
+
+    /**
+     * 获取通知内容
+     *
+     * @return array
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function getNotification()
+    {
+        return $this->access->getNotification();
+    }
+
+    public function getLocales()
+    {
+        $locales = config('admin.locales');
+        $langPath = admin_path('Lang');
+        foreach ($locales as $locale => $name) {
+            $localePath = $langPath . DIRECTORY_SEPARATOR . $locale;
+            if (!(is_dir($localePath) && bomber()->dirList($localePath) && !is_dir(__DIR__ . DIRECTORY_SEPARATOR . 'directory/Lang/' . $locale)))
+                unset($locales[$locale]);
+        }
     }
 
     /**

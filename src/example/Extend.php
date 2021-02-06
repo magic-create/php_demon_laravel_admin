@@ -8,6 +8,8 @@ class Extend extends Controllers
 {
     protected $loginExcept = ['captcha'];
 
+    protected $accessExcept = ['*'];
+
     function __construct()
     {
         parent::__construct();

@@ -18,6 +18,27 @@ function admin_path($path = '')
 }
 
 /**
+ * 运维后台输出视图
+ *
+ * @param string|null                                   $view
+ * @param \Illuminate\Contracts\Support\Arrayable|array $data
+ * @param array                                         $mergeData
+ *
+ * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
+ *
+ * @author    ComingDemon
+ * @copyright 魔网天创信息科技
+ */
+function admin_view($view = null, $data = [], $mergeData = [])
+{
+    $factory = app(\Illuminate\View\Factory::class);
+    if (func_num_args() === 0)
+        return $factory;
+
+    return $factory->make(mb_stripos($view, 'admin::') === false ? 'admin::' . $view : $view, $data, $mergeData);
+}
+
+/**
  * 运维后台URL路径
  *
  * @param null  $path

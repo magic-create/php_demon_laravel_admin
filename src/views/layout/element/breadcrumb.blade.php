@@ -1,14 +1,19 @@
 @section('breadcrumb')
     <div class="row">
         <div class="col-sm-12">
+            @php($breadcrumb = app('admin')->getBreadcrumb())
             <div class="page-title-box">
                 {{--页面标题--}}
-                <h4 class="page-title">Title</h4>
+                <h4 class="page-title">{{end($breadcrumb)}}</h4>
                 {{--面包屑导航--}}
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:">Module</a></li>
-                    <li class="breadcrumb-item"><a href="javascript:">Tab</a></li>
-                    <li class="breadcrumb-item active">Page</li>
+                    @foreach($breadcrumb as $index => $title)
+                        @if($index == count($breadcrumb)-1)
+                            <li class="breadcrumb-item active">{{$title}}</li>
+                        @else
+                            <li class="breadcrumb-item"><a href="javascript:">{{$title}}</a></li>
+                        @endif
+                    @endforeach
                 </ol>
                 <div class="page-statis d-none d-sm-block"></div>
             </div>

@@ -19,8 +19,8 @@ class AdminServiceProvider extends ServiceProvider
     public function register()
     {
         //  合并配置
-        $this->mergeConfigFrom(__DIR__ . DIRECTORY_SEPARATOR . 'config/admin.php', 'admin');
-        $this->mergeConfigFrom(__DIR__ . DIRECTORY_SEPARATOR . 'config/dbtable.php', 'dbtable');
+        $this->mergeConfigFrom(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'admin.php', 'admin');
+        $this->mergeConfigFrom(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'dbtable.php', 'dbtable');
         //  动态生成最终有效前端资源路径（CDN优先，如果未配置则拼接本地路径）
         config()->set('admin.assets', (config('admin.cdn') ? : config('admin.static', '/static/admin') . '/libs') . '/');
         //  加载路由
@@ -37,7 +37,16 @@ class AdminServiceProvider extends ServiceProvider
         //  加载语言包
         $langPath = admin_path('Lang');
         $localePath = $langPath . DIRECTORY_SEPARATOR . $this->app->getLocale();
-        $this->loadTranslationsFrom(is_dir($localePath) && bomber()->dirList($localePath) ? $langPath : __DIR__ . DIRECTORY_SEPARATOR . 'directory/Lang', 'admin');
+        $localePreset = __DIR__ . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'Lang';
+        $this->loadTranslationsFrom(is_dir($localePath) && bomber()->dirList($localePath) ? $langPath : $localePreset, 'admin');
+        //  过滤无效的语言
+        $locales = config('admin.locales', []);
+        foreach ($locales as $locale => $name) {
+            $localePath = $langPath . DIRECTORY_SEPARATOR . $locale;
+            if (!(is_dir($localePath) && bomber()->dirList($localePath)) && !is_dir($localePreset . DIRECTORY_SEPARATOR . $locale))
+                unset($locales[$locale]);
+        }
+        config()->set('admin.locales', $locales);
         //  检查是否正确安装
         if (!is_dir(admin_path('Controllers')) && !$this->app->runningInConsole())
             abort(DEMON_CODE_SERVICE, 'Please install it correctly');

@@ -6,6 +6,7 @@ use Demon\AdminLaravel\access\model\AllotModel;
 use Demon\AdminLaravel\access\model\MenuModel;
 use Demon\AdminLaravel\access\model\RoleModel;
 use Demon\AdminLaravel\access\model\UserModel;
+use Illuminate\Support\Str;
 
 class Service
 {
@@ -23,6 +24,16 @@ class Service
      * @var array
      */
     public $badge = [];
+
+    /**
+     * @var array
+     */
+    public $breadcrumb = [];
+
+    /**
+     * @var array
+     */
+    public $notification = [];
 
     /**
      * @var string
@@ -67,7 +78,7 @@ class Service
             $name = 'admin::' . mb_substr($key, 2);
             $trans = __($name, $replace, $locale);
 
-            return $trans == $name ? $key : $trans;
+            return $trans == $name ? mb_substr($key, 2) : $trans;
         }
 
         return $key;
@@ -478,18 +489,18 @@ EOF;
      */
     public function getAccessParents($data, $mid, $self = false)
     {
-        $upId = 0;
+        $node = null;
         $list = [];
         foreach ($data as $item) {
             if ($item['mid'] == $mid) {
                 if ($self)
-                    $list[] = $item['mid'];
-                $upId = $item['upId'];
+                    $list[] = $item;
+                $node = $item;
                 break;
             }
         }
-        if ($upId)
-            $list = array_merge(self::getAccessParents($data, $upId, true), $list);
+        if ($node)
+            $list = array_merge($list, self::getAccessParents($data, $node['upId'], true));
 
         return $list;
     }
@@ -538,12 +549,10 @@ EOF;
         $mids = collect($data)->pluck('mid')->toArray();
         foreach ($mids as $mid) {
             $parents = self::getAccessParents($all, $mid, false);
-            foreach ($parents as $upId) {
-                if (!in_array($upId, $mids)) {
-                    $mids[] = $upId;
-                    $parent = $all->where('mid', $upId)->first()->toArray();
-                    if ($parent)
-                        $data[] = $parent;
+            foreach ($parents as $item) {
+                if (!in_array($item['mid'], $mids)) {
+                    $mids[] = $item['mid'];
+                    $data[] = $item;
                 }
             }
         }
@@ -574,7 +583,7 @@ EOF;
             //  父类
             $parents = $item['type'] == 'page' && $item['upId'] ? self::getAccessParents($data, $item['mid'], false) : [];
             foreach ($data as &$v) {
-                if (in_array($v['mid'], $parents)) {
+                if (in_array($v['mid'], collect($parents)->pluck('mid')->toArray())) {
                     $v['badge'] = $v['badge'] ?? 0;
                     $v['badge'] += $item['badge'];
                     $v['badgeColor'] = $v['badgeColor'] ? : $item['badgeColor'];
@@ -584,9 +593,70 @@ EOF;
                     }
                 }
             }
+            //  面包屑数组
+            if ($item['active']) {
+                foreach (array_reverse($parents) as $parent)
+                    $this->breadcrumb[$parent['mid']] = $parent;
+                $this->breadcrumb[$item['mid']] = $item;
+            }
         }
 
         return $data;
+    }
+
+    /**
+     * 获取面包屑导航
+     *
+     * @param bool $isDetails
+     *
+     * @return array
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function getBreadcrumb($isDetails = false)
+    {
+        if (!$this->breadcrumb) {
+            $path = str_replace(admin_url() . '/', '', url()->current());
+            $url = '';
+            foreach (explode('/', $path) as $index => $title) {
+                $url .= '/' . $title;
+                $this->breadcrumb[$index] = ['mid' => $index, 'path' => admin_url($url), 'title' => Str::studly($title)];
+            }
+        }
+
+        foreach ($this->breadcrumb as $mid => $item)
+            $this->breadcrumb[$mid]['title'] = self::autoLang($item['title']);
+
+        if ($isDetails)
+            return $this->breadcrumb;
+
+        return collect($this->breadcrumb)->values()->pluck('title')->toArray();
+    }
+
+    /**
+     * 获取通知内容
+     *
+     * @param bool $isDetails
+     *
+     * @return array
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function getNotification()
+    {
+        foreach ($this->notification as $index => $item) {
+            if (!is_array($item))
+                $this->notification[$index] = $item = [];
+            $this->notification[$index]['theme'] = ($item['theme'] ?? null) ? : 'success';
+            $this->notification[$index]['icon'] = ($item['icon'] ?? null) ? : 'fas fa-exclamation';
+            $this->notification[$index]['title'] = self::autoLang($item['title'] ?? '');
+            $this->notification[$index]['content'] = ($item['content'] ?? '') ? (is_array($item['content']) ? self::autoLang($item['content'][0] ?? '', $item['content'][1] ?? []) : self::autoLang($item['content'])) : '';
+            $this->notification[$index]['path'] = ($item['path'] ?? null) ? : 'javascript:';
+        }
+
+        return $this->notification;
     }
 
     /**

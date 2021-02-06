@@ -19,7 +19,7 @@
 {{--加载预设尾部--}}
 @include('admin::layout.element.footer')
 {{--加载预设标题和面包屑导航--}}
-@include('admin::layout.element.breadcrumb')
+@include(config('admin.element.breadcrumb'))
 {{--传递页面内容--}}
 @section('page')
     @yield('container.content',__('No Content'))

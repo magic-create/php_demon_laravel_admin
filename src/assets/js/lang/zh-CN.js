@@ -24,6 +24,7 @@
                 cropper:function(){return '裁剪图片';},
                 image:function(){return '选择图片';},
                 icon:function(){return '选择图标';},
+                radio:function(){return '单项选择';},
             }
         });
     }

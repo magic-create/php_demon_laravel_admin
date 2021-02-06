@@ -16,7 +16,7 @@
             $('.slimscroll-menu').slimscroll({
                 height:$(window).height() - 80,
                 position:'right',
-                size:"5px",
+                size:'5px',
                 color:'#9ea5ab',
                 wheelStep:5,
                 touchScrollStep:50
@@ -26,7 +26,7 @@
         $('.slimscroll').slimscroll({
             height:'auto',
             position:'right',
-            size:"5px",
+            size:'5px',
             color:'#9ea5ab',
             touchScrollStep:50
         });
@@ -38,7 +38,7 @@
         $('.enlarged-toggle').on('click', function(event){
             event.preventDefault();
             $('html').toggleClass('enlarged');
-            if(window.localStorage && $(window).width() >= 1025) localStorage.setItem("admin.config.enlarged", $('html').hasClass('enlarged') ? 'on' : 'off');
+            if(window.localStorage && $(window).width() >= 1025) localStorage.setItem('admin.config.enlarged', $('html').hasClass('enlarged') ? 'on' : 'off');
         });
     };
     //  响应式

@@ -15,7 +15,7 @@ class MenuController extends Controller
 
     public function index(MenuTable $table)
     {
-        return $table->render('admin::preset.access.menu', ['access' => app('admin')->access]);
+        return $table->render('preset.access.menu', ['access' => app('admin')->access]);
     }
 
     public function weight()
@@ -33,7 +33,7 @@ class MenuController extends Controller
             return $this->api->send();
         }
         else
-            return view('admin::preset.access.menu_info', ['access' => app('admin')->access, 'store' => MenuModel::fieldStore()]);
+            return admin_view('preset.access.menu_info', ['access' => app('admin')->access, 'store' => MenuModel::fieldStore()]);
     }
 
     public function edit()
@@ -47,7 +47,7 @@ class MenuController extends Controller
             return $this->api->send();
         }
         else
-            return view('admin::preset.access.menu_info', ['info' => $info, 'access' => app('admin')->access, 'store' => MenuModel::fieldStore()]);
+            return admin_view('preset.access.menu_info', ['info' => $info, 'access' => app('admin')->access, 'store' => MenuModel::fieldStore()]);
     }
 
     public function status()

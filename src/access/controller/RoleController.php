@@ -15,7 +15,7 @@ class RoleController extends Controller
 
     public function index(RoleTable $table)
     {
-        return $table->render('admin::preset.access.role', ['access' => app('admin')->access]);
+        return $table->render('preset.access.role', ['access' => app('admin')->access]);
     }
 
     public function add()
@@ -29,7 +29,7 @@ class RoleController extends Controller
             $store = RoleModel::fieldStore();
             $tree = app('admin')->access->getRoleTree($store['menu']);
 
-            return view('admin::preset.access.role_info', ['access' => app('admin')->access, 'tree' => $tree]);
+            return admin_view('preset.access.role_info', ['access' => app('admin')->access, 'tree' => $tree]);
         }
     }
 
@@ -47,7 +47,7 @@ class RoleController extends Controller
             $store = RoleModel::fieldStore();
             $tree = app('admin')->access->getRoleTree($store['menu'], $info->rid);
 
-            return view('admin::preset.access.role_info', ['info' => $info, 'access' => app('admin')->access, 'tree' => $tree]);
+            return admin_view('preset.access.role_info', ['info' => $info, 'access' => app('admin')->access, 'tree' => $tree]);
         }
     }
 

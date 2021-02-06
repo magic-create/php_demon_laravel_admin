@@ -1,6 +1,6 @@
 @section('topbar')
     {{--搜索区域--}}
-    <li class="dropdown notification-list d-none d-smblock">
+    <li class="dropdown notification-list d-none d-sm-block">
         {{--搜索表单--}}
         <form role="search" class="app-search">
             <div class="form-group mb-0">
@@ -22,6 +22,10 @@
             <a class="dropdown-item" href="javascript:">Action 4</a>
             <a class="dropdown-item" href="javascript:">Action 5</a>
         </div>
+    </li>
+    {{--切换语言--}}
+    <li class="dropdown notification-list">
+        <a class="nav-link dropdown-toggle arrow-none waves-effect" action="locale" title="Locale" href="javascript:" role="button" aria-haspopup="false" aria-expanded="false"><i class="fa fa-language noti-icon"></i></a>
     </li>
     {{--通知区域--}}
     <li class="dropdown notification-list">
@@ -56,7 +60,7 @@
     <li class="dropdown notification-list">
         <div class="dropdown notification-list nav-pro-img">
             {{--用户头像--}}
-            <a class="dropdown-toggle nav-link arrow-none waves-effect nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+            <a class="dropdown-toggle nav-link arrow-none waves-effect nav-user" data-toggle="dropdown" href="javascript:" role="button" aria-haspopup="false" aria-expanded="false">
                 <img src="{{admin_static('images/avatar/1.jpg')}}" alt="user" class="rounded-circle">
             </a>
             {{--菜单部分--}}
@@ -79,4 +83,21 @@
             </div>
         </a>
     </li>
+    <script>
+        $(function(){
+            $('[action="locale"]').on('click', function(){
+                $.admin.layer.radio({
+                    current:'{{app()->getLocale()}}',
+                    list:JSON.parse('{!!json_encode(config('admin.locales'))!!}')
+                }, {title:'{{app('admin')->__('base.auth.locale')}}'}, function(index, layero){
+                    $.post('{{admin_url('auth/locale')}}', {locale:layero.checked}, function(data){
+                        $.admin.api.success(data, function(){
+                            $.admin.layer.close(index);
+                            $.admin.layer.alert(data.message, {icon:1, time:3000, end:function(){location.href = location.href;}});
+                        });
+                    }).fail($.admin.api.fail);
+                });
+            });
+        });
+    </script>
 @endsection

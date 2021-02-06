@@ -4,10 +4,13 @@ namespace Demon\AdminLaravel\access\controller;
 
 use Demon\AdminLaravel\access\model\UserModel;
 use Demon\AdminLaravel\Controller;
+use Illuminate\Support\Facades\Artisan;
 
 class AuthController extends Controller
 {
-    protected $loginExcept = ['*'];
+    protected $loginExcept = ['login', 'locale'];
+
+    protected $accessExcept = ['*'];
 
     function __construct()
     {
@@ -23,7 +26,7 @@ class AuthController extends Controller
     public function login()
     {
         //  页面跳转
-        $url = session('url');
+        $url = session('url', admin_url('/'));
         $url = $url == admin_url('auth/login') ? admin_url('/') : $url;
         if (DEMON_SUBMIT) {
             //  验证参数
@@ -44,7 +47,7 @@ class AuthController extends Controller
             if ($this->uid)
                 return redirect($url);
 
-            return view('admin::preset.access.login', [
+            return admin_view('preset.access.login', [
                 'backgroundImage' => app('admin')->getBackgroundImage(function($config) { return '//img.infinitynewtab.com/wallpaper/' . ($config['mode'] == 'random' ? mt_rand(1, 4049) : date('Ymd') % 4049) . '.jpg'; })
             ]);
         }
@@ -63,5 +66,52 @@ class AuthController extends Controller
 
         //  登出成功
         return $this->api->setMessage(app('admin')->__('base.auth.logout_success'))->send();
+    }
+
+    /**
+     * 变更设置
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setting()
+    {
+        if (DEMON_SUBMIT) {
+            $this->api->check(UserModel::edit($this->uid, arguer('data', [], 'array')));
+
+            return $this->api->setMessage(app('admin')->__('base.auth.setting_success'))->send();
+        }
+        else
+            return admin_view('preset.access.setting', ['access' => app('admin')->access, 'store' => UserModel::fieldStore()]);
+    }
+
+    /**
+     * 切换语言
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function locale()
+    {
+        //  保存设置语言
+        session(['locale' => arguer('locale', app()->getLocale(), 'string')]);
+
+        return $this->api->setMessage(app('admin')->__('base.auth.locale_success'))->send();
+    }
+
+    /**
+     * 清理缓存
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function clear()
+    {
+        Artisan::call('view:clear');
+        if (is_file(app()->getCachedConfigPath()))
+            Artisan::call('config:cache');
+
+        //  清理成功
+        return $this->api->setMessage(app('admin')->__('base.auth.clear_success'))->send();
     }
 }

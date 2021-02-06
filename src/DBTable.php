@@ -983,6 +983,6 @@ class DBTable
         $this->getButton();
 
         //  渲染视图
-        return view($view, $data, $mergeData)->with('dbTable', $this);
+        return admin_view($view, $data, $mergeData)->with('dbTable', $this);
     }
 }

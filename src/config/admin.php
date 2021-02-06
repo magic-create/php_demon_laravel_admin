@@ -21,6 +21,14 @@ return [
     'authentication' => env('ADMIN_AUTHENTICATION', \Demon\AdminLaravel\access\controller\AuthController::class),
     //  菜单统计
     'badge' => env('ADMIN_BADGE', \Demon\AdminLaravel\example\Service::class),
+    //  通知内容
+    'notification' => env('ADMIN_NOTIFICATION', \Demon\AdminLaravel\example\Service::class),
+    //  使用语言
+    'locales' => [
+        'en' => 'English',
+        'zh-CN' => '简体中文',
+        'zh-TW' => '繁體中文',
+    ],
     //  Session
     'session' => [
         //  驱动

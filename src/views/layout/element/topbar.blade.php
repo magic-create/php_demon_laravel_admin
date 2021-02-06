@@ -1,69 +1,43 @@
 @section('topbar')
-    {{--搜索区域--}}
-    <li class="dropdown notification-list d-none d-sm-block">
-        {{--搜索表单--}}
-        <form role="search" class="app-search">
-            <div class="form-group mb-0">
-                <input type="text" class="form-control" placeholder="Search..">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </div>
-        </form>
-    </li>
-    {{--操作区域--}}
-    <li class="dropdown notification-list">
-        {{--显示按钮和图标--}}
-        <a class="nav-link dropdown-toggle arrow-none waves-effect" title="Action" data-toggle="dropdown" href="javascript:" role="button" aria-haspopup="false" aria-expanded="false"><i class="far fa-trash-alt noti-icon"></i></a>
-        {{--菜单部分--}}
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="javascript:">Action 1</a>
-            <a class="dropdown-item" href="javascript:">Action 2</a>
-            <a class="dropdown-item" href="javascript:">Action 3</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="javascript:">Action 4</a>
-            <a class="dropdown-item" href="javascript:">Action 5</a>
-        </div>
-    </li>
     {{--通知区域--}}
+    @php($notifications = app('admin')->getNotification())
     <li class="dropdown notification-list">
-        @php($_notifications = rand(0,10))
         {{--显示图标和数字--}}
-        <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="javascript:" role="button" aria-haspopup="false" aria-expanded="false">
+        <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="{{$notifications ? 'javascript:' : admin_url('auth/setting')}}" role="button" aria-haspopup="false" aria-expanded="false">
             <i class="far fa-bell noti-icon"></i>
-            @if($_notifications)
-                <span class="badge badge-pill badge-danger noti-icon-badge">{{$_notifications}}</span>
+            @if($notifications)
+                <span class="badge badge-pill badge-danger noti-icon-badge">{{count($notifications)}}</span>
             @endif
         </a>
         {{--菜单部分--}}
-        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
-            @if($_notifications)
+        @if($notifications)
+            <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
                 {{--标题--}}
-                <h6 class="dropdown-item-text">Notifications ({{$_notifications}})</h6>
+                <h6 class="dropdown-item-text">{{app('admin')->__('base.auth.notifications')}} ({{count($notifications)}})</h6>
                 {{--内容列表--}}
                 <div class="slimscroll notification-item-list">
-                    @for ($i = 0; $i < min($_notifications,5); $i++)
-                        <a href="javascript:" class="dropdown-item notify-item">
-                            <div class="notify-icon bg-success"><i class="fas fa-exclamation"></i></div>
-                            <p class="notify-details">Notifications {{$i+1}} Title<span class="text-muted">Notifications {{$i+1}} Content</span></p>
+                    @foreach ($notifications as $item)
+                        <a href="{{$item['path']}}" class="dropdown-item notify-item">
+                            <div class="notify-icon bg-{{$item['theme']}}"><i class="{{$item['icon']}}"></i></div>
+                            <p class="notify-details">{{$item['title']}}<span class="text-muted">{{$item['content']}}</span></p>
                         </a>
-                    @endfor
+                    @endforeach
                 </div>
-            @endif
-            {{--查看全部--}}
-            <a href="javascript:" class="dropdown-item text-center text-primary">View all <i class="fi-arrow-right"></i></a>
-        </div>
+            </div>
+        @endif
     </li>
     {{--用户区域--}}
     <li class="dropdown notification-list">
         <div class="dropdown notification-list nav-pro-img">
             {{--用户头像--}}
-            <a class="dropdown-toggle nav-link arrow-none waves-effect nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                <img src="{{app('admin')->getUserAvatar($user->avatar, $user->nickname)}}" class="rounded-circle">
+            <a class="dropdown-toggle nav-link arrow-none waves-effect nav-user" data-toggle="dropdown" href="javascript:" role="button" aria-haspopup="false" aria-expanded="false">
+                <img src="{{app('admin')->getUserAvatar($user->avatar??null, $user->nickname??null)}}" class="rounded-circle">
             </a>
             {{--菜单部分--}}
             <div class="dropdown-menu dropdown-menu-right profile-dropdown">
-                <a class="dropdown-item" href="javascript:"><i class="fa fa-user-circle mr-2"></i> Profile</a>
-                <a class="dropdown-item" href="javascript:"><i class="fa fa-wallet mr-2"></i> My Wallet</a>
-                <a class="dropdown-item d-block" href="#"><span class="badge badge-success float-right">11</span><i class="fa fa-cog mr-2"></i> Settings</a>
+                <a class="dropdown-item" href="javascript:" action="clear"><i class="far fa-trash-alt"></i> {{app('admin')->__('base.auth.cache')}}</a>
+                <a class="dropdown-item" href="{{admin_url('auth/setting')}}"><i class="fa fa-cog"></i> {{app('admin')->__('base.auth.setting')}}</a>
+                <a class="dropdown-item" href="javascript:" action="locale"><i class="fa fa-language"></i> {{app('admin')->__('base.auth.locale')}}</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-danger" href="javascript:" action="logout"><i class="fa fa-power-off text-danger"></i> {{app('admin')->__('base.auth.logout')}}</a>
             </div>
@@ -80,14 +54,30 @@
         </a>
     </li>
     <script>
-        $('[action="logout"]').on('click', function(){
-            $.admin.layer.confirm('{{app('admin')->__('base.auth.logout_confirm')}}', function(index){
-                $.post('{{admin_url('auth/logout')}}', function(data){
-                    $.admin.api.success(data, function(){
-                        $.admin.layer.close(index);
-                        $.admin.layer.alert(data.message, {icon:1, time:3000, end:function(){location.href = location.href;}});
-                    });
-                }).fail($.admin.api.fail);
+        $(function(){
+            $('[action="locale"]').on('click', function(){
+                $.admin.layer.radio({
+                    current:'{{app()->getLocale()}}',
+                    list:JSON.parse('{!!json_encode(config('admin.locales'))!!}')
+                }, {title:'{{app('admin')->__('base.auth.locale')}}'}, function(index, layero){
+                    $.post('{{admin_url('auth/locale')}}', {locale:layero.checked}, function(data){
+                        $.admin.api.success(data, function(){
+                            $.admin.layer.close(index);
+                            $.admin.layer.alert(data.message, {icon:1, time:3000, end:function(){location.href = location.href;}});
+                        });
+                    }).fail($.admin.api.fail);
+                });
+            });
+            $('[action="clear"]').on('click', function(){$.post('{{admin_url('auth/clear')}}', function(data){$.admin.api.success(data, function(data){$.admin.alert.success(data.message);});}).fail($.admin.api.fail);});
+            $('[action="logout"]').on('click', function(){
+                $.admin.layer.confirm('{{app('admin')->__('base.auth.logout_confirm')}}', function(index){
+                    $.post('{{admin_url('auth/logout')}}', function(data){
+                        $.admin.api.success(data, function(){
+                            $.admin.layer.close(index);
+                            $.admin.layer.alert(data.message, {icon:1, time:3000, end:function(){location.href = location.href;}});
+                        });
+                    }).fail($.admin.api.fail);
+                });
             });
         });
     </script>

@@ -23,7 +23,8 @@
                 avatar:function(){return 'Avatar';},
                 cropper:function(){return 'Cropper';},
                 image:function(){return 'Image';},
-                icon:function(){return 'Icon';}
+                icon:function(){return 'Icon';},
+                radio:function(){return 'Radio';},
             }
         });
     }

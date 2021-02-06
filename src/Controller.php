@@ -50,21 +50,52 @@ class Controller extends BaseController
         $this->uid = request()->get('uid');
         //  Access
         if (config('admin.access')) {
+            //  User
+            $this->__user();
             //  Auth
             if (get_called_class() != config('admin.authentication')) {
                 $action = request()->route()->getActionMethod();
                 //  Login
                 if ($this->__login($action) !== true)
                     $this->__access($action);
-                //  Badge
-                if (config('admin.badge'))
-                    app()->call([app()->make(config('admin.badge')), 'setBadge']);
             }
+            //  Badge
+            if (config('admin.badge'))
+                app()->call([app()->make(config('admin.badge')), 'setBadge'], ['uid' => $this->uid]);
+            //  Notification
+            if (config('admin.notification'))
+                app()->call([app()->make(config('admin.notification')), 'setNotification'], ['uid' => $this->uid]);
         }
 
         return 1;
     }
 
+    /**
+     * 检查用户
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function __user()
+    {
+        //  检查用户
+        if (config('admin.access')) {
+            //  如果已经登录
+            if ($this->uid) {
+                //  获取信息并更新
+                if ($this->user = UserModel::findAndRids($this->uid)) {
+                    app('admin')->setUser($this->user);
+                    view()->share('user', $this->user);
+                    UserModel::where('uid', $this->uid)->update(['activeTime' => mstime()]);
+                }
+                //  如果数据有误或状态不正确
+                if (!$this->user || $this->user->status < 1) {
+                    $this->uid = 0;
+                    $this->user = null;
+                }
+            }
+        }
+    }
 
     /**
      * 检查登录
@@ -78,20 +109,6 @@ class Controller extends BaseController
     {
         //  检查登录
         if (config('admin.access')) {
-            //  已经登录则验证用户
-            if ($this->uid) {
-                if ($this->user = UserModel::find($this->uid)) {
-                    //  视图变量
-                    view()->share('user', $this->user);
-                    //  更新活跃时间
-                    UserModel::where('uid', $this->uid)->update(['activeTime' => mstime()]);
-                }
-                //  用户无效或状态不正确
-                if (!$this->user || $this->user->status < 1) {
-                    $this->uid = 0;
-                    $this->user = null;
-                }
-            }
             //  不需要登录
             if (in_array('*', $this->loginExcept) || in_array($action, $this->loginExcept))
                 return true;

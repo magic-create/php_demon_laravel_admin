@@ -23,6 +23,6 @@ class IndexController extends Controller
      */
     public function index()
     {
-        return view('admin::index');
+        return admin_view('index');
     }
 }

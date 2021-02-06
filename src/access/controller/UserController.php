@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function index(UserTable $table)
     {
-        return $table->render('admin::preset.access.user', ['access' => app('admin')->access]);
+        return $table->render('preset.access.user', ['access' => app('admin')->access]);
     }
 
     public function add()
@@ -28,7 +28,7 @@ class UserController extends Controller
             return $this->api->send();
         }
         else
-            return view('admin::preset.access.user_info', ['access' => app('admin')->access, 'action' => __FUNCTION__, 'store' => UserModel::fieldStore()]);
+            return admin_view('preset.access.user_info', ['access' => app('admin')->access, 'action' => __FUNCTION__, 'store' => UserModel::fieldStore()]);
     }
 
     public function info()
@@ -37,7 +37,7 @@ class UserController extends Controller
         if (!$info)
             abort(DEMON_CODE_PARAM);
 
-        return view('admin::preset.access.user_info', ['info' => $info, 'readonly' => true, 'access' => app('admin')->access, 'action' => __FUNCTION__, 'store' => UserModel::fieldStore()]);
+        return admin_view('preset.access.user_info', ['info' => $info, 'readonly' => true, 'access' => app('admin')->access, 'action' => __FUNCTION__, 'store' => UserModel::fieldStore()]);
     }
 
     public function edit()
@@ -51,7 +51,7 @@ class UserController extends Controller
             return $this->api->send();
         }
         else
-            return view('admin::preset.access.user_info', ['info' => $info, 'access' => app('admin')->access, 'action' => __FUNCTION__, 'store' => UserModel::fieldStore()]);
+            return admin_view('preset.access.user_info', ['info' => $info, 'access' => app('admin')->access, 'action' => __FUNCTION__, 'store' => UserModel::fieldStore()]);
     }
 
     public function status()
