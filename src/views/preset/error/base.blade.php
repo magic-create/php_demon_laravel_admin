@@ -13,7 +13,7 @@
     @yield('container.style')
 @endsection
 {{--加载预设尾部--}}
-@include('admin::layout.element.footer')
+@include(config('admin.element.footer'))
 {{--传递页面内容--}}
 @section('frame')
     <div class="wrapper-page">

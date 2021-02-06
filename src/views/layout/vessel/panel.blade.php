@@ -17,7 +17,7 @@
 {{--加载主菜单--}}
 @include(config('admin.element.slidebar'))
 {{--加载预设尾部--}}
-@include('admin::layout.element.footer')
+@include(config('admin.element.footer'))
 {{--加载预设标题和面包屑导航--}}
 @include(config('admin.element.breadcrumb'))
 {{--传递页面内容--}}
