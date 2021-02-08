@@ -24,7 +24,7 @@
                 cropper:function(){return 'Cropper';},
                 image:function(){return 'Image';},
                 icon:function(){return 'Icon';},
-                radio:function(){return 'Radio';},
+                radio:function(){return 'Radio';}
             }
         });
     }
@@ -287,6 +287,19 @@
                         error:"Error: "
                     }
                 }
+            }
+        });
+    }
+    //  AdminTabs默认语言
+    if(typeof ($.admin.tabs) != 'undefined'){
+        $.extend($.admin.tabs.settings, {
+            local:{
+                refreshLabel:'Refresh',
+                closeThisLabel:'Close',
+                closeOtherLabel:'Close Other',
+                closeLeftLabel:'Close Left',
+                closeRightLabel:'Close Right',
+                loadbar:'Loading, please wait...'
             }
         });
     }

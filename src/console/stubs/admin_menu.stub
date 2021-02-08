@@ -64,7 +64,7 @@ class Create{{tableClassName}}Table extends Migration
               ['mid' => 1004, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_table', 'path' => 'example/table', 'icon' => 'fa fa-table', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 1005, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_widget', 'path' => 'example/widget', 'icon' => 'fa fa-magic', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 1006, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_editor', 'path' => 'example/editor', 'icon' => 'fa fa-pen-fancy', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
-              ['mid' => 1007, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_markdown', 'path' => 'example/marker', 'icon' => 'fa fa-marker', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1007, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_markdown', 'path' => 'example/markdown', 'icon' => 'fa fa-marker', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 1008, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_login', 'path' => 'example/login', 'icon' => 'fa fa-user-check', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
           ]);
         DB::connection('{{connection}}')->update('ALTER TABLE {{table}} AUTO_INCREMENT = 10000;');

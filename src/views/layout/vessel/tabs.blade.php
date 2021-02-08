@@ -16,24 +16,9 @@
 @include(config('admin.element.topbar'))
 {{--加载主菜单--}}
 @include(config('admin.element.slidebar'))
-{{--加载预设尾部--}}
-@include(config('admin.element.footer'))
-{{--加载预设标题和面包屑导航--}}
-@include(config('admin.element.breadcrumb'))
 {{--传递页面内容--}}
 @section('page')
-    <div class="row">
-        <div class="col-12">
-            <div class="email-leftbar card">
-                @yield('container.menu')
-            </div>
-            <div class="email-rightbar mb-2">
-                <div class="card">
-                    @yield('container.content')
-                </div>
-            </div>
-        </div>
-    </div>
+    @yield('container.content')
 @endsection
 {{--传递脚本信息--}}
 @section('script')

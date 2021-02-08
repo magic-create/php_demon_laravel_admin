@@ -137,6 +137,10 @@ return [
         'edit_role_success' => 'Role editing successfully',
         'del_role' => 'Delete Role',
         'del_role_success' => 'Role deleted successfully',
+        'role_menu_selected' => 'All Selected',
+        'role_menu_canceled' => 'All Canceled',
+        'role_menu_unfold' => 'Menu Unfold',
+        'role_menu_fold' => 'Menu Fold',
     ],
     'menu' => [
         'dashboard' => 'Dashboard',

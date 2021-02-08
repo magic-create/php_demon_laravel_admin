@@ -26,7 +26,7 @@
         <div class="col-12">
             <div class="card mb-3">
                 <div class="card-body">
-                    @yield('container.content',__('No Content'))
+                    @yield('container.content')
                 </div>
             </div>
         </div>

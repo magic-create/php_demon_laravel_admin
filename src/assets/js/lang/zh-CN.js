@@ -24,7 +24,7 @@
                 cropper:function(){return '裁剪图片';},
                 image:function(){return '选择图片';},
                 icon:function(){return '选择图标';},
-                radio:function(){return '单项选择';},
+                radio:function(){return '单项选择';}
             }
         });
     }
@@ -730,6 +730,19 @@
                         error:"错误："
                     }
                 }
+            }
+        });
+    }
+    //  AdminTabs默认语言
+    if(typeof ($.admin.tabs) != 'undefined'){
+        $.extend($.admin.tabs.settings, {
+            local:{
+                refreshLabel:'刷新',
+                closeThisLabel:'关闭',
+                closeOtherLabel:'关闭其他',
+                closeLeftLabel:'关闭左侧',
+                closeRightLabel:'关闭右侧',
+                loadbar:'正在加载内容，请稍候．．．'
             }
         });
     }

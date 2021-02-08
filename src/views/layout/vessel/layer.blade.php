@@ -14,7 +14,7 @@
 @endsection
 {{--传递页面内容--}}
 @section('frame')
-    @yield('container.content',__('No Content'))
+    @yield('container.content')
 @endsection
 {{--传递脚本信息--}}
 @section('script')

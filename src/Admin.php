@@ -273,17 +273,6 @@ class Admin
         return $this->access->getNotification();
     }
 
-    public function getLocales()
-    {
-        $locales = config('admin.locales');
-        $langPath = admin_path('Lang');
-        foreach ($locales as $locale => $name) {
-            $localePath = $langPath . DIRECTORY_SEPARATOR . $locale;
-            if (!(is_dir($localePath) && bomber()->dirList($localePath) && !is_dir(__DIR__ . DIRECTORY_SEPARATOR . 'directory/Lang/' . $locale)))
-                unset($locales[$locale]);
-        }
-    }
-
     /**
      * 生成或读取图形验证码
      *

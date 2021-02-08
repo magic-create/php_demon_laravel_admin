@@ -65,9 +65,9 @@ class Controller extends BaseController
             //  Notification
             if (config('admin.notification'))
                 app()->call([app()->make(config('admin.notification')), 'setNotification'], ['uid' => $this->uid]);
+            //  Tabs
+            $this->__tabs();
         }
-
-        return 1;
     }
 
     /**
@@ -114,9 +114,12 @@ class Controller extends BaseController
                 return true;
             //  需要登录
             if (!$this->uid) {
-                abort(DEMON_SUBMIT ?
-                    response()->json(['code' => DEMON_CODE_AUTH, 'message' => admin_error(DEMON_CODE_AUTH)], DEMON_CODE_AUTH) :
-                    response(app()->make(config('admin.authentication'))->login()));
+                if (!DEMON_SUBMIT) {
+                    session(['admin.login' => url()->full()]);
+                    abort(response(app()->make(config('admin.authentication'))->login()));
+                }
+                else
+                    abort(response()->json(['code' => DEMON_CODE_AUTH, 'message' => admin_error(DEMON_CODE_AUTH)], DEMON_CODE_AUTH));
             }
         }
     }
@@ -138,6 +141,33 @@ class Controller extends BaseController
                 abort(DEMON_SUBMIT ?
                     response()->json(['code' => DEMON_CODE_ACCESS, 'message' => admin_error(DEMON_CODE_ACCESS)], DEMON_CODE_ACCESS) :
                     response()->view('admin::preset.error.general', ['code' => DEMON_CODE_ACCESS, 'message' => admin_error(DEMON_CODE_ACCESS)], DEMON_CODE_ACCESS));
+            }
+        }
+    }
+
+    /**
+     * 标签页
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function __tabs()
+    {
+        //  开启判断
+        if (config('admin.tabs') && !DEMON_SUBMIT && !DEMON_INAJAX) {
+            //  携带框架标记并且不是授权相关功能，或者是首页但没有携带框架标记
+            if ((admin_tabs('frame') || (url()->current() == admin_url() && !admin_tabs(null))) && get_called_class() != config('admin.authentication')) {
+                //  获取用户菜单信息
+                $menu = collect(app('admin')->access->getUserMenuFormat());
+                //  寻找首页信息
+                $index = $menu->where('path', admin_url())->first();
+                //  定义基础内容
+                $frames = [$index ? $index : ['mid' => 0, 'title' => app('admin')->__('base.menu.dashboard'), 'path' => admin_url()]];
+                //  搜寻当前页
+                if (admin_url() != url()->current() && $current = $menu->where('path', url()->current())->first())
+                    $frames[] = $current;
+                //  输出框架视图
+                abort(response(admin_view('layout.vessel.tabs', ['frames' => $frames])));
             }
         }
     }

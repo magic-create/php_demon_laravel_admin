@@ -137,6 +137,10 @@ return [
         'edit_role_success' => '角色编辑成功',
         'del_role' => '删除角色',
         'del_role_success' => '角色删除成功',
+        'role_menu_selected' => '全部选择',
+        'role_menu_canceled' => '全部取消',
+        'role_menu_unfold' => '展开',
+        'role_menu_fold' => '收起',
     ],
     'menu' => [
         'dashboard' => '首页',

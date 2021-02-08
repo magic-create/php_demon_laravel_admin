@@ -3,7 +3,7 @@
     @php($notifications = app('admin')->getNotification())
     <li class="dropdown notification-list">
         {{--显示图标和数字--}}
-        <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="{{$notifications ? 'javascript:' : admin_url('auth/setting')}}" role="button" aria-haspopup="false" aria-expanded="false">
+        <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="{{$notifications ? 'dropdown' : ''}}" href="{{$notifications ? 'javascript:' : admin_url('auth/setting')}}" role="button" aria-haspopup="false" aria-expanded="false">
             <i class="far fa-bell noti-icon"></i>
             @if($notifications)
                 <span class="badge badge-pill badge-danger noti-icon-badge">{{count($notifications)}}</span>

@@ -18,6 +18,21 @@ function admin_path($path = '')
 }
 
 /**
+ * 是否为Tabs页
+ *
+ * @param string $type
+ *
+ * @return bool
+ *
+ * @author    ComingDemon
+ * @copyright 魔网天创信息科技
+ */
+function admin_tabs($type = 'html')
+{
+    return config('admin.tabs') ? $type ? arguer((string)config('admin.tabs'), '', 'string') === $type : arguer((string)config('admin.tabs'), false, 'bool') : false;
+}
+
+/**
  * 运维后台输出视图
  *
  * @param string|null                                   $view

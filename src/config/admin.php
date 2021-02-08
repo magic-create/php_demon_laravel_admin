@@ -13,6 +13,8 @@ return [
     'layout' => env('ADMIN_LAYOUT', 'vertical'),
     //  主题（light/dark）
     'theme' => env('ADMIN_THEME', 'light'),
+    //  是否开启Tabs-Frame（启用时为URL参数标记）
+    'tabs' => env('ADMIN_TABS', false),
     //  数据库连接
     'connection' => env('ADMIN_CONNECTION', 'admin'),
     //  权限验证
@@ -71,7 +73,7 @@ return [
         //  侧边导航
         'slidebar' => env('ADMIN_ELEMENT_SLIDEBAR', 'admin::preset.element.slidebar'),
         //  顶部导航
-        'topbar' => env('ADMIN_ELEMENT_TOPBAR', 'admin::preset.element.topbar'),
+        'topbar' => env('ADMIN_ELEMENT_TOPBAR', 'admin::preset.element.topbar')
     ],
     //  背景图片
     'background' => [

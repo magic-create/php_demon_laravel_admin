@@ -26,8 +26,8 @@ class AuthController extends Controller
     public function login()
     {
         //  页面跳转
-        $url = session('url', admin_url('/'));
-        $url = $url == admin_url('auth/login') ? admin_url('/') : $url;
+        $url = session('admin.login', admin_url());
+        $url = $url == admin_url('auth/login') ? admin_url() : $url;
         if (DEMON_SUBMIT) {
             //  验证参数
             $data = $this->api->arguer([
@@ -38,7 +38,7 @@ class AuthController extends Controller
             //  验证登录
             $user = $this->api->check(UserModel::password('username', $data['account'], $data['password']));
             //  保存用户信息
-            session(['uid' => $user->uid]);
+            session(['uid' => $user->uid, 'admin.login' => null]);
 
             //  登录成功
             return $this->api->setMessage(app('admin')->__('base.auth.login_success'))->setData(['url' => $url])->send();

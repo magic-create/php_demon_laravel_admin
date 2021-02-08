@@ -31,7 +31,7 @@ class Controller extends Controllers
                 ],
                 'captcha' => [
                     'name' => app('admin')->__('base.auth.captcha'),
-                    'rule' => 'required|in:' . session('extend/image/captcha'),
+                    'rule' => 'required|in:' . app('admin')->captcha(),
                     'message' => app('admin')->__('base.auth.error_captcha')
                 ]
             ]);

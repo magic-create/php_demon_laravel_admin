@@ -181,8 +181,7 @@ class Service
     /**
      * 获取用户的全部菜单详情
      *
-     *
-     * @return array //['mod'=>...,'con'=>...,'act'=>...]
+     * @return array //['menu'=>...,'page'=>...,'action'=>...]
      *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
@@ -392,13 +391,13 @@ class Service
         foreach ($data as $item) {
             if ($item['upId'] == $upId) {
                 $item['deep'] = $deep;
-                $item['title'] = self::autoLang($item['title']);
                 $item['badgeClass'] = !$item['badgeColor'] || stripos($item['badgeColor'], '#') === false ? ($item['badgeColor'] ? : 'badge-primary') : '';
                 $item['badgeColor'] = $item['badgeClass'] ? '' : "background-color:{$item['badgeColor']};color:#FFFFFF";
                 $item['badge'] = $item['badge'] ? "<span class='badge badge-pill float-right {$item['badgeClass']}' style='{$item['badgeColor']}'>{$item['badge']}</span>" : '';
+                $item['tabs'] = $item['type'] == 'page' ? "data-tabs='{$item['mid']}' data-title='{$item['title']}'" : '';
                 $html .= <<<EOF
 <li class="{$item['active']}" deep="{$item['deep']}">
-    <a href="{$item['path']}" class="waves-effect {$item['arrow']}" aria-expanded="{$item['expanded']}">
+    <a href="{$item['path']}" {$item['tabs']} class="waves-effect {$item['arrow']}" aria-expanded="{$item['expanded']}">
         <i class="{$item['icon']}"></i>
         {$item['badge']}
         <span>{$item['title']}</span>
@@ -535,7 +534,7 @@ EOF;
      * 生成导航属性
      *
      * @param     $all
-     * @param     $data
+     * @param     $origin
      * @param     $badge
      *
      * @return mixed
@@ -543,8 +542,9 @@ EOF;
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function getAccessAttribute($all, $data, $badge)
+    public function getAccessAttribute($all, $origin, $badge)
     {
+        $data = collect($origin)->toArray();
         //  子节点有内容的话自动填入主节点来保证菜单正常展开
         $mids = collect($data)->pluck('mid')->toArray();
         foreach ($mids as $mid) {
@@ -569,6 +569,8 @@ EOF;
                     $item['badge'] += $c[0];
                     $item['badgeColor'] = $c[1] ?? $item['badgeColor'];
                 }
+            //  标题
+            $item['title'] = self::autoLang($item['title']);
             //  路径
             $item['path'] = $item['type'] == 'menu' ? 'javascript:' : admin_url($item['path']);
             //  箭头
@@ -660,6 +662,24 @@ EOF;
     }
 
     /**
+     * 获取用户的导航信息
+     *
+     * @param bool $attr
+     *
+     * @return array
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function getUserMenuFormat($attr = true):array
+    {
+        $menus = self::getUserMenu();
+        $data = bomber()->arrayReorder(array_merge($menus['menu'], $menus['page'], $menus['action']), 'root', SORT_DESC, 'weight', SORT_DESC, 'mid', SORT_ASC);
+
+        return $attr ? self::getAccessAttribute(MenuModel::where('status', 1)->get(), $data, $this->badge) : $data;
+    }
+
+    /**
      * 获取用户的导航代码
      *
      * @return string
@@ -669,10 +689,7 @@ EOF;
      */
     public function getUserMenuHtml():string
     {
-        $menus = self::getUserMenu();
-        $data = bomber()->arrayReorder(array_merge($menus['menu'], $menus['page'], $menus['action']), 'root', SORT_DESC, 'weight', SORT_DESC, 'mid', SORT_ASC);
-
-        return self::getAccessHtml(self::getAccessAttribute(MenuModel::where('status', 1)->get(), $data, $this->badge));
+        return self::getAccessHtml(self::getAccessAttribute(MenuModel::where('status', 1)->get(), self::getUserMenuFormat(false), $this->badge));
     }
 
     /**
