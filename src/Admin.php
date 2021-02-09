@@ -29,6 +29,16 @@ class Admin
     public $access;
 
     /**
+     * @var Log
+     */
+    public $log;
+
+    /**
+     * @var Api
+     */
+    public $api;
+
+    /**
      * @var Object
      */
     public $user;
@@ -42,6 +52,8 @@ class Admin
     {
         $this->config = $config->get('admin');
         $this->access = new Service();
+        $this->log = new Log();
+        $this->api = new Api();
     }
 
     /**
@@ -57,6 +69,7 @@ class Admin
     public function setUid(int $uid = 0)
     {
         $this->access->uid = $uid;
+        $this->log->uid = $uid;
 
         return $this;
     }

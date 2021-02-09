@@ -18,18 +18,26 @@ function admin_path($path = '')
 }
 
 /**
- * 是否为Tabs页
+ * 是否为Tabs页或者替换类型
  *
- * @param string $type
+ * @param string      $type
+ * @param bool|string $replace
  *
  * @return bool
  *
  * @author    ComingDemon
  * @copyright 魔网天创信息科技
  */
-function admin_tabs($type = 'html')
+function admin_tabs($type = 'html', $url = null, $replace = false)
 {
-    return config('admin.tabs') ? $type ? arguer((string)config('admin.tabs'), '', 'string') === $type : arguer((string)config('admin.tabs'), false, 'bool') : false;
+    $key = (string)config('admin.tabs');
+    $url = $url ? : url()->full();
+    if ($replace !== false)
+        return str_replace("{$key}={$type}", "{$key}={$replace}", $url);
+
+    parse_str(parse_url($url)['query'] ?? '', $parm);
+
+    return $key ? $type ? arguer($key, '', 'string', $parm) === $type : arguer($key, false, 'bool', $parm) : false;
 }
 
 /**

@@ -2,6 +2,7 @@
 
 namespace Demon\AdminLaravel\example;
 
+use Demon\AdminLaravel\access\model\LogModel;
 use Demon\AdminLaravel\Api;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -356,7 +357,7 @@ class Service
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function setBadge()
+    public function setBadge($uid)
     {
         app('admin')->setBadge(['example/table' => [rand(0, 10), '#ff0000'], 'example/form' => rand(0, 10)]);
     }
@@ -367,7 +368,7 @@ class Service
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function setNotification()
+    public function setNotification($uid)
     {
         rand(0, 2) ?
             app('admin')->setNotification([
@@ -375,5 +376,21 @@ class Service
                 ['theme' => rand(0, 1) ? 'info' : 'primary', 'title' => '__base.access.batch', 'content' => ['__base.access.batch_confirm', ['action' => 'Test', 'length' => rand(1, 99)]]],
                 ['icon' => 'fa fa-cloud-sun-rain', 'title' => '__base.access.batch', 'content' => ['__base.access.batch_confirm', ['action' => 'Test', 'length' => rand(1, 99)]]],
             ]) : null;
+    }
+
+    /**
+     * 保存日志
+     *
+     * @param $response
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function saveLog($response)
+    {
+        if (DEMON_SUBMIT && !app('admin')->log->break)
+            LogModel::insert(app('admin')->log->build(function(&$data) {
+                $data['arguments'] = app('admin')->log->filter($data['arguments']);
+            }));
     }
 }

@@ -138,11 +138,21 @@ class MenuModel extends BaseModel
     public static function del($mid)
     {
         $store = self::fieldStore();
-        $info = self::find($mid);
-        if (!$info)
-            return DEMON_CODE_DATA;
-        $childs = collect(app('admin')->access->getAccessChilds($store['parent'], $mid))->pluck('mid')->toArray();
+        if (is_array($mid)) {
+            $list = self::whereIn('mid', $mid)->get();
+            if (!$list)
+                return DEMON_CODE_DATA;
+        }
+        else {
+            $info = self::find($mid);
+            if (!$info)
+                return DEMON_CODE_DATA;
+            $list = [$info];
+        }
+        $mids = [];
+        foreach ($list as $item)
+            $mids = array_merge($mids, array_merge([$item['mid']], collect(app('admin')->access->getAccessChilds($store['parent'], $mid))->pluck('mid')->toArray()));
 
-        return self::whereIn('mid', array_merge([$mid], $childs))->where('system', 0)->delete() ? true : DEMON_CODE_DATA;
+        return self::whereIn('mid', $mids)->where('system', 0)->delete() ? true : DEMON_CODE_DATA;
     }
 }

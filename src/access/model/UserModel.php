@@ -46,7 +46,7 @@ class UserModel extends BaseModel
         if (!$uid)
             return DEMON_CODE_PARAM;
 
-        return self::where('system', 0)->whereIn('uid', is_array($uid) ? $uid : explode(',', $uid))->update(['status' => (int)$status, 'updateTime' => mstime()]) ? true : DEMON_CODE_COND;
+        return self::where('system', 0)->whereIn('uid', is_array($uid) ? $uid : explode(',', $uid))->update(['status' => (int)$status, 'username' => null, 'updateTime' => mstime()]) ? true : DEMON_CODE_COND;
     }
 
     public static function checkData($data = [], $info = [])
@@ -58,10 +58,16 @@ class UserModel extends BaseModel
             return $reData;
         $reData['avatar'] = ($reData['avatar'] ?? '') ? : null;
         $reData['nickname'] = ($reData['nickname'] ?? '') ? : $reData['username'];
+        $reData['remark'] = ($reData['remark'] ?? '') ? : null;
         if ($reData['password'] ?? null)
             $reData['password'] = bomber()->password(['content' => $reData['password'], 'action' => 'hash']);
         else
             unset($reData['password']);
+        if ($reData['username']) {
+            $uniqueUsername = self::where('username', $reData['username'])->where('uid', '!=', $info['uid'] ?? 0)->first();
+            if ($uniqueUsername)
+                return error_build(DEMON_CODE_PARAM, app('admin')->access->getLang('error_username_unique'));
+        }
         $field = self::fieldList();
         foreach ($reData as $key => $val) {
             if (!in_array($key, $field))
@@ -114,7 +120,6 @@ class UserModel extends BaseModel
         $reData = self::checkData($data, $info);
         if (!error_check($reData))
             return $reData;
-        $reData += ['updateTime' => mstime()];
         foreach ($reData as $key => $val) {
             if ($val == $info->{$key})
                 unset($reData[$key]);
@@ -122,6 +127,6 @@ class UserModel extends BaseModel
         if (isset($data['role']))
             AllotModel::updateList($uid, $data['role']);
 
-        return self::where('uid', $uid)->update($reData) ? true : DEMON_CODE_DATA;
+        return self::where('uid', $uid)->update($reData + ['updateTime' => mstime()]) ? $reData : DEMON_CODE_DATA;
     }
 }

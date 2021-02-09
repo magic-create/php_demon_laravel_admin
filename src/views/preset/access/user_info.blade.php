@@ -25,6 +25,10 @@
                 <label>{{$access->getLang('nickname')}}</label>
                 <input type="text" name="nickname" class="form-control" placeholder="{{$access->getLang('enter_nickname')}}" value="{{$info->nickname ?? ''}}" @if($readonly ?? false) readonly @endif/>
             </div>
+            <div class="form-group">
+                <label>{{$access->getLang('remark')}}</label>
+                <input type="text" name="remark" class="form-control" placeholder="{{$access->getLang('enter_remark')}}" value="{{$info->remark ?? ''}}" @if($readonly ?? false) readonly @endif/>
+            </div>
             @if($action != 'info')
                 <div class="form-group">
                     <label>{{$access->getLang('password')}}</label>

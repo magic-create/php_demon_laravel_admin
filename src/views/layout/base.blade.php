@@ -18,11 +18,11 @@
     <link rel="shortcut icon" href="{{admin_static('images/favicon.ico')}}">
     {{--PHP配置给JS--}}
     <script>
-        window._locale = '{{app()->getLocale()}}';
         window._debug = Boolean({!!config('app.debug')!!});
-        window._token = '{{function_exists('csrf_token') ? csrf_token() : ''}}';
+        window._locale = '{{app()->getLocale()}}';
         window._layout = '{{config('admin.layout')}}';
         window._theme = '{{config('admin.theme')}}';
+        window._token = '{{function_exists('csrf_token') ? csrf_token() : ''}}';
     </script>
     {{--加载脚本--}}
     <script src="{{admin_cdn('jquery/3.5.1/jquery.min.js')}}"></script>
@@ -36,7 +36,6 @@
     <script src="{{admin_cdn('bootstrap-filestyle/2.1.0/bootstrap-filestyle.min.js')}}"></script>
     <script src="{{admin_cdn('ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js')}}"></script>
     <script src="{{admin_cdn('marked/1.2.7/marked.min.js')}}"></script>
-    <script src="{{admin_cdn('moment.js/2.29.1/moment.min.js')}}"></script>
     <script src="{{admin_cdn('moment.js/2.29.1/moment.min.js')}}"></script>
     <script src="{{admin_static('libs/bootstrap4-datetimepicker/4.17.50/js/bootstrap-datetimepicker.min.js')}}"></script>
     <script src="{{admin_cdn('jquery-validate/1.9.0/jquery.validate.min.js')}}"></script>

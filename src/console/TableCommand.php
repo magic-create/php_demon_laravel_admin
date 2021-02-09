@@ -71,6 +71,9 @@ class TableCommand extends Command
         $allot = 'admin_allot';
         $this->replaceMigration($this->createBaseMigration($allot), $allot, Str::studly($allot), $allot);
 
+        $log = 'admin_log';
+        $this->replaceMigration($this->createBaseMigration($log), $log, Str::studly($log), $log);
+
         $menu = 'admin_menu';
         $this->replaceMigration($this->createBaseMigration($menu), $menu, Str::studly($menu), $menu);
 

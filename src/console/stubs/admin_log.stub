@@ -1,0 +1,49 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class Create{{tableClassName}}Table extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::connection('{{connection}}')
+              ->create('{{table}}', function(Blueprint $table) {
+                  $table->engine = 'MyISAM';
+                  $table->bigIncrements('lid')->primary()->comment('记录ID');
+                  $table->unsignedInteger('uid')->default(0)->comment('管理员UID');
+                  $table->string('tag', 64)->nullable()->comment('标记');
+                  $table->string('method', 32)->nullable()->comment('类型');
+                  $table->string('path', 255)->nullable()->comment('路径');
+                  $table->string('remark', 128)->nullable()->comment('备注');
+                  $table->mediumText('content')->nullable()->comment('内容');
+                  $table->mediumText('arguments')->nullable()->comment('参数');
+                  $table->unsignedInteger('ip')->default(0)->comment('IP');
+                  $table->string('userAgent', 255)->nullable()->comment('UA标识');
+                  $table->unsignedBigInteger('createTime')->default(0)->comment('创建时间');
+                  $table->unsignedInteger('createDate')->default(0)->comment('创建日期');
+                  $table->unsignedBigInteger('soleCode')->default(0)->comment('唯一标识码');
+                  $table->index('uid');
+                  $table->index('tag');
+                  $table->index('ip');
+                  $table->index('createTime');
+                  $table->index('createDate');
+              });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::connection('{{connection}}')->dropIfExists('{{table}}');
+    }
+}

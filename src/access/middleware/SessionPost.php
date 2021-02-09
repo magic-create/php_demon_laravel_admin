@@ -31,7 +31,6 @@ class SessionPost
             $request->attributes->add(['uid' => $uid]);
         }
 
-        //  Next
         return $next($request);
     }
 }

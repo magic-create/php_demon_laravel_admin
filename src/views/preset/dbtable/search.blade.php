@@ -6,7 +6,7 @@
             @foreach($dbTableSearch->list ?? [] as $key => $val)
                 @php
                     $val->where = $val->where ?? '';
-                    $val->type = isset($val->type) ? $val->type :($val->where == 'range' ? 'num' : 'text');
+                    $val->type = isset($val->type) ? $val->type : (in_array($val->where,['range','between']) ? 'num' : 'text');
                     $val->attrHtml = $val->attrHtml ?? '';
                     $val->title = $val->title ?? '';
                     $val->placeholder = $val->placeholder ?? (!in_array($val->type,['select']) ? $val->title : '');

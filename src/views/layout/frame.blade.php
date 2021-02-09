@@ -34,7 +34,7 @@
             @endif
             {{--正文部分--}}
             <div class="content-page">
-                <div class="content {{!admin_tabs() ? 'dnav' : ''}}">
+                <div class="content {{config('admin.tabs') && !admin_tabs() ? 'dnav' : ''}}">
                     @foreach($frames ?? [] as $index => $frame)
                         <div id="dtab_{{$frame['mid']}}" class="dtabs-pane" role="tabpanel"></div>
                     @endforeach
@@ -106,7 +106,7 @@
         </header>
         {{--正文部分--}}
         @if(config('admin.tabs'))
-            <div class="wrapper {{!admin_tabs() ? 'dnav' : ''}}">
+            <div class="wrapper {{config('admin.tabs') && !admin_tabs() ? 'dnav' : ''}}">
                 @foreach($frames ?? [] as $index => $frame)
                     <div id="dtab_{{$frame['mid']}}" class="dtabs-pane" role="tabpanel"></div>
                 @endforeach
@@ -117,9 +117,9 @@
                     @if(config('admin.tabs') && !admin_tabs())
                         <script>
                             $.admin.tabs.init({
-                                render:'.wrapper', symbol:'{{config('admin.tabs')}}', metismenu:'.metismenu', offset:168, drop:280, store:true,
+                                render:'.wrapper', symbol:'{{config('admin.tabs')}}', metismenu:'.metismenu', offset:170, drop:280, store:true,
                                 resize:function(e){
-                                    e.settings.offset = e.width > 991 ? 168 : 58;
+                                    e.settings.offset = e.width > 991 ? 165 : 55;
                                     e.settings.drop = e.width > 991 ? 280 : (e.width > 620 ? 320 : 240);
                                     return e.settings;
                                 }

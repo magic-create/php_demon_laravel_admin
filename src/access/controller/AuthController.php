@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Artisan;
 
 class AuthController extends Controller
 {
-    protected $loginExcept = ['login', 'locale'];
-
+    protected $loginExcept = ['*'];
+    
     protected $accessExcept = ['*'];
 
     function __construct()
@@ -28,6 +28,7 @@ class AuthController extends Controller
         //  页面跳转
         $url = session('admin.login', admin_url());
         $url = $url == admin_url('auth/login') ? admin_url() : $url;
+        $url = admin_tabs('html', $url, 'frame');
         if (DEMON_SUBMIT) {
             //  验证参数
             $data = $this->api->arguer([
@@ -39,6 +40,8 @@ class AuthController extends Controller
             $user = $this->api->check(UserModel::password('username', $data['account'], $data['password']));
             //  保存用户信息
             session(['uid' => $user->uid, 'admin.login' => null]);
+            //  记录标记
+            app('admin')->log->setTag('auth.login');
 
             //  登录成功
             return $this->api->setMessage(app('admin')->__('base.auth.login_success'))->setData(['url' => $url])->send();
@@ -48,70 +51,9 @@ class AuthController extends Controller
                 return redirect($url);
 
             return admin_view('preset.access.login', [
+                'url' => $url,
                 'backgroundImage' => app('admin')->getBackgroundImage(function($config) { return '//img.infinitynewtab.com/wallpaper/' . ($config['mode'] == 'random' ? mt_rand(1, 4049) : date('Ymd') % 4049) . '.jpg'; })
             ]);
         }
-    }
-
-    /**
-     * 登出
-     *
-     * @author    ComingDemon
-     * @copyright 魔网天创信息科技
-     */
-    public function logout()
-    {
-        //  移除用户信息
-        session(['uid' => 0]);
-
-        //  登出成功
-        return $this->api->setMessage(app('admin')->__('base.auth.logout_success'))->send();
-    }
-
-    /**
-     * 变更设置
-     *
-     * @author    ComingDemon
-     * @copyright 魔网天创信息科技
-     */
-    public function setting()
-    {
-        if (DEMON_SUBMIT) {
-            $this->api->check(UserModel::edit($this->uid, arguer('data', [], 'array')));
-
-            return $this->api->setMessage(app('admin')->__('base.auth.setting_success'))->send();
-        }
-        else
-            return admin_view('preset.access.setting', ['access' => app('admin')->access, 'store' => UserModel::fieldStore()]);
-    }
-
-    /**
-     * 切换语言
-     *
-     * @author    ComingDemon
-     * @copyright 魔网天创信息科技
-     */
-    public function locale()
-    {
-        //  保存设置语言
-        session(['locale' => arguer('locale', app()->getLocale(), 'string')]);
-
-        return $this->api->setMessage(app('admin')->__('base.auth.locale_success'))->send();
-    }
-
-    /**
-     * 清理缓存
-     *
-     * @author    ComingDemon
-     * @copyright 魔网天创信息科技
-     */
-    public function clear()
-    {
-        Artisan::call('view:clear');
-        if (is_file(app()->getCachedConfigPath()))
-            Artisan::call('config:cache');
-
-        //  清理成功
-        return $this->api->setMessage(app('admin')->__('base.auth.clear_success'))->send();
     }
 }

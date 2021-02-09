@@ -17,7 +17,7 @@ class Create{{tableClassName}}Table extends Migration
         Schema::connection('{{connection}}')
               ->create('{{table}}', function(Blueprint $table) {
                   $table->engine = 'MyISAM';
-                  $table->integerIncrements('rid')->comment('角色RID');
+                  $table->integerIncrements('rid')->primary()->comment('角色RID');
                   $table->string('name', 32)->comment('名称');
                   $table->string('remark', 128)->nullable()->comment('备注');
                   $table->unsignedTinyInteger('system')->default(0)->comment('系统内置无法操作');

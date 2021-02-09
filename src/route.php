@@ -4,13 +4,14 @@ use Demon\AdminLaravel\access\middleware\SessionPre;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Demon\AdminLaravel\access\middleware\SessionPost;
+use Demon\AdminLaravel\access\middleware\LogSave;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 app('router')->group([
     'namespace' => 'App\Admin\Controllers',
     'prefix' => config('admin.path'),
-    'middleware' => array_merge([SessionPre::class, StartSession::class, VerifyCsrfToken::class, SessionPost::class], config('admin.middleware', [])),
+    'middleware' => array_merge([SessionPre::class, StartSession::class, VerifyCsrfToken::class, SessionPost::class], config('admin.middleware', []), [LogSave::class]),
 ], function($router) {
     //  路由方法
     $run = function($controller = null, $act = 'index', $mod = 'common', $con = 'index') use ($router) {
@@ -48,7 +49,7 @@ app('router')->group([
     //  首页
     $router->match(['get', 'post'], '/', function() use ($run) { return $run(); });
     //  授权
-    $router->match(['get', 'post'], '/auth/{act?}', function($act = 'login') use ($run) { return $run(config('admin.authentication'), $act); });
+    $router->match(['get', 'post'], '/auth/{act?}', function($act = 'login') use ($run) { return $run($act == 'login' ? config('admin.authentication') : config('admin.setting'), $act); });
     //  权限
     $router->match(['get', 'post'], '/admin/access/{con?}/{act?}', function($con, $act = 'index') use ($run) { return $run("Demon\\AdminLaravel\\access\\controller\\" . ucwords($con) . 'Controller', $act); });
     //  例子

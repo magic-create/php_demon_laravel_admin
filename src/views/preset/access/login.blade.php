@@ -1,5 +1,12 @@
 @extends('admin::layout.base')
 @include('admin::layout.element.footer')
+@section('link.before')
+    @if(config('admin.tabs'))
+        <script>
+            if(window.self != window.top) window.top.location.href = window.self.location.href;
+        </script>
+    @endif
+@endsection
 @section('frame')
     <div class="wrapper-page">
         <div class="card">

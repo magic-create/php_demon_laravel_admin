@@ -45,16 +45,17 @@ class Controller extends BaseController
     public function __construct()
     {
         //  接口服务
-        $this->api = $this->api ? : new Api();
+        $this->api = $this->api ? : app('admin')->api;
         //  登录用户
         $this->uid = request()->get('uid');
         //  Access
         if (config('admin.access')) {
             //  User
             $this->__user();
+            //  Action
+            $action = request()->route()->getActionMethod();
             //  Auth
             if (get_called_class() != config('admin.authentication')) {
-                $action = request()->route()->getActionMethod();
                 //  Login
                 if ($this->__login($action) !== true)
                     $this->__access($action);
@@ -66,7 +67,7 @@ class Controller extends BaseController
             if (config('admin.notification'))
                 app()->call([app()->make(config('admin.notification')), 'setNotification'], ['uid' => $this->uid]);
             //  Tabs
-            $this->__tabs();
+            $this->__tabs($action);
         }
     }
 
@@ -148,10 +149,12 @@ class Controller extends BaseController
     /**
      * 标签页
      *
+     * @param string $action
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function __tabs()
+    public function __tabs($action)
     {
         //  开启判断
         if (config('admin.tabs') && !DEMON_SUBMIT && !DEMON_INAJAX) {

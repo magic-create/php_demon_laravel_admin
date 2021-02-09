@@ -17,7 +17,7 @@ class Create{{tableClassName}}Table extends Migration
         Schema::connection('{{connection}}')
               ->create('{{table}}', function(Blueprint $table) {
                   $table->engine = 'MyISAM';
-                  $table->integerIncrements('mid')->comment('角色RID');
+                  $table->integerIncrements('mid')->primary()->comment('角色RID');
                   $table->enum('type', ['menu', 'page', 'action'])->comment('类型(menu:菜单,page:页面,action:操作)');
                   $table->unsignedInteger('upId')->default(0)->comment('父级ID');
                   $table->string('title', 32)->nullable()->comment('标题');
@@ -57,6 +57,11 @@ class Create{{tableClassName}}Table extends Migration
               ['mid' => 21, 'type' => 'action', 'upId' => 18, 'title' => null, 'path' => 'admin/access/role/edit', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 22, 'type' => 'action', 'upId' => 18, 'title' => null, 'path' => 'admin/access/role/add', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 23, 'type' => 'action', 'upId' => 18, 'title' => null, 'path' => 'admin/access/role/batch', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 24, 'type' => 'page', 'upId' => 3, 'title' => '__base.menu.admin_access_log', 'path' => 'admin/access/log', 'icon' => 'fa fa-list-alt', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 25, 'type' => 'action', 'upId' => 24, 'title' => null, 'path' => 'admin/access/log/del', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 26, 'type' => 'action', 'upId' => 24, 'title' => null, 'path' => 'admin/access/log/info', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 27, 'type' => 'action', 'upId' => 24, 'title' => null, 'path' => 'admin/access/log/clear', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 28, 'type' => 'action', 'upId' => 24, 'title' => null, 'path' => 'admin/access/log/export', 'icon' => null, 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 1000, 'type' => 'menu', 'upId' => 2, 'title' => '__base.menu.example', 'path' => null, 'icon' => 'fa fa-gifts', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 1001, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_index', 'path' => 'example/index', 'icon' => 'fa fa-tachometer-alt', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 1002, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_form', 'path' => 'example/form', 'icon' => 'fa fa-building', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
