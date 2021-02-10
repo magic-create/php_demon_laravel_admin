@@ -81,6 +81,21 @@ function admin_url($path = null, $parameters = [], $secure = null)
 }
 
 /**
+ * 去掉AdminUrl前缀
+ *
+ * @param null $url
+ *
+ * @return string
+ *
+ * @author    ComingDemon
+ * @copyright 魔网天创信息科技
+ */
+function admin_url_repre($url = null)
+{
+    return bomber()->strReplaceOnce(admin_url(), '', $url ? : url()->full(), 'pre');
+}
+
+/**
  * 运维后台通过错误码获取错误翻译
  *
  * @param       $key

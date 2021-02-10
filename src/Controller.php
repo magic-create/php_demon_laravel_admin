@@ -48,27 +48,27 @@ class Controller extends BaseController
         $this->api = $this->api ? : app('admin')->api;
         //  登录用户
         $this->uid = request()->get('uid');
+        //  Action
+        $action = request()->route()->getActionMethod();
         //  Access
         if (config('admin.access')) {
             //  User
             $this->__user();
-            //  Action
-            $action = request()->route()->getActionMethod();
             //  Auth
             if (get_called_class() != config('admin.authentication')) {
                 //  Login
                 if ($this->__login($action) !== true)
                     $this->__access($action);
             }
-            //  Badge
-            if (config('admin.badge'))
-                app()->call([app()->make(config('admin.badge')), 'setBadge'], ['uid' => $this->uid]);
-            //  Notification
-            if (config('admin.notification'))
-                app()->call([app()->make(config('admin.notification')), 'setNotification'], ['uid' => $this->uid]);
-            //  Tabs
-            $this->__tabs($action);
         }
+        //  Badge
+        if (config('admin.badge'))
+            app()->call([app()->make(config('admin.badge')), 'setBadge'], ['uid' => $this->uid]);
+        //  Notification
+        if (config('admin.notification'))
+            app()->call([app()->make(config('admin.notification')), 'setNotification'], ['uid' => $this->uid]);
+        //  Tabs
+        $this->__tabs($action);
     }
 
     /**
@@ -141,7 +141,7 @@ class Controller extends BaseController
             if (!in_array('*', $this->accessExcept) && !in_array($action, $this->accessExcept) && !app('admin')->access->check(url()->current())) {
                 abort(DEMON_SUBMIT ?
                     response()->json(['code' => DEMON_CODE_ACCESS, 'message' => admin_error(DEMON_CODE_ACCESS)], DEMON_CODE_ACCESS) :
-                    response()->view('admin::preset.error.general', ['code' => DEMON_CODE_ACCESS, 'message' => admin_error(DEMON_CODE_ACCESS)], DEMON_CODE_ACCESS));
+                    response(admin_view('preset.error.general', ['code' => DEMON_CODE_ACCESS, 'message' => admin_error(DEMON_CODE_ACCESS)]), DEMON_CODE_ACCESS));
             }
         }
     }

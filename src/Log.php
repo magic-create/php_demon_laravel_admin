@@ -174,7 +174,7 @@ class Log
         }
         else {
             $method = request()->method();
-            $path = request()->url() ?? null;
+            $path = admin_url_repre(request()->url() ?? null);
             $arguments = request()->all();
         }
 
