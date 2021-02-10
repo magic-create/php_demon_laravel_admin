@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 class AuthController extends Controller
 {
     protected $loginExcept = ['*'];
-    
+
     protected $accessExcept = ['*'];
 
     function __construct()
@@ -41,7 +41,7 @@ class AuthController extends Controller
             //  保存用户信息
             session(['uid' => $user->uid, 'admin.login' => null]);
             //  记录标记
-            app('admin')->log->setTag('auth.login');
+            app('admin')->log->setUid($user->uid)->setTag('auth.login');
 
             //  登录成功
             return $this->api->setMessage(app('admin')->__('base.auth.login_success'))->setData(['url' => $url])->send();
