@@ -5,8 +5,11 @@ namespace Demon\AdminLaravel\example;
 use Demon\AdminLaravel\Admin;
 use Demon\AdminLaravel\AdminServiceProvider;
 use Demon\AdminLaravel\Controller as Controllers;
+use Demon\AdminLaravel\Setting;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class Controller extends Controllers
 {
@@ -15,6 +18,12 @@ class Controller extends Controllers
         parent::__construct();
     }
 
+    /**
+     * 登录页面
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
     public function login()
     {
         if (DEMON_SUBMIT) {
@@ -320,5 +329,35 @@ class Controller extends Controllers
     public function markdown()
     {
         return view('admin::preset.example.markdown');
+    }
+
+    /**
+     * 配置项编辑
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setting()
+    {
+        $store = Service::fieldStore();
+        $modules = ['test', 'debug'];
+        $setting = new Setting(Service::setting());
+        $setting->setModule(['test' => '测试', 'debug' => '调试']);
+        $setting->setData([
+            'custom' => collect($store['level'])->pluck('name')->toArray(),
+            'object' => collect($store['credit'])->pluck('name', 'alias')->toArray(),
+        ]);
+        if (DEMON_SUBMIT) {
+            $module = arguer('module');
+            $save = $setting->save($module, arguer('data', 'array', []));
+            foreach ($save['change'] as $key => $val)
+                Service::model(Service::SettingModel)->where('module', $module)->where('name', $key)->update(['before' => DB::raw('value'), 'value' => $val]);
+            //  设置记录
+            app('admin')->log->setContent($save['differ']);
+
+            return $this->api->send();
+        }
+        else
+            return $setting->render('preset.example.setting', $modules, ['modules' => $setting->getModule()]);
     }
 }

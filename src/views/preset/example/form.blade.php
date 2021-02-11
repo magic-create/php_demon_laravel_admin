@@ -179,7 +179,7 @@
         //  More Advanced
         $.admin.date('#advanced .date[name="date"]', {format:'YYYY-MM-DD'});
         $.admin.date('#advanced .date[name="datetime"]', {format:'YYYY-MM-DD HH:mm:ss'});
-        $.admin.date('#advanced .date[name="time"]', {format:'hh:mm:ss'});
+        $.admin.date('#advanced .date[name="time"]', {format:'HH:mm:ss'});
         $.admin.color('#advanced .color');
         $.admin.file('#advanced .file');
         $.admin.slider('#advanced .slider[name="slider"]');

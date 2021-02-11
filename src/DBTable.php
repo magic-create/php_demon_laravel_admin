@@ -969,6 +969,7 @@ class DBTable
      * @param array  $mergeData
      *
      * @return mixed
+     *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */

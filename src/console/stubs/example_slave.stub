@@ -22,7 +22,7 @@ class Create{{tableClassName}}Table extends Migration
                   $table->unsignedDecimal('value', 16, 3)->default(0)->comment('数值');
                   $table->unsignedBigInteger('createTime')->default(0)->comment('创建时间');
                   $table->unsignedBigInteger('updateTime')->default(0)->comment('更新时间');
-                  $table->unique(['uid', 'type'], 'uid');
+                  $table->unique(['uid', 'type']);
               });
     }
 

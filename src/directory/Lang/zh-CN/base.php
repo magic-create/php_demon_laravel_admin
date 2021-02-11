@@ -47,6 +47,8 @@ return [
         'setting_success' => '个人设置保存成功',
         'locale' => '语言',
         'locale_success' => '语言切换成功',
+        'submit' => '提交',
+        'reset' => '重置',
     ],
     'access' => [
         'admin' => '系统管理员',
@@ -158,7 +160,7 @@ return [
         'userAgent' => 'UA标识',
         'arguments' => '参数',
         'export' => '导出',
-        'export_max_length' => '导出失败,导出数量大于:length项,请缩小导出范围',
+        'export_max_length' => '导出失败,导出数量大于:length项,请缩小导出范围'
     ],
     'menu' => [
         'dashboard' => '首页',
@@ -171,6 +173,7 @@ return [
         'example_editor' => '富文本编辑器',
         'example_markdown' => 'MarkDown编辑器',
         'example_login' => '登录页',
+        'example_setting' => '配置页',
         'admin' => '后台管理',
         'admin_access' => '权限管理',
         'admin_access_user' => '管理员',

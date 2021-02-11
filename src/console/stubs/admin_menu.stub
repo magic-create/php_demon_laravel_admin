@@ -19,9 +19,9 @@ class Create{{tableClassName}}Table extends Migration
                   $table->engine = 'MyISAM';
                   $table->integerIncrements('mid')->primary()->comment('角色RID');
                   $table->enum('type', ['menu', 'page', 'action'])->comment('类型(menu:菜单,page:页面,action:操作)');
-                  $table->unsignedInteger('upId')->default(0)->comment('父级ID');
+                  $table->unsignedInteger('upId')->default(0)->index()->comment('父级ID');
                   $table->string('title', 32)->nullable()->comment('标题');
-                  $table->string('path', 128)->nullable()->comment('路径');
+                  $table->string('path', 128)->nullable()->unique()->comment('路径');
                   $table->string('icon', 128)->nullable()->comment('图标');
                   $table->string('badgeColor', 32)->nullable()->comment('统计颜色(#开头的16进制颜色或样式名称)');
                   $table->string('remark', 128)->nullable()->comment('备注');
@@ -71,6 +71,7 @@ class Create{{tableClassName}}Table extends Migration
               ['mid' => 1006, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_editor', 'path' => 'example/editor', 'icon' => 'fa fa-pen-fancy', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 1007, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_markdown', 'path' => 'example/markdown', 'icon' => 'fa fa-marker', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
               ['mid' => 1008, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_login', 'path' => 'example/login', 'icon' => 'fa fa-user-check', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
+              ['mid' => 1009, 'type' => 'page', 'upId' => 1000, 'title' => '__base.menu.example_setting', 'path' => 'example/setting', 'icon' => 'fa fa-cogs', 'weight' => 0, 'system' => 1, 'createTime' => mstime()],
           ]);
         DB::connection('{{connection}}')->update('ALTER TABLE {{table}} AUTO_INCREMENT = 10000;');
     }

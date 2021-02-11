@@ -16,7 +16,7 @@ class SettingController extends Controller
     {
         parent::__construct();
     }
-    
+
     /**
      * 登出
      *
@@ -62,8 +62,12 @@ class SettingController extends Controller
      */
     public function locale()
     {
+        //   获取设置语言
+        $locale = arguer('locale', app()->getLocale(), 'string');
+        if (!in_array($locale, array_keys(config('admin.locales'))))
+            return $this->api->setError(DEMON_CODE_PARAM)->send();
         //  保存设置语言
-        session(['locale' => arguer('locale', app()->getLocale(), 'string')]);
+        session(['locale' => $locale]);
 
         return $this->api->setMessage(app('admin')->__('base.auth.locale_success'))->send();
     }
@@ -76,9 +80,17 @@ class SettingController extends Controller
      */
     public function clear()
     {
+        //  清理视图缓存
         Artisan::call('view:clear');
+        //  清理配置缓存
         if (is_file(app()->getCachedConfigPath()))
             Artisan::call('config:cache');
+        //  清理映射
+        if (is_file(app()->getCachedPackagesPath()) || is_file(app()->getCachedServicesPath()))
+            Artisan::call('clear-compiled');
+        //  清理Opcache
+        if (ini_get('opcache.enable'))
+            opcache_reset();
 
         //  清理成功
         return $this->api->setMessage(app('admin')->__('base.auth.clear_success'))->send();

@@ -60,8 +60,7 @@
     <script>
         $('#validate .image').click(function(){
             var self = $(this);
-            if($('#validate [name="avatar"]').attr('readonly'))
-                return;
+            if($('#validate [name="avatar"]').attr('readonly')) return;
             $.admin.layer.avatar({image:self.attr('src')}, function(index, o){
                 $.admin.layer.close(index);
                 var base64 = o.cropper.getCroppedCanvas({width:128, height:128}).toDataURL('image/jpeg', 0.6);

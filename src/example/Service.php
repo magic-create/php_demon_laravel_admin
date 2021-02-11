@@ -26,10 +26,21 @@ class Service
      *  从表
      */
     const SlaveModel = 'example_slave';
+
     /**
-     *  主键
+     *  从表主键
      */
     const SlaveKey = 'id';
+
+    /**
+     *  配置表
+     */
+    const SettingModel = 'example_setting';
+
+    /**
+     *  配置表主键
+     */
+    const SettingKey = 'id';
 
     /**
      * 邀请码编排
@@ -91,6 +102,21 @@ class Service
     public static function fieldList()
     {
         return Schema::connection(self::$connection)->getColumnListing(self::MasterModel);
+    }
+
+    /**
+     * 构造模型
+     *
+     * @param string $table
+     *
+     * @return \Illuminate\Database\ConnectionInterface|\Illuminate\Database\Query\Builder
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public static function model(string $table = '')
+    {
+        return $table ? DB::connection(self::$connection)->table($table) : DB::connection(self::$connection);
     }
 
     /**
@@ -179,7 +205,7 @@ class Service
         //  Sex为enum类型需要特殊处理
         $reData['sex'] = (string)$reData['sex'];
         //  头像为Null
-        $reData['avatar'] = $reData['avatar'] ? : null;
+        $reData['avatar'] = ($reData['avatar'] ?? null) ? : null;
         //  验证字段
         if (($reData['phone'] ?? null) && !bomber()->regexp($reData['phone'], 'mobile'))
             return error_build('手机号码格式有误');
@@ -257,11 +283,6 @@ class Service
         $uid = DB::connection(self::$connection)->table(self::MasterModel)->insertGetId($reData);
         if ($uid) {
             DB::connection(self::$connection)->table(self::MasterModel)->where('uid', $uid)->update(['code' => bomber()->inviteCode($uid, 1, self::InviteCodeKey, self::InviteCodeOffset)]);
-            //  批量更新其他用户邀请码
-            /*
-            foreach (DB::connection(Service::$connection)->table(Service::MasterModel)->get() as $key => $val)
-                DB::connection(Service::$connection)->table(Service::MasterModel)->where('uid', $val->uid)->update(['code' => bomber()->inviteCode($val->uid, 1, Service::InviteCodeKey, Service::InviteCodeOffset)]);
-            */
 
             return true;
         }
@@ -349,6 +370,24 @@ class Service
         //  增加
         else
             return $query->update(['updateTime' => mstime(), 'value' => DB::raw("value+{$num}")]) ? true : DEMON_CODE_DATA;
+    }
+
+    /**
+     * 获取配置信息
+     *
+     * @param null $module
+     *
+     * @return \Illuminate\Support\Collection
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public static function setting($module = null)
+    {
+        if ($module)
+            return DB::connection(self::$connection)->table(self::SettingModel)->whereIn(is_array($module) ? $module : [$module])->get();
+        else
+            return DB::connection(self::$connection)->table(self::SettingModel)->get();
     }
 
     /**

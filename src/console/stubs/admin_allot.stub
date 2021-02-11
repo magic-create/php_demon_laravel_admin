@@ -20,6 +20,7 @@ class Create{{tableClassName}}Table extends Migration
                   $table->unsignedInteger('uid')->comment('管理员UID');
                   $table->unsignedInteger('rid')->comment('角色RID');
                   $table->unsignedBigInteger('createTime')->default(0)->comment('创建时间');
+                  $table->unique(['uid', 'rid']);
               });
         DB::connection('{{connection}}')
           ->table('{{table}}')

@@ -62,8 +62,11 @@ class TableCommand extends Command
         $example_master = Service::MasterModel;
         $this->replaceMigration($this->createBaseMigration($example_master), $example_master, Str::studly($example_master), $example_master);
 
+        $example_setting = Service::SettingModel;
+        $this->replaceMigration($this->createBaseMigration($example_setting), $example_setting, Str::studly($example_setting), $example_setting);
+
         $example_slave = Service::SlaveModel;
-        $this->replaceMigration($this->createBaseMigration($example_slave), $example_slave, Str::studly($example_slave), $example_master);
+        $this->replaceMigration($this->createBaseMigration($example_slave), $example_slave, Str::studly($example_slave), $example_slave);
 
         $session = config('admin.session.table');
         $this->replaceMigration($this->createBaseMigration($session), $session, Str::studly($session), 'admin_session');

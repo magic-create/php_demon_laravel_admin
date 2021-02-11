@@ -30,15 +30,15 @@ app('router')->group([
                 }
                 else abort(DEMON_CODE_NONE);
             } catch (NotFoundHttpException $exception) {
-                if (!request()->ajax())
+                if (!request()->ajax() && !config('app.debug'))
                     return admin_view('preset.error.general', ['code' => $exception->getStatusCode(), 'message' => $exception->getMessage()]);
                 throw $exception;
             } catch (HttpException $exception) {
-                if (!request()->ajax())
+                if (!request()->ajax() && !config('app.debug'))
                     return admin_view('preset.error.general', ['code' => $exception->getStatusCode(), 'message' => $exception->getMessage()]);
                 throw $exception;
             } catch (ErrorException $exception) {
-                if (!request()->ajax())
+                if (!request()->ajax() && !config('app.debug'))
                     return admin_view('preset.error.general', ['code' => DEMON_CODE_SERVER, 'message' => config('app.debug') ? $exception->getMessage() : admin_error(DEMON_CODE_SERVER)]);
                 throw $exception;
             }
