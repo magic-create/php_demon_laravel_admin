@@ -619,11 +619,10 @@ EOF;
     public function getBreadcrumb($isDetails = false)
     {
         if (!$this->breadcrumb) {
-            $path = str_replace(admin_url() . '/', '', url()->current());
             $url = '';
-            foreach (explode('/', $path) as $index => $title) {
+            foreach (explode('/', request()->path()) as $index => $title) {
                 $url .= '/' . $title;
-                $this->breadcrumb[$index] = ['mid' => $index, 'path' => admin_url($url), 'title' => Str::studly($title)];
+                $this->breadcrumb[$index] = ['mid' => $index, 'path' => 'javascript:', 'title' => Str::studly($title)];
             }
         }
 
