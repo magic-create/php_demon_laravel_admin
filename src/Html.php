@@ -150,6 +150,47 @@ class Html
     }
 
     /**
+     * 输入框
+     *
+     * @param array  $attribute
+     * @param string $class
+     * @param array  $group
+     *
+     * @return string
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function input($attribute = [], $class = 'form-control', $group = [])
+    {
+        $append = '';
+        foreach ($attribute as $key => $val)
+            $append .= " {$key}='{$val}'";
+        $input = "<input type='text' class='form-control {$class}' {$append}/>";
+        if (!$group)
+            return $input;
+        $class = $group['class'] ?? 'input-group';
+        $attr = '';
+        foreach ($group['attr'] ?? [] as $key => $val)
+            $attr .= " {$key}='{$val}'";
+        $html = "<div class='{$class}' {$attr}>";
+        if ($group['prepend'] ?? '') {
+            $html .= '<div class="input-group-prepend">';
+            $html .= $group['append'];
+            $html .= '</div>';
+        }
+        $html .= $input;
+        if ($group['append'] ?? '') {
+            $html .= '<div class="input-group-append">';
+            $html .= $group['append'];
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
      * 创建搜索控件
      *
      * @param        $data

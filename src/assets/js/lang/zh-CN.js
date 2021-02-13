@@ -166,6 +166,8 @@
             paginationNextText:'下一页',
             searchSubmitText:'提交搜索',
             searchResetText:'重置条件',
+            clipboardSuccessTips:'复制成功',
+            clipboardErrorTips:'复制失败',
             formatCopyRows:function formatCopyRows(){ return '复制'; },
             formatPrint:function formatPrint(){ return '打印'; },
             formatLoadingMessage:function formatLoadingMessage(){ return '正在努力地加载数据中，请稍候'; },

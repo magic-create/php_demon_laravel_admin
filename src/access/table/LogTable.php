@@ -61,7 +61,7 @@ class LogTable extends DBTable
             ['data' => 'b.uid', 'title' => $this->access->getLang('username'), 'width' => '10%', 'reorder' => true],
             ['data' => 'userRemark', 'origin' => 'b.remark as userRemark', 'title' => $this->access->getLang('userRemark'), 'width' => '10%', 'search' => true],
             ['data' => 'a.tag', 'title' => $this->access->getLang('tag'), 'search' => true],
-            ['data' => 'a.path', 'title' => $this->access->getLang('path'), 'search' => true],
+            ['data' => 'a.path', 'title' => $this->access->getLang('path'), 'search' => true, 'action' => true],
             ['data' => 'a.remark', 'title' => $this->access->getLang('remark'), 'search' => true],
             ['data' => 'a.ip', 'title' => $this->access->getLang('ip'), 'search' => true],
             ['data' => 'a.soleCode', 'title' => $this->access->getLang('soleCode'), 'search' => true],
@@ -83,6 +83,12 @@ class LogTable extends DBTable
     {
         return [
             'uid' => function($val) { return "[{$val->uid}]{$val->username}"; },
+            'path' => function($val) {
+                return admin_html('input', ['readonly' => true, 'value' => $val->path], 'form-control input-sm d-none d-lg-block', [
+                    'class' => 'input-group input-group-sm',
+                    'append' => "<button class='btn btn-secondary clipboard' data-clipboard-text='{$val->path}'><i class='far fa-clipboard'></i></button>"
+                ]);
+            },
             'ip' => function($val) { return $val->ip ? long2ip($val->ip) : null; },
             'createTime' => function($val) { return $val->createTime ? msdate('Y-m-d H:i:s', $val->createTime) : null; },
             '_action' => [
@@ -101,6 +107,7 @@ class LogTable extends DBTable
         if ($this->count() > $max)
             abort(DEMON_CODE_LARGE, $this->access->getLang('export_max_length', ['length' => $max]));
         $this->format = [
+            'path' => function($val) { return $val->path; },
             'uid' => function($val) { return $val->uid; },
             '_action' => ['type' => 'remove']
         ];

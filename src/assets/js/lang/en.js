@@ -146,6 +146,8 @@
             paginationNextText:'next page',
             searchSubmitText:'Submit',
             searchResetText:'Reset',
+            clipboardSuccessTips:'Copy success!',
+            clipboardErrorTips:'Copy error!',
             formatCopyRows:function formatCopyRows(){ return 'Copy Rows'; },
             formatPrint:function formatPrint(){ return 'Print'; },
             formatLoadingMessage:function formatLoadingMessage(){ return 'Loading, please wait'; },

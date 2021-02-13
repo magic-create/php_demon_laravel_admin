@@ -179,6 +179,9 @@ function admin_html()
             case 'search':
                 return $html->search($parm[1] ?? null, $parm[2] ?? '', $parm[3] ?? []);
                 break;
+            case 'input':
+                return $html->input($parm[1] ?? null, $parm[2] ?? '', $parm[3] ?? []);
+                break;
             default:
                 return $html;
         }

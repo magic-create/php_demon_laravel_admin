@@ -40,6 +40,7 @@
     <script src="{{admin_static('libs/bootstrap4-datetimepicker/4.17.50/js/bootstrap-datetimepicker.min.js')}}"></script>
     <script src="{{admin_cdn('jquery-validate/1.9.0/jquery.validate.min.js')}}"></script>
     <script src="{{admin_cdn('cropperjs/1.5.9/cropper.min.js')}}"></script>
+    <script src="{{admin_cdn('clipboard.js/2.0.6/clipboard.min.js')}}"></script>
     <script src="{{admin_static('libs/bootstrap4-layer/3.1.1/layer.min.js')}}"></script>
     {{--前置引入区域--}}
     @yield('link.before')
