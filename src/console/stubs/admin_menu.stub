@@ -17,7 +17,7 @@ class Create{{tableClassName}}Table extends Migration
         Schema::connection('{{connection}}')
               ->create('{{table}}', function(Blueprint $table) {
                   $table->engine = 'MyISAM';
-                  $table->integerIncrements('mid')->primary()->comment('角色RID');
+                  $table->integerIncrements('mid')->comment('角色RID');
                   $table->enum('type', ['menu', 'page', 'action'])->comment('类型(menu:菜单,page:页面,action:操作)');
                   $table->unsignedInteger('upId')->default(0)->index()->comment('父级ID');
                   $table->string('title', 32)->nullable()->comment('标题');

@@ -16,7 +16,7 @@ class Create{{tableClassName}}Table extends Migration
         Schema::connection('{{connection}}')
               ->create('{{table}}', function(Blueprint $table) {
                   $table->engine = 'InnoDB';
-                  $table->bigIncrements('id')->primary()->comment('ID');
+                  $table->bigIncrements('id')->comment('ID');
                   $table->unsignedInteger('uid')->comment('UID');
                   $table->unsignedTinyInteger('type')->comment('类型');
                   $table->unsignedDecimal('value', 16, 3)->default(0)->comment('数值');
