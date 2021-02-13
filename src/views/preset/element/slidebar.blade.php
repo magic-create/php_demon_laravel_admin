@@ -48,6 +48,7 @@
                     ['icon' => 'pen-fancy', 'title' => 'Editor', 'path' => admin_url('example/editor')],
                     ['icon' => 'marker', 'title' => 'Markdown', 'path' => admin_url('example/markdown')],
                     ['icon' => 'user-check', 'title' => 'Login', 'path' => admin_url('example/login')],
+                    ['icon' => 'cogs', 'title' => 'Setting', 'path' => admin_url('example/setting')],
                 ]
             ]
         ];

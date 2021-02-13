@@ -175,7 +175,7 @@ class Table extends DBTable
     {
         $query = DB::connection(Service::$connection)->table(Service::MasterModel . ' as a')->where('a.status', '>=', 0);
         $query->leftJoin(Service::MasterModel . ' as b', 'b.uid', '=', 'a.inviteUid');
-        $inviteCount = DB::table(Service::MasterModel)->select(DB::raw('count(1) as inviteCount,inviteUid'))->groupBy('inviteUid');
+        $inviteCount = DB::connection(Service::$connection)->table(Service::MasterModel)->select(DB::raw('count(1) as inviteCount,inviteUid'))->groupBy('inviteUid');
         $query->leftJoinSub($inviteCount, 'c', 'c.inviteUid', '=', 'a.uid');
         foreach ($this->store['credit'] as $type => $name) {
             $alias = 'c_' . $type;
