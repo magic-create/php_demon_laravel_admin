@@ -49,7 +49,7 @@ class AdminServiceProvider extends ServiceProvider
         config()->set('admin.locales', $locales);
         //  检查是否正确安装
         if (!is_dir(admin_path('Controllers')) && !$this->app->runningInConsole())
-            abort(DEMON_CODE_SERVICE, 'Please install it correctly');
+            throw new \ErrorException('Please install it (AdminService) correctly, Read the README.md first', DEMON_CODE_SERVICE);
         //  加载视图
         $this->loadViewsFrom([__DIR__ . DIRECTORY_SEPARATOR . 'views', admin_path('Views')], 'admin');
         //  实例化更多
