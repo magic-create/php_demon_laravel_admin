@@ -50,12 +50,14 @@ class Api
 
     /**
      * Api constructor.
+     *
+     * @param array $message
      */
-    public function __construct()
+    public function __construct($message = [])
     {
-        $this->default = array_flip($this->default);
+        $this->default = $message + array_flip($this->default);
         foreach (array_keys($this->default) as $code)
-            $this->default[$code] = admin_error($code);
+            $this->default[$code] = $message[$code] ?? admin_error($code);
     }
 
     /**
