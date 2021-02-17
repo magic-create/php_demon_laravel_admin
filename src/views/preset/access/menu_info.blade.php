@@ -57,22 +57,22 @@
 @endsection
 @section('container.script')
     <script>
-        var menuType = '{{$info->type ?? 'page'}}';
-        $('#validate [name="type"]').change(function(){
-            var type = $('[name="type"]:checked').val();
-            if(!type)
-                return;
+        var menuType;
+        var menuChange = function(type){
             menuType = type;
             if(menuType == 'menu') $('#validate [name="path"]').parent().hide();
             else $('#validate [name="path"]').parent().show();
-            if(menuType == 'action'){
-                $('#validate [name="icon"]').parent().parent().hide();
-            }else{
-                $('#validate [name="icon"]').parent().parent().show();
-            }
+            if(menuType == 'action') $('#validate [name="icon"]').parent().parent().hide();
+            else $('#validate [name="icon"]').parent().parent().show();
+        };
+        menuChange('{{$info->type ?? 'page'}}');
+        $('#validate [name="type"]').change(function(){
+            var type = $('[name="type"]:checked').val();
+            if(!type) return;
+            menuChange(type);
         });
         $('#validate [name="icon"]').parent().find('button').on('click', function(){
-            layer.fontAwesome({list:'{{admin_cdn('font-awesome/5.15.1/css/all.min.css')}}'}, function(index, layero){
+            layer.fontAwesome({list:'{{admin_static('libs/font-awesome/5.15.1/css/all.min.css')}}'}, function(index, layero){
                 $('#validate [name="icon"]').val(layero.iconClass);
                 $.admin.layer.close(index);
             });
@@ -80,8 +80,8 @@
         $.admin.form('#validate', {
             render:true,
             list:{
-                title:{function:{rule:function(e){return menuType != 'action' ? $(e).val().length : true; }}},
-                path:{function:{rule:function(e){return menuType != 'menu' ? $(e).val().length : true; }}}
+                title:{required:false, function:{rule:function(e){return menuType != 'action' ? $(e).val().length : true; }}},
+                path:{required:false, function:{rule:function(e){return menuType != 'menu' ? $(e).val().length : true; }}}
             },
             callback:{
                 success:function(e){ $.post('', {data:e.value()}, $.admin.api.report).fail($.admin.api.report);}

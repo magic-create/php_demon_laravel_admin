@@ -238,7 +238,7 @@ class Html
                         if (bomber()->arrayLevel($data) == 1)
                             $newData[$title ? $val : $key] = $val;
                         // 如果是二维数组的话，和对象相同的处理
-                        else if ($title && bomber()->arrayLevel($data) == 2) {
+                        else if ($title && bomber()->arrayLevel($data) >= 2) {
                             if ($bind)
                                 $newData[$val[$bind]] = $val[$title];
                             else

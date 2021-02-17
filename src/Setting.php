@@ -159,7 +159,7 @@ class Setting
         $data = [];
         //  如果查询具体模块
         if ($module) {
-            $list = $this->list->where('module', $module)->get();
+            $list = $this->list->where('module', $module);
             if ($list) {
                 foreach ($list as $val)
                     $data[$val['name']] = self::format($val['value'], $val['filter']);

@@ -2,10 +2,6 @@
 
 namespace Demon\AdminLaravel\example;
 
-use App\Models\Central\MemberModel;
-use App\Redis\Central\LevelRedis;
-use App\Redis\Central\VipRedis;
-use App\Services\Central\ConfigService;
 use Demon\AdminLaravel\DBTable;
 use Demon\AdminLaravel\Spreadsheet;
 use Illuminate\Support\Facades\DB;
@@ -62,10 +58,8 @@ class Table extends DBTable
     public function setSearch()
     {
         $credit = [];
-        foreach ($this->store['credit'] as $type => $v) {
-            $alias = 'c_' . $type;
+        foreach ($this->store['credit'] as $type => $v)
             $credit[] = ['data' => 'c_' . $type . '.value', 'name' => $v['alias'], 'title' => $v['name'], 'where' => 'range'];
-        }
 
         return array_merge([
             ['data' => 'a.uid', 'title' => 'UID', 'placeholder' => '精准UID，多个可用 , 分隔', 'where' => 'in'],
@@ -119,10 +113,8 @@ class Table extends DBTable
     public function setColumn()
     {
         $credit = [];
-        foreach ($this->store['credit'] as $type => $v) {
-            $alias = 'c_' . $type;
+        foreach ($this->store['credit'] as $type => $v)
             $credit[] = ['data' => $v['alias'], 'origin' => 'c_' . $type . '.value', 'title' => $v['name'], 'action' => true, 'reorder' => true];
-        }
 
         return array_merge([
             ['data' => 'a.uid', 'title' => 'UID', 'reorder' => true],
@@ -208,6 +200,8 @@ class Table extends DBTable
 
     /**
      * 设置格式化
+     *
+     * @param $data
      *
      * @return array
      *

@@ -5,7 +5,7 @@
         @php($type = strtolower($val->type))
         @if($val->module == $module && $val->hidden != 1)
             <div class="form-group" id="setting-{{$module}}-{{$val->name}}" data-tag="{{$val->tag}}">
-                <label>{{$val->title}}</label>
+                <label class="d-block">{{$val->title}}<span class="float-right text-muted">{{$val->module}}.{{$val->name}}</span></label>
                 @if($type === 'checkbox')
                     <div class="check-group"><input type="checkbox" class="switch" @if(!$val->hidden) name="{{$val->name}}" @else readonly @endif @if($val->value) checked @endif></div>
                 @elseif($type == 'checkboxs')
@@ -55,13 +55,21 @@
                         <div class="input-group-append"><span class="input-group-text color-addon"></span></div>
                     </div>
                 @elseif($type == 'textarea')
-                    <textarea class="form-control" {!!$validate!!} rows="6" @if(!$val->hidden) name="{{$val->name}}" @else readonly @endif @if($val->must) required @endif>{{$val->value}}</textarea>
+                    @if($val->filter == 'array')
+                        <textarea class="form-control" {!!$validate!!} rows="6" @if(!$val->hidden) name="{{$val->name}}" @else readonly @endif @if($val->must) required @endif>{{implode(',',$val->value)}}</textarea>
+                    @else
+                        <textarea class="form-control" {!!$validate!!} rows="6" @if(!$val->hidden) name="{{$val->name}}" @else readonly @endif @if($val->must) required @endif>{{$val->value}}</textarea>
+                    @endif
                 @elseif($type == 'editor')
                     <textarea class="form-control editor" {!!$validate!!} rows="6" @if(!$val->hidden) name="{{$val->name}}" @else readonly @endif @if($val->must) required @endif>{{$val->value}}</textarea>
                 @elseif($type == 'markdown')
                     <textarea class="form-control markdown" {!!$validate!!} rows="6" @if(!$val->hidden) name="{{$val->name}}" @else readonly @endif @if($val->must) required @endif>{{$val->value}}</textarea>
-                @elseif($type == 'text')
-                    <input type="text" class="form-control" {!!$validate!!} @if(!$val->hidden) name="{{$val->name}}" @else readonly @endif value="{{$val->value}}" @if($val->must) required @endif>
+                @elseif(in_array($type,['text','input','string','char']))
+                    @if($val->filter == 'array')
+                        <input type="text" class="form-control" {!!$validate!!} @if(!$val->hidden) name="{{$val->name}}" @else readonly @endif value="{{implode(',',$val->value)}}" @if($val->must) required @endif>
+                    @else
+                        <input type="text" class="form-control" {!!$validate!!} @if(!$val->hidden) name="{{$val->name}}" @else readonly @endif value="{{$val->value}}" @if($val->must) required @endif>
+                    @endif
                 @elseif($type == 'password')
                     <div class="input-group">
                         <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-lock"></i></span></div>

@@ -1,6 +1,6 @@
 @extends('admin::layout.vessel.blank')
 @section('container.link.before')
-    <script src="//cdn.bootcdn.net/ajax/libs/echarts/5.0.1/echarts.min.js"></script>
+    <script src="{{admin_cdn('echarts/5.0.1/echarts.min.js',true)}}"></script>
 @endsection
 @section('container.style')
     <style>
@@ -147,7 +147,7 @@
                 type:'pie',
                 avoidLabelOverlap:false,
                 radius:['60%', '90%'],
-                top:30, bottom:30,
+                top:30, bottom:40,
                 label:{show:false, position:'center'},
                 emphasis:{label:{show:true, fontSize:30, fontWeight:'bold'}},
                 data:[]
@@ -157,7 +157,7 @@
             title:{text:'Line Test', subtext:'Test'},
             legend:{type:'scroll', bottom:0},
             tooltip:{renderMode:'richText', trigger:'axis'},
-            grid:{left:20, right:50, top:60, bottom:30, containLabel:true},
+            grid:{left:20, right:50, top:60, bottom:40, containLabel:true},
             xAxis:[{type:'category', boundaryGap:false, data:[]}],
             yAxis:[{type:'value'}],
             series:[]
@@ -166,7 +166,7 @@
             title:{text:'Line Test', subtext:'Test'},
             legend:{type:'scroll', bottom:0},
             tooltip:{renderMode:'richText', trigger:'axis', axisPointer:{type:'shadow'}},
-            grid:{left:20, right:50, top:60, bottom:30, containLabel:true},
+            grid:{left:20, right:50, top:60, bottom:40, containLabel:true},
             xAxis:[{type:'category', data:[]}],
             yAxis:[{type:'value'}],
             series:[]

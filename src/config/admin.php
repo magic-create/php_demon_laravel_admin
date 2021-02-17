@@ -5,8 +5,13 @@ return [
     'title' => env('ADMIN_TITLE', 'Admin Management'),
     //  自定义路由入口
     'path' => env('ADMIN_PATH', 'admin'),
-    //  配置CDN后一些资源将加载CDN，否则走本地
-    'cdn' => env('ADMIN_CDN', 'https://cdn.bootcdn.net/ajax/libs'),
+    //  CDN配置
+    'cdn' => [
+        //  开启CDN后将读取CDN远程资源
+        'status' => (bool)env('ADMIN_CDN_STATUS', true),
+        //  请设置CDN的地址（部分强制使用CDN的地方会用到）
+        'url' => env('ADMIN_CDN_URL', 'https://cdn.bootcdn.net/ajax/libs'),
+    ],
     //  静态资源释放目录（位于public目录下）
     'static' => env('ADMIN_STATIC', '/static/admin'),
     //  布局（horizontal/vertical）

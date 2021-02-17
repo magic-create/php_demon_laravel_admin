@@ -22,7 +22,7 @@ class AdminServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'admin.php', 'admin');
         $this->mergeConfigFrom(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'dbtable.php', 'dbtable');
         //  动态生成最终有效前端资源路径（CDN优先，如果未配置则拼接本地路径）
-        config()->set('admin.assets', (config('admin.cdn') ? : config('admin.static', '/static/admin') . '/libs') . '/');
+        config()->set('admin.assets', (config('admin.cdn.status') ? config('admin.cdn.url') : config('admin.static', '/static/admin') . '/libs') . '/');
         //  加载路由
         $this->loadRoutesFrom(__DIR__ . DIRECTORY_SEPARATOR . 'route.php');
     }
@@ -51,7 +51,7 @@ class AdminServiceProvider extends ServiceProvider
         if (!is_dir(admin_path('Controllers')) && !$this->app->runningInConsole())
             throw new \ErrorException('Please install it (AdminService) correctly, Read the README.md first', DEMON_CODE_SERVICE);
         //  加载视图
-        $this->loadViewsFrom([__DIR__ . DIRECTORY_SEPARATOR . 'views', admin_path('Views')], 'admin');
+        $this->loadViewsFrom([admin_path('Views'), __DIR__ . DIRECTORY_SEPARATOR . 'views'], 'admin');
         //  实例化更多
         $this->app->singleton('admin', function($app) { return new Admin($app['config']); });
         //  前端资源

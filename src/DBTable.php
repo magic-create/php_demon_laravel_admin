@@ -409,9 +409,13 @@ class DBTable
                     break;
                 //  编辑字段
                 case 'edit':
-                default:
                     foreach ($list as $k => $v)
                         $list[$k]->{$key} = $callback ? $callback($v) : $list[$k]->{$key};
+                    break;
+                //  自动识别
+                default:
+                    foreach ($list as $k => $v)
+                        $list[$k]->{$key} = $callback ? $callback($v) : ($list[$k]->{$key} ?? null);
             }
         }
 
@@ -478,6 +482,7 @@ class DBTable
         foreach ($data as $key => $val) {
             // 将name的表去掉
             $name = $val['name'] ?? $val['data'];
+            $data[$key]['name'] = $val['name'] = $name;
             if ($name == $val['data'] && $strrpos = strrpos($name, '.') !== false)
                 $data[$key]['name'] = $val['name'] = substr($name, $strrpos + 1);
             // 如果有预设默认值

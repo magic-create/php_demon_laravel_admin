@@ -119,15 +119,16 @@ function admin_error($key, $replace = [], $locale = null)
  * 运维后台CDN资源
  *
  * @param string $path
+ * @param bool   $force
  *
  * @return string
  *
  * @author    ComingDemon
  * @copyright 魔网天创信息科技
  */
-function admin_cdn($path = '')
+function admin_cdn($path = '', $force = false)
 {
-    return config('admin.assets') . $path;
+    return ($force ? config('admin.cdn.url') . '/' : config('admin.assets')) . $path;
 }
 
 /**

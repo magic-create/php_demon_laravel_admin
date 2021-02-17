@@ -45,7 +45,7 @@
                         @yield('page')
                         {{--Tab区域--}}
                         @if(config('admin.tabs') && !admin_tabs())
-                            <script>$.admin.tabs.init({render:'.content-page > .content', symbol:'{{config('admin.tabs')}}', metismenu:'.metismenu', store:true});</script>
+                            <script>$.admin.tabs.init({render:'.content-page > .content', symbol:'{{config('admin.tabs')}}', metismenu:'.metismenu', drop:240});</script>
                         @endif
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                     @if(config('admin.tabs') && !admin_tabs())
                         <script>
                             $.admin.tabs.init({
-                                render:'.wrapper', symbol:'{{config('admin.tabs')}}', metismenu:'.metismenu', offset:170, drop:280, store:true,
+                                render:'.wrapper', symbol:'{{config('admin.tabs')}}', metismenu:'.metismenu', offset:170, drop:280,
                                 resize:function(e){
                                     e.settings.offset = e.width > 991 ? 165 : 55;
                                     e.settings.drop = e.width > 991 ? 280 : (e.width > 620 ? 320 : 240);

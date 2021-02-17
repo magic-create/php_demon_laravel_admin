@@ -15,22 +15,22 @@ class Api
     /**
      * @var int 状态码
      */
-    private $code = 0;
+    public $code = 0;
 
     /**
      * @var string 信息内容
      */
-    private $message = 'success';
+    public $message = 'success';
 
     /**
      * @var array 数据
      */
-    private $data = [];
+    public $data = [];
 
     /**
      * @var string[] 错误提示
      */
-    private $default = [
+    public $default = [
         DEMON_CODE_PARAM,
         DEMON_CODE_AUTH,
         DEMON_CODE_FORBID,

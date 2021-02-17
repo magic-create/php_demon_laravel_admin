@@ -2,14 +2,9 @@
 
 namespace Demon\AdminLaravel\example;
 
-use Demon\AdminLaravel\Admin;
-use Demon\AdminLaravel\AdminServiceProvider;
 use Demon\AdminLaravel\Controller as Controllers;
 use Demon\AdminLaravel\Setting;
-use Gregwar\Captcha\CaptchaBuilder;
-use Gregwar\Captcha\PhraseBuilder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class Controller extends Controllers
 {
@@ -353,7 +348,7 @@ class Controller extends Controllers
             foreach ($save['change'] as $key => $val)
                 Service::model(Service::SettingModel)->where('module', $module)->where('name', $key)->update(['before' => DB::raw('value'), 'value' => $val]);
             //  设置记录
-            app('admin')->log->setContent($save['differ']);
+            app('admin')->log->setTag('example.setting')->setContent($save['differ']);
 
             return $this->api->send();
         }
