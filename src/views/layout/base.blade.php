@@ -42,16 +42,16 @@
     <script src="{{admin_cdn('cropperjs/1.5.9/cropper.min.js')}}"></script>
     <script src="{{admin_cdn('clipboard.js/2.0.6/clipboard.min.js')}}"></script>
     <script src="{{admin_static('libs/bootstrap4-layer/3.1.1/layer.min.js')}}"></script>
-    {{--从配置项循环加载--}}
-    @foreach(config('admin.js',[]) as $item)
-        <script src="{{$item}}"></script>
-    @endforeach
     {{--前置引入区域--}}
     @yield('link.before')
     {{--启动应用--}}
     <script src="{{admin_static('js/app.js')}}"></script>
     <script src="{{admin_static('js/demon.min.js')}}"></script>
     <script src="{{admin_static('js/lang/'.app()->getLocale().'.js')}}"></script>
+    {{--从配置项循环加载--}}
+    @foreach(config('admin.js',[]) as $item)
+        <script src="{{$item}}"></script>
+    @endforeach
     {{--加载脚本--}}
     <script src="{{admin_cdn('twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js')}}"></script>
     {{--加载样式--}}

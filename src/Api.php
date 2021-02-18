@@ -218,6 +218,20 @@ class Api
     }
 
     /**
+     * 快速输出内容
+     *
+     * @param mixed ...$data
+     *
+     * @return string
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function sendData(...$data)
+    {
+        return $this->setData(...$data)->send();
+    }
+
+    /**
      * 设置状态码
      *
      * @param $code
@@ -236,6 +250,21 @@ class Api
             $this->message = $this->default[$this->code] ?? 'fail';
 
         return $this;
+    }
+
+    /**
+     * 快速输出状态码
+     *
+     * @param int   $code
+     * @param array $extend
+     *
+     * @return string
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function sendCode(int $code, array $extend = [])
+    {
+        return $this->setCode($code)->send($extend);
     }
 
     /**
