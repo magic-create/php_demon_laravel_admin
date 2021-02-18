@@ -724,6 +724,44 @@ EOF;
     }
 
     /**
+     * 路由请求权限拦截判断
+     *
+     * @param string $action
+     * @param array  $except
+     * @param array  $assgin
+     *
+     * @return bool
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function intercept(string $action, array $except = [], array $assgin = [])
+    {
+        //  如果标记了通配则直接通过
+        if (in_array('*', $except))
+            return true;
+        //  如果在排除规则也通过
+        if (in_array($action, $except))
+            return true;
+        //  是否指定了权限分配
+        foreach ($assgin as $parent => $childs) {
+            //  正常是数组，也兼容单字符串
+            $childs = is_array($childs) ? $childs : [$childs];
+            //  匹配父指派，可以是通配也可以是当前Action
+            if (in_array('*', $childs) || in_array($action, $childs)) {
+                //  如果父指派排除则通过
+                if (in_array($parent, $except))
+                    return true;
+                //  如果父指派通过则通过
+                if (self::check(bomber()->strReplaceOnce($action, $parent, url()->current(), 'post')))
+                    return true;
+            }
+        }
+
+        //  在规则中通过检查
+        return self::check(url()->current());
+    }
+
+    /**
      * 获取用户对操作的权限
      *
      * @param string $path

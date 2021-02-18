@@ -28,16 +28,19 @@ class Controller extends BaseController
     protected $user = null;
 
     /**
-     *
      * @var array 无需登录
      */
     protected $loginExcept = [];
 
     /**
-     *
      * @var array 无需权限
      */
     protected $accessExcept = [];
+
+    /**
+     * @var array 权限分配
+     */
+    protected $accessAssign = [];
 
     /**
      * Controller constructor.
@@ -138,7 +141,7 @@ class Controller extends BaseController
         //  检查权限
         if (config('admin.access')) {
             //  需要权限
-            if (!in_array('*', $this->accessExcept) && !in_array($action, $this->accessExcept) && !app('admin')->access->check(url()->current())) {
+            if (!app('admin')->access->intercept($action, $this->accessExcept, $this->accessAssign)) {
                 abort(DEMON_SUBMIT ?
                     response()->json(['code' => DEMON_CODE_ACCESS, 'message' => admin_error(DEMON_CODE_ACCESS)], DEMON_CODE_ACCESS) :
                     response(admin_view('preset.error.general', ['code' => DEMON_CODE_ACCESS, 'message' => admin_error(DEMON_CODE_ACCESS)]), DEMON_CODE_ACCESS));

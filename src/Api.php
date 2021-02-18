@@ -183,6 +183,20 @@ class Api
     }
 
     /**
+     * 快速输出错误
+     *
+     * @param int    $error
+     * @param string $message
+     *
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function sendError($error = DEMON_CODE_PARAM, $message = '')
+    {
+        return abort($this->setError($error, $message)->send());
+    }
+
+    /**
      * 设置返回数据
      *
      * @param mixed ...$data

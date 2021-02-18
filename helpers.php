@@ -35,6 +35,9 @@ function admin_tabs($type = 'html', $url = null, $replace = false)
     if ($replace !== false)
         return str_replace("{$key}={$type}", "{$key}={$replace}", $url);
 
+    if ($type == 'html' && (DEMON_INAJAX || DEMON_SUBMIT))
+        return true;
+
     parse_str(parse_url($url)['query'] ?? '', $parm);
 
     return $key ? $type ? arguer($key, '', 'string', $parm) === $type : arguer($key, false, 'bool', $parm) : false;

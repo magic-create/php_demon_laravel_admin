@@ -42,6 +42,10 @@
     <script src="{{admin_cdn('cropperjs/1.5.9/cropper.min.js')}}"></script>
     <script src="{{admin_cdn('clipboard.js/2.0.6/clipboard.min.js')}}"></script>
     <script src="{{admin_static('libs/bootstrap4-layer/3.1.1/layer.min.js')}}"></script>
+    {{--从配置项循环加载--}}
+    @foreach(config('admin.js',[]) as $item)
+        <script src="{{$item}}"></script>
+    @endforeach
     {{--前置引入区域--}}
     @yield('link.before')
     {{--启动应用--}}
@@ -59,6 +63,10 @@
     <link href="{{admin_cdn('font-awesome/5.15.1/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{admin_cdn('node-waves/0.7.6/waves.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{admin_static('css/theme_'.config('admin.theme').'.css')}}" rel="stylesheet" type="text/css">
+    {{--从配置项循环加载--}}
+    @foreach(config('admin.css',[]) as $item)
+        <link href="{{$item}}" rel="stylesheet" type="text/css">
+    @endforeach
     {{--挂载引入区域--}}
     @yield('link.after')
     <script>$.ajaxSetup({headers:{'X-CSRF-TOKEN':window._token}});</script>

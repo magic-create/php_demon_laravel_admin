@@ -84,6 +84,10 @@ return [
         //  顶部导航
         'topbar' => env('ADMIN_ELEMENT_TOPBAR', 'admin::preset.element.topbar')
     ],
+    //  附加全局JS
+    'js' => [],
+    //  附加全局CSS
+    'css' => [],
     //  背景图片
     'background' => [
         //  切换模式（random/daily）
