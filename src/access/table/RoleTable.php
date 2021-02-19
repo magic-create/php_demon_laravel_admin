@@ -67,7 +67,9 @@ class RoleTable extends DBTable
             '_action' => [
                 'type' => 'add',
                 'callback' => function($val) {
-                    return $val->system ? '' : $this->access->action('edit', true, admin_button('edit')) . $this->access->action('del', true, admin_button('del'));
+                    return $val->system ? '' :
+                        $this->access->action('edit', true, admin_button('edit', ['modal' => $this->access->getLang('edit_role')])) .
+                        $this->access->action('del', true, admin_button('del', ['modal' => $this->access->getLang('del_role')]));
                 }
             ],
         ];

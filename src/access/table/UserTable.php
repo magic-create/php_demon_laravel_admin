@@ -112,9 +112,9 @@ class UserTable extends DBTable
             '_action' => [
                 'type' => 'add',
                 'callback' => function($val) {
-                    return $this->access->action('info', true, admin_button('info')) .
-                        $this->access->action('edit', true, admin_button('edit')) .
-                        $this->access->action('del', true, $val->system ? '' : admin_button('del'));
+                    return $this->access->action('info', true, admin_button('info', ['modal' => $this->access->getLang('user_info')])) .
+                        $this->access->action('edit', true, admin_button('edit', ['modal' => $this->access->getLang('edit_user')])) .
+                        $this->access->action('del', true, $val->system ? '' : admin_button('del', ['modal' => $this->access->getLang('del_user')]));
                 }
             ],
         ];

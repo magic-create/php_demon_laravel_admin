@@ -240,7 +240,8 @@ class DBTable
             $val['text'] = $val['text'] ?? '';
             $val['class'] = ($val['class'] ?? '') ? : $this->config->toolbarButton ?? 'btn btn-secondary';
             $val['title'] = $val['title'] ?? '';
-            $val['attr'] = $val['attr'] ?? [];
+            $val['modal'] = $val['modal'] ?? $val['text'];
+            $val['attr'] = array_merge(['modal' => $val['modal']], $val['attr'] ?? []);
             $val['icon'] = $val['icon'] ?? '';
             $val['text'] = ($val['icon'] ? admin_html()->fast('', [], 'i', $val['icon']) : '') . $val['text'];
             if ($val['title']) {

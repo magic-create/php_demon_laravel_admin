@@ -14,7 +14,7 @@
                         window.open($.admin.table.getUrl('export'));
                         break;
                     case 'clear':
-                        $.admin.layer.confirm('{{$dbTable->access->getLang('clear_log')}}', function(index){
+                        $.admin.layer.confirm(a.$elem.attr('modal'), function(index){
                             $.post('{{$dbTable->access->path('clear')}}', function(data){
                                 $.admin.api.success(data, function(){
                                     $.admin.layer.close(index);
@@ -42,10 +42,10 @@
             $('body').on('row:action', function(e, a){
                 switch(a.action){
                     case 'info':
-                        $.admin.api.open('{{$dbTable->access->getLang('log_info')}}', '{{$dbTable->access->path('info')}}?lid=' + a.row.lid, {}, function(index){$.admin.layer.close(index);});
+                        $.admin.api.open(a.$elem.attr('modal'), '{{$dbTable->access->path('info')}}?lid=' + a.row.lid, {}, function(index){$.admin.layer.close(index);});
                         break;
                     case 'del':
-                        $.admin.layer.confirm('{{$dbTable->access->getLang('del_log')}}', function(index){
+                        $.admin.layer.confirm(a.$elem.attr('modal'), function(index){
                             $.post('{{$dbTable->access->path('del')}}', {lid:a.row.lid}, function(data){
                                 $.admin.api.success(data, function(){
                                     $.admin.layer.close(index);

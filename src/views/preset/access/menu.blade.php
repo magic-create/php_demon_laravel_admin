@@ -17,7 +17,7 @@
             $('body').on('toolbar:action', function(e, a){
                 switch(a.action){
                     case 'add':
-                        $.admin.api.open('{{$dbTable->access->getLang('add_menu')}}', '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
+                        $.admin.api.open($(a.$elem).attr('modal'), '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
                                 $.admin.layer.close(index);
                                 $.admin.alert.success('{{$dbTable->access->getLang('add_menu_success')}}');
@@ -70,7 +70,7 @@
                         $.post('{{$dbTable->access->path('status')}}', {mid:a.row.mid, status:a.switch}, function(){$.admin.table.method('refresh');}).fail($.admin.api.fail);
                         break;
                     case 'edit':
-                        $.admin.api.open('{{$dbTable->access->getLang('edit_menu')}} : ' + (a.row.title ? a.row.title : a.row.path), '{{$dbTable->access->path('edit')}}?mid=' + a.row.mid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
+                        $.admin.api.open(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), '{{$dbTable->access->path('edit')}}?mid=' + a.row.mid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
                                 $.admin.layer.close(index);
                                 $.admin.alert.success('{{$dbTable->access->getLang('edit_menu_success')}}');
@@ -80,7 +80,7 @@
                         });
                         break;
                     case 'add':
-                        $.admin.api.open('{{$dbTable->access->getLang('add_menu')}} : ' + (a.row.title ? a.row.title : a.row.path), '{{$dbTable->access->path('add')}}?upId=' + a.row.mid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
+                        $.admin.api.open(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), '{{$dbTable->access->path('add')}}?upId=' + a.row.mid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
                                 $.admin.layer.close(index);
                                 $.admin.alert.success('{{$dbTable->access->getLang('add_menu_success')}}');
@@ -90,7 +90,7 @@
                         });
                         break;
                     case 'del':
-                        $.admin.layer.confirm('{{$dbTable->access->getLang('del_menu')}} : ' + (a.row.title ? a.row.title : a.row.path), function(index){
+                        $.admin.layer.confirm(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), function(index){
                             $.post('{{$dbTable->access->path('del')}}', {mid:a.row.mid}, function(data){
                                 $.admin.api.success(data, function(){
                                     $.admin.layer.close(index);

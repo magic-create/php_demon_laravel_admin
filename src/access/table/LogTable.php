@@ -27,7 +27,7 @@ class LogTable extends DBTable
     public function setButton()
     {
         return [
-            'clear' => $this->access->action('clear', true, ['class' => 'btn btn-dark', 'text' => $this->access->getLang('clear'), 'icon' => 'fa fa-bomb']),
+            'clear' => $this->access->action('clear', true, ['class' => 'btn btn-dark', 'text' => $this->access->getLang('clear'), 'icon' => 'fa fa-bomb', 'modal' => $this->access->getLang('clear_log')]),
             'del' => $this->access->action('del', true, ['class' => 'btn btn-danger', 'text' => $this->access->getLang('batch_del'), 'icon' => 'fa fa-trash-alt']),
             'export' => $this->access->action('export', true, ['class' => 'btn btn-success', 'text' => $this->access->getLang('export'), 'icon' => 'fa fa-file-download']),
         ];
@@ -94,8 +94,8 @@ class LogTable extends DBTable
             '_action' => [
                 'type' => 'add',
                 'callback' => function($val) {
-                    return $this->access->action('info', true, admin_button('info')) .
-                        $this->access->action('del', true, $val->system ? '' : admin_button('del'));
+                    return $this->access->action('info', true, admin_button('info', ['modal' => $this->access->getLang('log_info')])) .
+                        $this->access->action('del', true, $val->system ? '' : admin_button('del', ['modal' => $this->access->getLang('del_log')]));
                 }
             ],
         ];

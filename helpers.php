@@ -208,12 +208,19 @@ function admin_html()
  */
 function admin_button($action = '', $type = '', $parm = [])
 {
+    //  type和action相同的情况下可以向前一位参数
+    if (is_array($type)) {
+        $parm = $type;
+        $type = $action;
+    }
     $text = $parm['text'] ?? '';
     $title = $parm['title'] ?? $text;
+    $modal = $parm['modal'] ?? $text;
     $tag = $parm['tag'] ?? 'button';
     $size = $parm['size'] ?? 'sm';
     $theme = $parm['theme'] ?? 'secondary';
     $icon = $parm['icon'] ?? '';
+    $auto = $parm['auto'] ?? false;
     $type = $type ? : $action;
     switch ($type) {
         //  新增
@@ -258,6 +265,6 @@ function admin_button($action = '', $type = '', $parm = [])
 
     //  返回内容
     return admin_html()->button(($icon ? admin_html()->fast('', [], 'i', $icon) : '') . $text, ($parm['attr'] ?? []) + [
-            'action' => $action, 'title' => $title, 'data-toggle' => 'tooltip', 'data-trigger' => 'hover'
+            'action' => $action . ($auto ? (ucfirst(is_string($auto) ? $auto : 'auto')) : ''), 'title' => $title, 'modal' => $modal, 'data-toggle' => 'tooltip', 'data-trigger' => 'hover'
         ], $tag, "btn-{$size} btn-{$theme} " . ($parm['class'] ?? ''));
 }

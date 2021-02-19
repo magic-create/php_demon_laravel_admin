@@ -11,7 +11,7 @@
             $('body').on('toolbar:action', function(e, a){
                 switch(a.action){
                     case 'add':
-                        $.admin.api.open('{{$dbTable->access->getLang('add_user')}}', '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
+                        $.admin.api.open($(a.$elem).attr('modal'), '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
                                 $.admin.layer.close(index);
                                 $.admin.alert.success('{{$dbTable->access->getLang('add_user_success')}}');
@@ -53,7 +53,7 @@
                         $.post('{{$dbTable->access->path('status')}}', {uid:a.row.uid, status:a.switch}, function(){$.admin.table.method('refresh');}).fail($.admin.api.fail);
                         break;
                     case 'edit':
-                        $.admin.api.open('{{$dbTable->access->getLang('edit_user')}} : ' + a.row.nickname, '{{$dbTable->access->path('edit')}}?uid=' + a.row.uid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
+                        $.admin.api.open($(a.$elem).attr('modal') + ' : ' + a.row.nickname, '{{$dbTable->access->path('edit')}}?uid=' + a.row.uid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
                                 $.admin.layer.close(index);
                                 $.admin.alert.success('{{$dbTable->access->getLang('edit_user_success')}}');
@@ -63,10 +63,10 @@
                         });
                         break;
                     case 'info':
-                        $.admin.api.open('{{$dbTable->access->getLang('user_info')}} : ' + a.row.nickname, '{{$dbTable->access->path('info')}}?uid=' + a.row.uid, {}, function(index){$.admin.layer.close(index);});
+                        $.admin.api.open($(a.$elem).attr('modal') + ' : ' + a.row.nickname, '{{$dbTable->access->path('info')}}?uid=' + a.row.uid, {}, function(index){$.admin.layer.close(index);});
                         break;
                     case 'del':
-                        $.admin.layer.confirm('{{$dbTable->access->getLang('del_user')}} : ' + a.row.nickname, function(index){
+                        $.admin.layer.confirm($(a.$elem).attr('modal') + ' : ' + a.row.nickname, function(index){
                             $.post('{{$dbTable->access->path('del')}}', {uid:a.row.uid}, function(data){
                                 $.admin.api.success(data, function(){
                                     $.admin.layer.close(index);

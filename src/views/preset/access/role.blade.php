@@ -11,7 +11,7 @@
             $('body').on('toolbar:action', function(e, a){
                 switch(a.action){
                     case 'add':
-                        $.admin.api.open('{{$dbTable->access->getLang('add_role')}}', '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
+                        $.admin.api.open($(a.$elem).attr('modal'), '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
                                 $.admin.layer.close(index);
                                 $.admin.alert.success('{{$dbTable->access->getLang('add_role_success')}}');
@@ -53,7 +53,7 @@
                         $.post('{{$dbTable->access->path('status')}}', {rid:a.row.rid, status:a.switch}, function(){$.admin.table.method('refresh');}).fail($.admin.api.fail);
                         break;
                     case 'edit':
-                        $.admin.api.open('{{$dbTable->access->getLang('edit_role')}} : ' + a.row.name, '{{$dbTable->access->path('edit')}}?rid=' + a.row.rid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
+                        $.admin.api.open(a.$elem.attr('modal') + ' : ' + a.row.name, '{{$dbTable->access->path('edit')}}?rid=' + a.row.rid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
                                 $.admin.layer.close(index);
                                 $.admin.alert.success('{{$dbTable->access->getLang('edit_role_success')}}');
@@ -63,7 +63,7 @@
                         });
                         break;
                     case 'del':
-                        $.admin.layer.confirm('{{$dbTable->access->getLang('del_role')}} : ' + a.row.title, function(index){
+                        $.admin.layer.confirm(a.$elem.attr('modal') + ' : ' + a.row.name, function(index){
                             $.post('{{$dbTable->access->path('del')}}', {rid:a.row.rid}, function(data){
                                 $.admin.api.success(data, function(){
                                     $.admin.layer.close(index);
