@@ -30,6 +30,11 @@ class DBTable
     public $store = [];
 
     /**
+     * @var bool 静态化数据（不进行动态查询，调用setData直接设置内容）
+     */
+    public $static = false;
+
+    /**
      * @var Service
      */
     public $access;
@@ -97,6 +102,8 @@ class DBTable
         $this->getConfig();
         $this->getField();
         $this->access = $this->access ? : app('admin')->access;
+        if ($this->static)
+            $this->data = $this->setData();
     }
 
     /**
@@ -932,18 +939,26 @@ class DBTable
     /**
      * 直接设置内容
      *
-     * @param array $data
-     *
      * @return $this
      *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function setData($data = [])
+    public function setData()
     {
-        $this->data = $data;
+        return [];
+    }
 
-        return $this;
+    /**
+     * 设置携带信息
+     *
+     * @return array
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setWith()
+    {
+        return [];
     }
 
     /**
@@ -958,12 +973,13 @@ class DBTable
     {
         $data = [$this->config->totalField => $this->count()];
         if (config('app.debug'))
-            $data['_debug'] = [$this->config->totalField => !$this->data ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null];
-        if ($statis = $this->getStatis($this->query))
+            $data['_debug'] = [$this->config->totalField => !$this->static ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null];
+        if (!$this->static && $statis = $this->getStatis($this->query))
             $data['statis'] = $statis;
         $data[$this->config->dataField] = $this->getFormat($this->get(2));
         if (config('app.debug'))
-            $data['_debug'][$this->config->dataField] = !$this->data ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null;
+            $data['_debug'][$this->config->dataField] = !$this->static ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null;
+        $data += $this->setWith();
 
         //  输出JSON
         return new JsonResponse($data);
@@ -979,7 +995,7 @@ class DBTable
      */
     public function count()
     {
-        return $this->data ? count($this->data) : $this->getQuery(0)->count();
+        return $this->static ? count($this->data) : $this->getQuery(0)->count();
     }
 
     /**
@@ -994,7 +1010,7 @@ class DBTable
      */
     public function get($step = 1)
     {
-        return $this->data ? collect($this->data) : $this->getQuery($step)->select(array_values($this->field))->get();
+        return $this->static ? collect($this->data) : $this->getQuery($step)->select(array_values($this->field))->get();
     }
 
     /**
