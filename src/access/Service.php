@@ -751,8 +751,15 @@ EOF;
                 //  如果父指派排除则通过
                 if (in_array($parent, $except))
                     return true;
+                //  特殊权限判断（index为父指派）
+                $needle = $action;
+                $replace = $parent;
+                if (in_array($parent, ['', '/', 'index'])) {
+                    $needle = "/{$action}";
+                    $replace = '';
+                }
                 //  如果父指派通过则通过
-                if (self::check(bomber()->strReplaceOnce($action, $parent, url()->current(), 'post')))
+                if (self::check(bomber()->strReplaceOnce($needle, $replace, url()->current(), 'post')))
                     return true;
             }
         }
