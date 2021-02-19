@@ -176,6 +176,29 @@ class DBTable
     }
 
     /**
+     * 设置请求参数
+     *
+     * @param      $key
+     * @param null $val
+     *
+     * @return $this
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function presetParams($key, $val = null)
+    {
+        $this->preset['presetParams'] = $this->preset['presetParams'] ?? [];
+        if (is_string($key))
+            $this->preset['presetParams'][$key] = $val;
+        else
+            $this->preset['presetParams'] = array_merge($this->preset['presetParams'], $key);
+        //  合并到配置项
+        $this->config = bomber()->objectMerge($this->config, $this->preset);
+
+        return $this;
+    }
+
+    /**
      * 获取前置配置
      *
      * @return array

@@ -24,6 +24,7 @@ return [
     'paginationLoop' => false,
     'showJumpTo' => true,
     'queryParamsType' => 'limit',
+    'presetParams' => [],
     'search' => true,
     'searchOnEnterKey' => true,
     'searchPanel' => true,
