@@ -89,16 +89,13 @@ class MenuTable extends DBTable
             'icon' => function($val) { return $val->icon ? admin_html('fast', '', [], 'i', $val->icon) : null; },
             'deepTitle' => function($val) { return $val->deepTitle; },
             'status' => function($val) { return admin_html('switch', $this->access->action('status', true) && !$val->system ? ['action' => 'status'] : ['readonly' => true], $val->status); },
-            '_action' => [
-                'type' => 'add',
-                'callback' => function($val) {
-                    return $val->system ? '' :
-                        $this->access->action('weight', true, admin_button('weight', '', ['icon' => 'fa fa-arrows-alt', 'attr' => ['title' => $this->access->getLang('drag_weight'), 'data-container' => '.bootstrap-table']])) .
-                        $this->access->action('add', true, $val->type != 'action' ? admin_button('add', ['modal' => $this->access->getLang('add_menu')]) : '') .
-                        $this->access->action('edit', true, admin_button('edit', ['modal' => $this->access->getLang('edit_menu')])) .
-                        $this->access->action('del', true, admin_button('del', ['modal' => $this->access->getLang('del_menu')]));
-                }
-            ],
+            '_action' => function($val) {
+                return $val->system ? '' :
+                    $this->access->action('weight', true, admin_button('weight', '', ['icon' => 'fa fa-arrows-alt', 'attr' => ['title' => $this->access->getLang('drag_weight'), 'data-container' => '.bootstrap-table']])) .
+                    $this->access->action('add', true, $val->type != 'action' ? admin_button('add', ['modal' => $this->access->getLang('add_menu')]) : '') .
+                    $this->access->action('edit', true, admin_button('edit', ['modal' => $this->access->getLang('edit_menu')])) .
+                    $this->access->action('del', true, admin_button('del', ['modal' => $this->access->getLang('del_menu')]));
+            },
         ];
     }
 }

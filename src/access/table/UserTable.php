@@ -109,14 +109,11 @@ class UserTable extends DBTable
             'activeTime' => function($val) { return $val->activeTime ? msdate('Y-m-d H:i:s', $val->activeTime) : null; },
             'loginTime' => function($val) { return $val->loginTime ? msdate('Y-m-d H:i:s', $val->loginTime) : null; },
             'status' => function($val) { return admin_html('switch', $this->access->action('status', true) && !$val->system ? ['action' => 'status'] : ['readonly' => true], $val->status); },
-            '_action' => [
-                'type' => 'add',
-                'callback' => function($val) {
-                    return $this->access->action('info', true, admin_button('info', ['modal' => $this->access->getLang('user_info')])) .
-                        $this->access->action('edit', true, admin_button('edit', ['modal' => $this->access->getLang('edit_user')])) .
-                        $this->access->action('del', true, $val->system ? '' : admin_button('del', ['modal' => $this->access->getLang('del_user')]));
-                }
-            ],
+            '_action' => function($val) {
+                return $this->access->action('info', true, admin_button('info', ['modal' => $this->access->getLang('user_info')])) .
+                    $this->access->action('edit', true, admin_button('edit', ['modal' => $this->access->getLang('edit_user')])) .
+                    $this->access->action('del', true, $val->system ? '' : admin_button('del', ['modal' => $this->access->getLang('del_user')]));
+            },
         ];
     }
 }
