@@ -68,7 +68,7 @@ class Table extends DBTable
             ['data' => 'a.sex', 'title' => '性别', 'type' => 'select', 'placeholder' => '请选择性别', 'option' => ['list' => $this->store['sex']]],
             [
                 'data' => 'a.avatar', 'title' => '头像', 'type' => 'select', 'placeholder' => '不限', 'option' => ['list' => $this->store['avatar']],
-                'where' => function($field, $value) {
+                'where' => function($value, $field) {
                     return $value == 'have' ?
                         function($query) use ($field) { $query->whereNotNull($field)->whereOr($field, '!=', ''); } :
                         function($query) use ($field) { $query->whereNull($field)->whereOr($field, ''); };

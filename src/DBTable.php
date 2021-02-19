@@ -10,6 +10,7 @@
 
 namespace Demon\AdminLaravel;
 
+use Demon\AdminLaravel\access\Service;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,11 @@ class DBTable
      * @var array 自定义储存
      */
     public $store = [];
+
+    /**
+     * @var Service
+     */
+    public $access;
 
     /**
      * @var object 完整配置项
@@ -90,6 +96,7 @@ class DBTable
     {
         $this->getConfig();
         $this->getField();
+        $this->access = $this->access ? : app('admin')->access;
     }
 
     /**
@@ -615,7 +622,7 @@ class DBTable
                 if ($val->value !== '') {
                     //  是自定义方法
                     if (bomber()->isFunction($val->where, false)) {
-                        if ($call = call_user_func($val->where, $val->data, $val->value))
+                        if ($call = call_user_func($val->where, $val->value, $val->data))
                             $where[] = $call;
                     }
                     else {

@@ -49,7 +49,7 @@ class UserTable extends DBTable
             [
                 'data' => 'b.role', 'title' => $this->access->getLang('role'), 'type' => 'select', 'placeholder' => $this->access->getLang('option_all'),
                 'option' => ['bind' => 'rid', 'title' => 'deepName', 'list' => $this->store['role']], 'attr' => ['data-select' => true],
-                'where' => function($field, $value) { return function($query) use ($field, $value) { $query->whereRaw("FIND_IN_SET({$value},{$field})"); }; },
+                'where' => function($value, $field) { return function($query) use ($field, $value) { $query->whereRaw("FIND_IN_SET({$value},{$field})"); }; },
             ],
             ['data' => 'a.remark', 'title' => $this->access->getLang('remark'), 'where' => 'like'],
             ['data' => 'a.loginTime', 'title' => $this->access->getLang('loginTime'), 'type' => 'time', 'where' => 'range', 'format' => 'mstime', 'attr' => ['data-time' => null]],
