@@ -84,9 +84,10 @@ class LogTable extends DBTable
         return [
             'uid' => function($val) { return "[{$val->uid}]{$val->username}"; },
             'path' => function($val) {
-                return admin_html('input', ['readonly' => true, 'value' => $val->path], 'form-control input-sm d-none d-lg-block', [
+                return admin_html('input', ['readonly' => true, 'value' => $val->path], 'form-control input-sm', [
                     'class' => 'input-group input-group-sm',
-                    'append' => "<button class='btn btn-secondary clipboard' data-clipboard-text='{$val->path}'><i class='far fa-clipboard'></i></button>"
+                    'append' => "<button class='btn btn-secondary clipboard' data-clipboard-text='{$val->path}'><i class='far fa-clipboard'></i></button>",
+                    'attr' => ['style' => 'min-width:120px']
                 ]);
             },
             'ip' => function($val) { return $val->ip ? long2ip($val->ip) : null; },
