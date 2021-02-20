@@ -45,7 +45,7 @@
                         $.admin.table.form($(a.$elem).attr('modal') + ' : ' + a.row.nickname, '{{$dbTable->access->path('edit')}}?uid=' + a.row.uid, {report:'{{$dbTable->access->getLang('edit_user_success')}}'});
                         break;
                     case 'info':
-                        $.admin.api.open($(a.$elem).attr('modal') + ' : ' + a.row.nickname, '{{$dbTable->access->path('info')}}?uid=' + a.row.uid, {}, function(index){$.admin.layer.close(index);});
+                        $.admin.table.layer($(a.$elem).attr('modal') + ' : ' + a.row.nickname, '{{$dbTable->access->path('info')}}?uid=' + a.row.uid);
                         break;
                     case 'del':
                         $.admin.layer.confirm($(a.$elem).attr('modal') + ' : ' + a.row.nickname, function(index){

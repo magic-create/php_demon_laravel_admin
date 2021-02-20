@@ -34,7 +34,7 @@
             $('body').on('row:action', function(e, a){
                 switch(a.action){
                     case 'info':
-                        $.admin.api.open(a.$elem.attr('modal'), '{{$dbTable->access->path('info')}}?lid=' + a.row.lid, {}, function(index){$.admin.layer.close(index);});
+                        $.admin.table.layer(a.$elem.attr('modal'), '{{$dbTable->access->path('info')}}?lid=' + a.row.lid);
                         break;
                     case 'del':
                         $.admin.layer.confirm(a.$elem.attr('modal'), function(index){

@@ -60,7 +60,7 @@
                 switch(a.action){
                     //  查看受邀人
                     case 'invited':
-                        $.admin.table.layer('查看用户 : ' + a.row.nickname + ' 的受邀人', '{{url()->current()}}?_action=invited&inviteUid=' + a.row.uid, {full:true});
+                        $.admin.table.layer('查看用户 : ' + a.row.nickname + ' 的受邀人', '{{url()->current()}}?_action=invited&inviteUid=' + a.row.uid, {full:true, btn:false});
                         break;
                     //  变更积分
                     case 'credit':
