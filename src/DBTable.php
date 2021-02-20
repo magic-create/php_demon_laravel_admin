@@ -981,6 +981,7 @@ class DBTable
      */
     public function ajax()
     {
+        $time = mstime();
         $data = [$this->config->totalField => $this->count()];
         if (config('app.debug'))
             $data['_debug'] = [$this->config->totalField => !$this->static ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null];
@@ -990,6 +991,8 @@ class DBTable
         if (config('app.debug'))
             $data['_debug'][$this->config->dataField] = !$this->static ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null;
         $data += $this->setWith();
+        if (config('app.debug'))
+            $data['_debug']['time'] = (mstime() - $time) . 'ms';
 
         //  输出JSON
         return new JsonResponse($data);
