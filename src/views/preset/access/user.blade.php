@@ -23,7 +23,7 @@
                         var action = a.$elem.attr('action');
                         var index = 0;
                         var success = function(data){
-                            $.admin.table.report(true, '{{$dbTable->access->getLang('batch_success')}}', index);
+                            $.admin.table.report(data, '{{$dbTable->access->getLang('batch_success')}}', index);
                         };
                         var title = $.admin.lang.format('{{$dbTable->access->getLang('batch_confirm')}}', {action:a.$elem.text(), length:uids.length});
                         switch(action){
@@ -58,7 +58,7 @@
                     case 'del':
                         $.admin.layer.confirm($(a.$elem).attr('modal') + ' : ' + a.row.nickname, function(index){
                             $.post('{{$dbTable->access->path('del')}}', {uid:a.row.uid}, function(data){
-                                $.admin.table.report(true, '{{$dbTable->access->getLang('del_user_success')}}', index);
+                                $.admin.table.report(data, '{{$dbTable->access->getLang('del_user_success')}}', index);
                             }).fail($.admin.api.fail);
                         });
                         break;
