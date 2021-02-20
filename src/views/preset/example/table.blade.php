@@ -50,11 +50,7 @@
                         if(!uids.length) return $.admin.api.fail('未选择内容');
                         $.admin.layer.confirm('确认将所选' + uids.length + '项进行' + a.$elem.html(), function(index){
                             $.post('{{url()->current()}}', {_action:a.$elem.data('action'), uid:uids, status:a.$elem.data('value')}, function(data){
-                                $.admin.api.success(data, function(){
-                                    $.admin.layer.close(index);
-                                    $.admin.alert.success('处理成功');
-                                    $.admin.table.method('refresh');
-                                });
+                                $.admin.table.report(data, '处理成功', index);
                             }).fail($.admin.api.fail);
                         });
                         break;
@@ -84,12 +80,8 @@
                         break;
                     case 'edit':
                         $.admin.api.open('编辑用户 : ' + a.row.nickname, '{{url()->current()}}?_action=edit&uid=' + a.row.uid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
-                            if(report.status){
-                                $.admin.layer.close(index);
-                                $.admin.alert.success('编辑成功');
-                                $.admin.table.method('refresh');
-                                return true;
-                            }else $.admin.api.fail(report.xhr);
+                            if(report.status) return $.admin.table.report(true, '编辑成功', index);
+                            else $.admin.api.fail(report.xhr);
                         });
                         break;
                     case 'del':
@@ -97,7 +89,7 @@
                             $.post('{{url()->current()}}', {_action:'delete', uid:a.row.uid}, function(data){
                                 $.admin.api.success(data, function(){
                                     $.admin.layer.close(index);
-                                    $.admin.alert.success('处理成功');
+                                    $.admin.alert.success('删除成功');
                                     $.admin.table.method('refresh');
                                 });
                             }).fail($.admin.api.fail);
@@ -109,11 +101,7 @@
                     case 'invite':
                         $.admin.layer.confirm('确认模拟 : ' + a.row.nickname + ' 的邀请注册', function(index){
                             $.post('{{url()->current()}}', {_action:'invite', inviteCode:a.row.code}, function(data){
-                                $.admin.api.success(data, function(){
-                                    $.admin.layer.close(index);
-                                    $.admin.alert.success('注册成功');
-                                    $.admin.table.method('refresh');
-                                });
+                                $.admin.table.report(data, '注册成功', index);
                             }).fail($.admin.api.fail);
                         });
                         break;

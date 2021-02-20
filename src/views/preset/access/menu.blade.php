@@ -19,10 +19,7 @@
                     case 'add':
                         $.admin.api.open($(a.$elem).attr('modal'), '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
-                                $.admin.layer.close(index);
-                                $.admin.alert.success('{{$dbTable->access->getLang('add_menu_success')}}');
-                                $.admin.table.method('refresh');
-                                return true;
+                                return $.admin.table.report(true, '{{$dbTable->access->getLang('add_menu_success')}}', index);
                             }else $.admin.api.fail(report.xhr);
                         });
                         break;
@@ -32,11 +29,7 @@
                         var action = a.$elem.attr('action');
                         var index = 0;
                         var success = function(data){
-                            $.admin.api.success(data, function(){
-                                $.admin.layer.close(index);
-                                $.admin.alert.success('{{$dbTable->access->getLang('batch_success')}}');
-                                $.admin.table.method('refresh');
-                            });
+                            $.admin.table.report(data, '{{$dbTable->access->getLang('batch_success')}}', index);
                         };
                         var title = $.admin.lang.format('{{$dbTable->access->getLang('batch_confirm')}}', {action:a.$elem.text(), length:mids.length});
                         switch(action){
@@ -72,31 +65,21 @@
                     case 'edit':
                         $.admin.api.open(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), '{{$dbTable->access->path('edit')}}?mid=' + a.row.mid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
-                                $.admin.layer.close(index);
-                                $.admin.alert.success('{{$dbTable->access->getLang('edit_menu_success')}}');
-                                $.admin.table.method('refresh');
-                                return true;
+                                return $.admin.table.report(true, '{{$dbTable->access->getLang('edit_menu_success')}}', index);
                             }else $.admin.api.fail(report.xhr);
                         });
                         break;
                     case 'add':
                         $.admin.api.open(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), '{{$dbTable->access->path('add')}}?upId=' + a.row.mid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
-                                $.admin.layer.close(index);
-                                $.admin.alert.success('{{$dbTable->access->getLang('add_menu_success')}}');
-                                $.admin.table.method('refresh');
-                                return true;
+                                return $.admin.table.report(true, '{{$dbTable->access->getLang('add_menu_success')}}', index);
                             }else $.admin.api.fail(report.xhr);
                         });
                         break;
                     case 'del':
                         $.admin.layer.confirm(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), function(index){
                             $.post('{{$dbTable->access->path('del')}}', {mid:a.row.mid}, function(data){
-                                $.admin.api.success(data, function(){
-                                    $.admin.layer.close(index);
-                                    $.admin.alert.success('{{$dbTable->access->getLang('del_menu_success')}}');
-                                    $.admin.table.method('refresh');
-                                });
+                                $.admin.table.report(data, '{{$dbTable->access->getLang('del_menu_success')}}', index);
                             }).fail($.admin.api.fail);
                         });
                         break;

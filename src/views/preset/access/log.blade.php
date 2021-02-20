@@ -16,11 +16,7 @@
                     case 'clear':
                         $.admin.layer.confirm(a.$elem.attr('modal'), function(index){
                             $.post('{{$dbTable->access->path('clear')}}', function(data){
-                                $.admin.api.success(data, function(){
-                                    $.admin.layer.close(index);
-                                    $.admin.alert.success('{{$dbTable->access->getLang('clear_log_success')}}');
-                                    $.admin.table.method('refresh');
-                                });
+                                $.admin.table.report(data, '{{$dbTable->access->getLang('clear_log_success')}}', index);
                             }).fail($.admin.api.fail);
                         });
                         break;
@@ -29,11 +25,7 @@
                         if(!lids.length) return $.admin.api.fail('{{$dbTable->access->getLang('batch_none')}}');
                         $.admin.layer.confirm($.admin.lang.format('{{$dbTable->access->getLang('batch_confirm')}}', {action:'{{$dbTable->access->getLang('batch_del')}}', length:lids.length}), function(index){
                             $.post('{{$dbTable->access->path('del')}}', {lid:lids}, function(data){
-                                $.admin.api.success(data, function(){
-                                    $.admin.layer.close(index);
-                                    $.admin.alert.success('{{$dbTable->access->getLang('batch_success')}}');
-                                    $.admin.table.method('refresh');
-                                });
+                                $.admin.table.report(data, '{{$dbTable->access->getLang('batch_success')}}', index);
                             }).fail($.admin.api.fail);
                         });
                         break;
@@ -47,11 +39,7 @@
                     case 'del':
                         $.admin.layer.confirm(a.$elem.attr('modal'), function(index){
                             $.post('{{$dbTable->access->path('del')}}', {lid:a.row.lid}, function(data){
-                                $.admin.api.success(data, function(){
-                                    $.admin.layer.close(index);
-                                    $.admin.alert.success('{{$dbTable->access->getLang('del_log_success')}}');
-                                    $.admin.table.method('refresh');
-                                });
+                                $.admin.table.report(data, '{{$dbTable->access->getLang('del_log_success')}}', index);
                             }).fail($.admin.api.fail);
                         });
                         break;

@@ -13,10 +13,7 @@
                     case 'add':
                         $.admin.api.open($(a.$elem).attr('modal'), '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
-                                $.admin.layer.close(index);
-                                $.admin.alert.success('{{$dbTable->access->getLang('add_user_success')}}');
-                                $.admin.table.method('refresh');
-                                return true;
+                                return $.admin.table.report(true, '{{$dbTable->access->getLang('add_user_success')}}', index);
                             }else $.admin.api.fail(report.xhr);
                         });
                         break;
@@ -26,11 +23,7 @@
                         var action = a.$elem.attr('action');
                         var index = 0;
                         var success = function(data){
-                            $.admin.api.success(data, function(){
-                                $.admin.layer.close(index);
-                                $.admin.alert.success('{{$dbTable->access->getLang('batch_success')}}');
-                                $.admin.table.method('refresh');
-                            });
+                            $.admin.table.report(true, '{{$dbTable->access->getLang('batch_success')}}', index);
                         };
                         var title = $.admin.lang.format('{{$dbTable->access->getLang('batch_confirm')}}', {action:a.$elem.text(), length:uids.length});
                         switch(action){
@@ -55,10 +48,7 @@
                     case 'edit':
                         $.admin.api.open($(a.$elem).attr('modal') + ' : ' + a.row.nickname, '{{$dbTable->access->path('edit')}}?uid=' + a.row.uid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
                             if(report.status){
-                                $.admin.layer.close(index);
-                                $.admin.alert.success('{{$dbTable->access->getLang('edit_user_success')}}');
-                                $.admin.table.method('refresh');
-                                return true;
+                                return $.admin.table.report(true, '{{$dbTable->access->getLang('edit_user_success')}}', index);
                             }else $.admin.api.fail(report.xhr);
                         });
                         break;
@@ -68,11 +58,7 @@
                     case 'del':
                         $.admin.layer.confirm($(a.$elem).attr('modal') + ' : ' + a.row.nickname, function(index){
                             $.post('{{$dbTable->access->path('del')}}', {uid:a.row.uid}, function(data){
-                                $.admin.api.success(data, function(){
-                                    $.admin.layer.close(index);
-                                    $.admin.alert.success('{{$dbTable->access->getLang('del_user_success')}}');
-                                    $.admin.table.method('refresh');
-                                });
+                                $.admin.table.report(true, '{{$dbTable->access->getLang('del_user_success')}}', index);
                             }).fail($.admin.api.fail);
                         });
                         break;
