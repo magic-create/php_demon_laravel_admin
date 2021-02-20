@@ -557,15 +557,25 @@ class DBTable
     {
         $list = [];
         if (trim($text) && ($this->config->search ?? false)) {
-            $this->query->where(function($query) use ($text) {
-                foreach ($this->config->columns as $val) {
-                    if (!($val->searchable ?? false) || !($val->field ?? null))
-                        continue;
-                    $field = $this->field[$val->field] ?? $val->field;
-                    $query->orWhere($field, 'like', "%{$text}%");
-                    $list[$field] = $text;
+            $isEnable = false;
+            foreach ($this->config->columns as $val) {
+                if (($val->searchable ?? false) && ($val->field ?? null)) {
+                    $isEnable = true;
+                    break;
                 }
-            });
+            }
+            if ($isEnable)
+                $this->query->where(function($query) use ($text) {
+                    foreach ($this->config->columns as $val) {
+                        if (!($val->searchable ?? false) || !($val->field ?? null))
+                            continue;
+                        $field = explode(' ', $this->field[$val->field] ?? $val->field)[0];
+                        $query->orWhere($field, 'like', "%{$text}%");
+                        $list[$field] = $text;
+                    }
+                });
+            else
+                $this->query->whereRaw('1<>1');
         }
 
         return $list;
