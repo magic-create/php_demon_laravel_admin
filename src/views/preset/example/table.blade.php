@@ -35,13 +35,12 @@
                         break;
                     //  新增用户
                     case 'add':
-                        $.admin.api.open('新增用户', '{{url()->current()}}?_action=add', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
-                            if(report.status){
+                        $.admin.table.form('新增用户', '{{url()->current()}}?_action=add', {
+                            report:function(report, index){
+                                $.admin.alert.success(report.data.message);
                                 $.admin.layer.close(index);
-                                $.admin.alert.success('新增成功');
-                                $.admin.table.method('refresh');
                                 return true;
-                            }else $.admin.api.fail(report.xhr);
+                            }
                         });
                         break;
                     //  批量调整
@@ -61,7 +60,7 @@
                 switch(a.action){
                     //  查看受邀人
                     case 'invited':
-                        $.admin.api.open('查看用户 : ' + a.row.nickname + ' 的受邀人', '{{url()->current()}}?_action=invited&inviteUid=' + a.row.uid, {success:function(layero, index){$.admin.layer.full(index);}}, function(index){$.admin.layer.close(index);});
+                        $.admin.table.layer('查看用户 : ' + a.row.nickname + ' 的受邀人', '{{url()->current()}}?_action=invited&inviteUid=' + a.row.uid, {full:true});
                         break;
                     //  变更积分
                     case 'credit':

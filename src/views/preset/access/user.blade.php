@@ -11,11 +11,7 @@
             $('body').on('toolbar:action', function(e, a){
                 switch(a.action){
                     case 'add':
-                        $.admin.api.open($(a.$elem).attr('modal'), '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
-                            if(report.status){
-                                return $.admin.table.report(true, '{{$dbTable->access->getLang('add_user_success')}}', index);
-                            }else $.admin.api.fail(report.xhr);
-                        });
+                        $.admin.table.form($(a.$elem).attr('modal'), '{{$dbTable->access->path('add')}}', {report:'{{$dbTable->access->getLang('add_user_success')}}'});
                         break;
                     case 'batch':
                         var uids = $.admin.table.getBatch(true);
@@ -46,11 +42,7 @@
                         $.post('{{$dbTable->access->path('status')}}', {uid:a.row.uid, status:a.switch}, function(){$.admin.table.method('refresh');}).fail($.admin.api.fail);
                         break;
                     case 'edit':
-                        $.admin.api.open($(a.$elem).attr('modal') + ' : ' + a.row.nickname, '{{$dbTable->access->path('edit')}}?uid=' + a.row.uid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
-                            if(report.status){
-                                return $.admin.table.report(true, '{{$dbTable->access->getLang('edit_user_success')}}', index);
-                            }else $.admin.api.fail(report.xhr);
-                        });
+                        $.admin.table.form($(a.$elem).attr('modal') + ' : ' + a.row.nickname, '{{$dbTable->access->path('edit')}}?uid=' + a.row.uid, {report:'{{$dbTable->access->getLang('edit_user_success')}}'});
                         break;
                     case 'info':
                         $.admin.api.open($(a.$elem).attr('modal') + ' : ' + a.row.nickname, '{{$dbTable->access->path('info')}}?uid=' + a.row.uid, {}, function(index){$.admin.layer.close(index);});

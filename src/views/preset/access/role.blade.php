@@ -11,11 +11,7 @@
             $('body').on('toolbar:action', function(e, a){
                 switch(a.action){
                     case 'add':
-                        $.admin.api.open($(a.$elem).attr('modal'), '{{$dbTable->access->path('add')}}', function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
-                            if(report.status){
-                                return $.admin.table.report(true, '{{$dbTable->access->getLang('add_role_success')}}', index);
-                            }else $.admin.api.fail(report.xhr);
-                        });
+                        $.admin.table.form($(a.$elem).attr('modal'), '{{$dbTable->access->path('add')}}', {report:'{{$dbTable->access->getLang('add_role_success')}}'});
                         break;
                     case 'batch':
                         var rids = $.admin.table.getBatch(true);
@@ -46,11 +42,7 @@
                         $.post('{{$dbTable->access->path('status')}}', {rid:a.row.rid, status:a.switch}, function(){$.admin.table.method('refresh');}).fail($.admin.api.fail);
                         break;
                     case 'edit':
-                        $.admin.api.open(a.$elem.attr('modal') + ' : ' + a.row.name, '{{$dbTable->access->path('edit')}}?rid=' + a.row.rid, function(index, layer){layer.iframe.$('form').submit();}, function(index, report){
-                            if(report.status){
-                                return $.admin.table.report(true, '{{$dbTable->access->getLang('edit_role_success')}}', index);
-                            }else $.admin.api.fail(report.xhr);
-                        });
+                        $.admin.table.form(a.$elem.attr('modal') + ' : ' + a.row.name, '{{$dbTable->access->path('edit')}}?rid=' + a.row.rid, {report:'{{$dbTable->access->getLang('edit_role_success')}}'});
                         break;
                     case 'del':
                         $.admin.layer.confirm(a.$elem.attr('modal') + ' : ' + a.row.name, function(index){
