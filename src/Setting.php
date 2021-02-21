@@ -76,11 +76,12 @@ class Setting
             $this->list[$key]['data'] = (is_string($val['data']) ? json_decode($val['data']) : $val['data']) ? : [];
             $init = is_string($val['validate']);
             $this->list[$key]['validate'] = ($init ? json_decode($val['validate'], true) : $val['validate']) ? : [];
+            $this->list[$key]['validateAttr'] = $val['validateAttr'] ?? [];
             if ($init) {
                 $validate = [];
                 foreach ($this->list[$key]['validate'] as $rule => $content)
                     $validate[] = $rule . '="' . (is_bool($content) ? ($content ? 'true' : null) : $content) . '"';
-                $this->list[$key]['validate'] = $validate;
+                $this->list[$key]['validateAttr'] = $validate;
             }
             foreach ($this->data as $tag => $data) {
                 if ($val['tag'] == $tag)

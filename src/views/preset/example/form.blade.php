@@ -70,6 +70,14 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label>多选下拉框并保持顺序</label>
+                            <select name="keep" class="form-control select" multiple data-keep="true">
+                                @for($i=1;$i<=10;$i++)
+                                    <option value="{{$i}}">选项-{{$i}}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>自定义</label>
                             <input type="text" name="custom" class="form-control" placeholder="请输入当前年份，如：2021"/>
                         </div>

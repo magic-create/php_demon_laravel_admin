@@ -1,6 +1,6 @@
 <form id="validate-{{$module}}">
     @foreach($list as $key => $val)
-        @php($validate = implode(' ', $val['validate']))
+        @php($validate = implode(' ', $val['validateAttr']))
         @php($val = array_to_object($val->all()))
         @php($type = strtolower($val->type))
         @if($val->module == $module && $val->hidden != 1)
@@ -29,7 +29,7 @@
                     </select>
                 @elseif($type == 'selects')
                     <select class="form-control select" {!!$validate!!} @if(!$val->hidden) name="{{$val->name}}" @else disabled @endif multiple @if($val->must) required @endif>
-                        @foreach($val->data as $k => $v)
+                        @foreach(($val->validate->keep ?? false) ? array_replace(array_flip($val->value), $val->data) : $val->data as $k => $v)
                             <option value="{{$k}}" @if(in_array($k,$val->value)) selected @endif>{{$v}}</option>
                         @endforeach
                     </select>
