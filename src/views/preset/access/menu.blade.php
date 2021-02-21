@@ -62,7 +62,7 @@
                         $.admin.table.form(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), '{{$dbTable->access->path('edit')}}?mid=' + a.row.mid, {report:'{{$dbTable->access->getLang('edit_menu_success')}}'});
                         break;
                     case 'add':
-                        $.admin.table.form(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), '{{$dbTable->access->path('edit')}}?mid=' + a.row.mid, {report:'{{$dbTable->access->getLang('add_menu_success')}}'});
+                        $.admin.table.form(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), '{{$dbTable->access->path('add')}}?upId=' + a.row.mid, {report:'{{$dbTable->access->getLang('add_menu_success')}}'});
                         break;
                     case 'del':
                         $.admin.layer.confirm(a.$elem.attr('modal') + ' : ' + (a.row.title ? a.row.title : a.row.path), function(index){
