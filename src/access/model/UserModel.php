@@ -2,7 +2,6 @@
 
 namespace Demon\AdminLaravel\access\model;
 
-use Demon\AdminLaravel\Api;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -51,7 +50,7 @@ class UserModel extends BaseModel
 
     public static function checkData($data = [], $info = [])
     {
-        $reData = (new Api())->validator([
+        $reData = app('admin')->api->validator([
             'username' => ['rule' => 'required|string|min:2|max:32'],
         ], [], [], $data);
         if (!error_check($reData))

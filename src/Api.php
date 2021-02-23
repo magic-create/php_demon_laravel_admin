@@ -28,9 +28,14 @@ class Api
     public $data = [];
 
     /**
+     * @var int 默认错误码
+     */
+    public $default = DEMON_CODE_PARAM;
+
+    /**
      * @var string[] 错误提示
      */
-    public $default = [
+    public $preset = [
         DEMON_CODE_PARAM,
         DEMON_CODE_AUTH,
         DEMON_CODE_FORBID,
@@ -51,13 +56,15 @@ class Api
     /**
      * Api constructor.
      *
+     * @param int   $default
      * @param array $message
      */
-    public function __construct($message = [])
+    public function __construct($default = DEMON_CODE_PARAM, $message = [])
     {
-        $this->default = $message + array_flip($this->default);
-        foreach (array_keys($this->default) as $code)
-            $this->default[$code] = $message[$code] ?? admin_error($code);
+        $this->preset = $message + array_flip($this->preset);
+        foreach (array_keys($this->preset) as $code)
+            $this->preset[$code] = $message[$code] ?? admin_error($code);
+        $this->default = $default;
     }
 
     /**
@@ -108,7 +115,7 @@ class Api
             }
 
             //  返回错误异常
-            return error_build(DEMON_CODE_PARAM, $message);
+            return error_build($this->default, $message);
         }
 
         //  返回全部参数
@@ -171,7 +178,7 @@ class Api
         if (!is_object($error))
             bomber()->errorCheck($error, function($e) use (&$error) { $error = $e; });
         //  设置错误码
-        $this->setCode($error->code ?? DEMON_CODE_PARAM);
+        $this->setCode($error->code ?? $this->default);
         //  特殊设置内容
         if ($message)
             $error->message = $message;
@@ -185,14 +192,20 @@ class Api
     /**
      * 快速输出错误
      *
-     * @param int    $error
      * @param string $message
+     * @param int    $error
      *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function sendError($error = DEMON_CODE_PARAM, $message = '')
+    public function sendError($message = '', $error = DEMON_CODE_PARAM)
     {
+        //  如果第一个参数是数字则表示错误码，参数顺位
+        if (is_numeric($message)) {
+            $error = $message;
+            $message = '';
+        }
+
         return abort($this->setError($error, $message)->send());
     }
 
@@ -247,7 +260,7 @@ class Api
         $this->code = (int)$code;
         //  有状态码则表示错误
         if (!$this->message || $this->message == 'success')
-            $this->message = $this->default[$this->code] ?? 'fail';
+            $this->message = $this->preset[$this->code] ?? 'fail';
 
         return $this;
     }
@@ -305,6 +318,6 @@ class Api
         $result = array_merge($result, $extend);
 
         //  返回结果内容
-        return response()->json($result, $this->code ? in_array($this->code, array_keys($this->default)) ? $this->code : DEMON_CODE_PARAM : 200, [], JSON_UNESCAPED_UNICODE);
+        return response()->json($result, $this->code ? in_array($this->code, array_keys($this->preset)) ? $this->code : $this->default : 200, [], JSON_UNESCAPED_UNICODE);
     }
 }

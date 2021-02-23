@@ -2,7 +2,6 @@
 
 namespace Demon\AdminLaravel\access\model;
 
-use Demon\AdminLaravel\Api;
 use Illuminate\Support\Facades\Schema;
 
 class RoleModel extends BaseModel
@@ -42,7 +41,7 @@ class RoleModel extends BaseModel
     public static function checkData($data = [], $info = [])
     {
         $store = self::fieldStore();
-        $reData = (new Api())->validator([
+        $reData = app('admin')->api->validator([
             'name' => ['rule' => 'required|string|min:2|max:64'],
         ], [], [], $data);
         if (!error_check($reData))

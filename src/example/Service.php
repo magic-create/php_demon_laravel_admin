@@ -3,7 +3,6 @@
 namespace Demon\AdminLaravel\example;
 
 use Demon\AdminLaravel\access\model\LogModel;
-use Demon\AdminLaravel\Api;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -193,7 +192,7 @@ class Service
         //  字段属性
         $store = self::fieldStore();
         $data['intro'] = arguer('intro', null, 'xss', $data);
-        $reData = (new Api())->validator([
+        $reData = app('admin')->api->validator([
             'nickname' => ['rule' => 'required|string|min:2|max:16', 'message' => '请输入2至16个字的用户昵称'],
             'level' => ['rule' => 'required|numeric|in:' . implode(',', array_keys($store['level'])), 'message' => '请选择正确的等级'],
             'sex' => ['rule' => 'required|numeric|in:' . implode(',', array_keys($store['sex'])), 'message' => '请选择正确的性别'],

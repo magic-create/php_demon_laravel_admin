@@ -2,7 +2,6 @@
 
 namespace Demon\AdminLaravel\access\model;
 
-use Demon\AdminLaravel\Api;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -71,7 +70,7 @@ class MenuModel extends BaseModel
     public static function checkData($data = [], $info = [])
     {
         $store = self::fieldStore();
-        $reData = (new Api())->validator([
+        $reData = app('admin')->api->validator([
             'type' => ['rule' => 'required|string|in:' . implode(',', array_keys($store['type'])), 'name' => app('admin')->access->getLang('type')],
         ], [], [], $data);
         if (!error_check($reData))

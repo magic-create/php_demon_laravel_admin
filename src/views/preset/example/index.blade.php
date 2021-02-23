@@ -157,7 +157,7 @@
             title:{text:'Line Test', subtext:'Test'},
             legend:{type:'scroll', bottom:0},
             tooltip:{renderMode:'richText', trigger:'axis'},
-            grid:{left:20, right:50, top:60, bottom:40, containLabel:true},
+            grid:{left:20, right:20, top:60, bottom:40, containLabel:true},
             xAxis:[{type:'category', boundaryGap:false, data:[]}],
             yAxis:[{type:'value'}],
             series:[]
