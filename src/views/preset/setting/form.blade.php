@@ -22,7 +22,9 @@
                     </div>
                 @elseif($type == 'select')
                     <select class="form-control select" {!!$validate!!} @if(!$val->hidden) name="{{$val->name}}" @else disabled @endif @if($val->must) required @endif>
-                        <option value="" @if($val->value === '') selected @endif>&nbsp;</option>
+                        @if(!$val->must)
+                            <option value="" @if($val->value === '') selected @endif>&nbsp;</option>
+                        @endif
                         @foreach($val->data as $k => $v)
                             <option value="{{$k}}" @if($val->value === $k) selected @endif>{{$v}}</option>
                         @endforeach
