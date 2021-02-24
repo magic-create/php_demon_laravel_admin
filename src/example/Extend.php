@@ -56,6 +56,8 @@ class Extend extends Controllers
      */
     public function upload()
     {
+        //  不记录日志
+        app('admin')->log->setBreak(true);
         if (!$_FILES)
             abort(DEMON_CODE_PARAM);
         $dir = arguer('dir', 'upload/admin/example/' . date('Ymd'));

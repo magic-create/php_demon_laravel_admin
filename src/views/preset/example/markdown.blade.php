@@ -22,7 +22,10 @@
 @endsection
 @section('container.script')
     <script>
-        var dimage = {dimageChoose:{maxWidth:800, cropper:true, dispose:true, dump:'{{admin_url('extend/image/dump')}}'}};
+        var dimage = {
+            dimageChoose:{maxWidth:800, cropper:true, dispose:true, dump:'{{admin_url('extend/image/dump')}}', uploadUrl:'{{admin_url('extend/image/upload')}}'},
+            dimageUploader:function(url, result, data, call){$.admin.api.upload(url, {blob:result, name:data.name, dir:'upload/admin/example/markdown/' + moment().format('YYYYMMDD')}, function(data){ call(data); });}
+        };
         $.admin.markdown('#validate [name="simple"]', $.extend({height:360, watch:false}, dimage));
         $.admin.markdown('#validate [name="complex"]', $.extend({height:480, toolbarIcons:'full'}, dimage));
         $.admin.form('#validate', {
