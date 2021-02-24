@@ -274,6 +274,8 @@ class DBTable
                 unset($list[$key]);
                 continue;
             }
+            $auto = $val['auto'] ?? false;
+            $action = $key . ($auto ? (ucfirst(is_string($auto) ? $auto : 'auto')) : '');
             $val['text'] = $val['text'] ?? '';
             $val['class'] = ($val['class'] ?? '') ? : $this->config->toolbarButton ?? 'btn btn-secondary';
             $val['title'] = $val['title'] ?? '';
@@ -289,10 +291,10 @@ class DBTable
             $val['list'] = $val['list'] ?? null;
             if ($val['list']) {
                 $val['attr']['data-toggle'] = 'dropdown';
-                $val['attr']['id'] = $val['attr']['id'] ?? $key . '-' . bomber()->md5($key . mstime() . rand(0, 9e3));
+                $val['attr']['id'] = $val['attr']['id'] ?? $action . '-' . bomber()->md5($action . mstime() . rand(0, 9e3));
             }
             else
-                $val['attr']['data-button-key'] = $key;
+                $val['attr']['data-button-key'] = $action;
             $attribute = '';
             foreach ($val['attr'] as $k => $v)
                 $attribute .= " {$k}='$v'";
@@ -311,7 +313,7 @@ class DBTable
                 $val['html'] .= "<div class='dropdown-menu' aria-labelledby='{$val['attr']['id']}'>";
                 foreach ($val['list'] as $v) {
                     $v['href'] = $v['href'] ?? 'javascript:';
-                    $v['data-button-key'] = $v['data-button-key'] ?? $key;
+                    $v['data-button-key'] = $v['data-button-key'] ?? $action;
                     $val['html'] .= is_array($v) ? admin_html()->fast($v['text'] ?? '', $v, 'a', 'dropdown-item') : $v;
                 }
                 $val['html'] .= '</div>';

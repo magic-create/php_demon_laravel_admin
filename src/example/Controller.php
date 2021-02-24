@@ -183,7 +183,7 @@ class Controller extends Controllers
                 break;
             //  积分
             case 'credit':
-                $parm = $this->api->validator([
+                $parm = $this->api->arguer([
                     'uid' => ['rule' => 'required|numeric', 'message' => '请选择正确的用户'],
                     'type' => ['rule' => 'required|numeric', 'message' => '请选择正确的类型'],
                 ]);

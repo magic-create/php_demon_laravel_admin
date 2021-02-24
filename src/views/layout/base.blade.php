@@ -74,6 +74,8 @@
     @yield('style')
 </head>
 <body>
+{{--自定义模板--}}
+@include('admin::layout.custom')
 {{--布局区域--}}
 @yield('frame')
 {{--挂载脚本区域--}}
