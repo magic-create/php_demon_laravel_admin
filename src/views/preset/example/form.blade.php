@@ -34,7 +34,9 @@
                         </div>
                         <div class="form-group">
                             <label>开关</label>
-                            <div class="check-group"><input name="switch" class="switch" type="checkbox"></div>
+                            <div class="check-group">
+                                <input name="switch" class="switch" type="checkbox">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>复选框</label>
@@ -203,10 +205,7 @@
         $.admin.file('#advanced .file');
         $.admin.slider('#advanced .slider[name="slider"]');
         $.admin.slider('#advanced .slider[name="sliders"]', {type:'double', grid:true, grid_num:10, prefix:"￥", max:1000, step:0.01, from:150, to:600});
-        $.admin.clipboard('#advanced .clipboard', function(){
-            console.log(arguments);
-            $.admin.layer.msg('复制成功', {icon:6, time:2000});
-        }, function(){$.admin.layer.msg('复制失败', {icon:5, time:2000});});
+        $.admin.clipboard('#advanced .clipboard', function(){$.admin.layer.msg('复制成功', {icon:6, time:2000});}, function(){$.admin.layer.msg('复制失败', {icon:5, time:2000});});
         var height = function(){ return $('#markdown').height($('#advanced .markdown').height());};
         height().css('overflow-y', 'auto');
         $('#advanced .markdown').on("keyup blur", function(){$('#markdown').html(marked($(this).val()));}).on('resize', height);
