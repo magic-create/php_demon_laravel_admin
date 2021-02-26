@@ -140,7 +140,7 @@ class Log
     {
         foreach ($data as $name => $value) {
             if (!is_array($value)) {
-                if (is_string($value) && mb_strlen($value) > 256 || mb_stripos($name, 'password') !== false || $value === '')
+                if (is_string($value) && mb_strlen($value) > 256 || $value != strip_tags($value) || mb_stripos($name, 'password') !== false || $value === '')
                     unset($data[$name]);
             }
             else
