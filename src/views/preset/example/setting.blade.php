@@ -30,7 +30,7 @@
                     var image = $('.image', $(v));
                     image.attr('src', data.value);
                     //  图片选择
-                    $(image).click(function(){
+                    $(image).unbind('click').click(function(){
                         var self = $(this);
                         if(input.attr('readonly')) return;
                         $.admin.layer.image({image:self.attr('src'), dump:'{{admin_url('extend/image/dump')}}', cropper:true}, function(index, o){

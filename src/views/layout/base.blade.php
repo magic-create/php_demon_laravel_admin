@@ -31,7 +31,6 @@
     <script src="{{admin_cdn('node-waves/0.7.6/waves.min.js')}}"></script>
     <script src="{{admin_cdn('select2/4.0.9/js/select2.full.min.js')}}"></script>
     <script src="{{admin_cdn('iCheck/1.0.3/icheck.min.js')}}"></script>
-    <script src="{{admin_cdn('bootstrap-switch/4.0.0-alpha.1/js/bootstrap-switch.min.js')}}"></script>
     <script src="{{admin_cdn('bootstrap-colorpicker/3.2.0/js/bootstrap-colorpicker.min.js')}}"></script>
     <script src="{{admin_cdn('bootstrap-filestyle/2.1.0/bootstrap-filestyle.min.js')}}"></script>
     <script src="{{admin_cdn('ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js')}}"></script>
@@ -69,7 +68,7 @@
     @endforeach
     {{--挂载引入区域--}}
     @yield('link.after')
-    <script>$.ajaxSetup({headers:{'X-CSRF-TOKEN':window._token}});</script>
+    <script>$.ajaxSetup({headers:{'X-CSRF-TOKEN':window._token}, showLoading:true});</script>
     {{--挂载样式区域--}}
     @yield('style')
 </head>

@@ -106,7 +106,7 @@
             $.admin.layer.avatar({image:self.attr('src')}, function(index, o){
                 $.admin.layer.close(index);
                 o.cropper.getCroppedCanvas().toBlob(function(obj){
-                    $.admin.api.upload('{{admin_url('extend/image/upload')}}', {blob:obj, dir:'upload/admin/example/avatar/' + moment().format('YYYYMMDD')}, function(data){
+                    $.admin.api.upload('{{admin_url('extend/image/upload')}}', {blob:obj, name:o.cropper.name, dir:'upload/admin/example/avatar/' + moment().format('YYYYMMDD')}, function(data){
                         self.attr('src', data.file);
                         $('#validate [name="avatar"]').val(data.file);
                     });
