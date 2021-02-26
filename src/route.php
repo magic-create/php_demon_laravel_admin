@@ -17,9 +17,14 @@ app('router')->group([
     $run = function($controller = null, $act = 'index', $mod = 'common', $con = 'index') use ($router) {
         //  如果该路由没有被直接定义
         if (!Route::has($con)) {
-            //  指向具体文件
-            $controller = $controller ? : "App\\Admin\\Controllers\\" . ucwords($mod) . "\\" . ucwords($con) . 'Controller';
             try {
+                //  指向具体文件
+                $controller = $controller ? : "App\\Admin\\Controllers\\" . ucwords($mod) . "\\" . ucwords($con) . 'Controller';
+                //  当前路径
+                $path = url()->current();
+                //  定义参数
+                foreach (['app' => 'admin'] + compact('controller', 'act', 'mod', 'con', 'path') as $key => $val)
+                    $router->current()->setParameter($key, $val);
                 //  如果文件存在
                 if (class_exists($controller)) {
                     //  手动设置路由
