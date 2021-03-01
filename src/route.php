@@ -15,6 +15,10 @@ app('router')->group([
 ], function($router) {
     //  路由方法
     $run = function($controller = null, $act = 'index', $mod = 'common', $con = 'index') use ($router) {
+        //  默认参数
+        $act = $act ? : 'index';
+        $mod = $mod ? : 'common';
+        $con = $con ? : 'index';
         //  如果该路由没有被直接定义
         if (!Route::has($con)) {
             try {
@@ -56,9 +60,9 @@ app('router')->group([
     //  授权
     $router->match(['get', 'post'], '/auth/{act?}', function($act = 'login') use ($run) { return $run($act == 'login' ? config('admin.authentication') : config('admin.setting'), $act); });
     //  权限
-    $router->match(['get', 'post'], '/admin/access/{con?}/{act?}', function($con, $act = 'index') use ($run) { return $run("Demon\\AdminLaravel\\access\\controller\\" . ucwords($con) . 'Controller', $act); });
+    $router->match(['get', 'post'], '/admin/access/{con?}/{act?}', function($con, $act = null) use ($run) { return $run("Demon\\AdminLaravel\\access\\controller\\" . ucwords($con) . 'Controller', $act); });
     //  例子
-    $router->match(['get', 'post'], '/example/{act?}', function($act = 'index') use ($run) { return $run(\Demon\AdminLaravel\example\Controller::class, $act); });
+    $router->match(['get', 'post'], '/example/{act?}', function($act = null) use ($run) { return $run(\Demon\AdminLaravel\example\Controller::class, $act); });
     //  扩展图片例子
     $router->match(['get', 'post'], '/extend/image/{act?}', function($act = '') use ($run) { return $run(\Demon\AdminLaravel\example\Extend::class, $act); });
     //  加载自定义
