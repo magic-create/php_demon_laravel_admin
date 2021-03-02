@@ -6,7 +6,7 @@ class Model extends App\Models\Model
 {
     function __construct()
     {
-        $this->connection = 'admin';
+        $this->connection = config('admin.connection');
         parent::__construct();
     }
 }

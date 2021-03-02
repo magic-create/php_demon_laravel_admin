@@ -820,12 +820,19 @@ class DBTable
             $limit = min($limit, max($this->config->pageList));
             $this->query->offset($offset)->limit($limit);
         }
+        $orderDynamic = [];
         //  排序设定
-        if ($sortName)
-            $this->query->orderBy(strtok($this->field[$sortName] ?? $sortName, ' '), $sortOrder ? : 'asc');
+        if ($sortName) {
+            $orderDynamic = [strtok($this->field[$sortName] ?? $sortName, ' '), $sortOrder ? : 'asc'];
+            $this->query->orderBy($orderDynamic[0], $orderDynamic[1]);
+        }
         //  附加排序
-        foreach ($this->getOrder() as $key => $val)
-            $this->query->orderBy(strtok($this->field[$key] ?? $key, ' '), $val);
+        foreach ($this->getOrder() as $key => $val) {
+            $foo = [strtok($this->field[$key] ?? $key, ' '), $val];
+            if ($foo == $orderDynamic)
+                continue;
+            $this->query->orderBy($foo[0], $foo[1]);
+        }
 
         //  返回构造
         return $this->query;
