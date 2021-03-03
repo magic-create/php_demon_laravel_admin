@@ -68,7 +68,10 @@
                         }
                     });
                 },
-                success:function(e){ $.post('', {data:e.value()}, $.admin.api.report).fail($.admin.api.report);}
+                success:function(e){
+                    $.admin.api.report('loading', true);
+                    $.post('', {data:e.value()}, $.admin.api.report).fail($.admin.api.report);
+                }
             }
         });
     </script>

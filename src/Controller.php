@@ -18,6 +18,11 @@ class Controller extends BaseController
     protected $api;
 
     /**
+     * @var Log 记录服务
+     */
+    protected $log;
+
+    /**
      * @var int 登录用户
      */
     protected $uid = 0;
@@ -49,6 +54,8 @@ class Controller extends BaseController
     {
         //  接口服务
         $this->api = $this->api ? : app('admin')->api;
+        //  记录服务
+        $this->log = $this->log ? : app('admin')->log;
         //  登录用户
         $this->uid = request()->get('uid');
         //  Action

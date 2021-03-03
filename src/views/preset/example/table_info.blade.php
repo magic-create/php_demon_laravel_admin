@@ -129,11 +129,14 @@
             commit:function(e){
                 if(!e.value().intro){
                     $('html').scrollTop($('#validate [name="intro"]').parent().offset().top);
-                    return $.admin.alert.danger('请输入简介');
+                    return $.admin.api.report('fail', '请输入简介');
                 }
             },
             callback:{
-                success:function(e){ $.post('', {data:e.value()}, $.admin.api.report).fail($.admin.api.report);}
+                success:function(e){
+                    $.admin.api.report('loading', true);
+                    $.post('', {data:e.value()}, $.admin.api.report).fail($.admin.api.report);
+                }
             }
         });
     </script>

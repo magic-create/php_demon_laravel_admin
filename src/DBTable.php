@@ -384,8 +384,16 @@ class DBTable
                 $val['data'] = preg_replace('/.*\./', '', $val['data']);
                 $this->field[$val['data']] = $val['origin'];
             }
-            else if (isset($val['origin']))
-                $this->field[$val['data']] = $val['origin'] . ' as ' . $val['data'];
+            else if (isset($val['origin'])) {
+                //  如果origin是方法则使用DB::raw包裹
+                if (bomber()->isFunction($val['origin']))
+                    $this->field[$val['data']] = DB::raw(call_user_func($val['origin'], $val['origin']) . ' as ' . $val['data']);
+                //  如果是括号包裹则使用DB::raw包裹
+                else if (mb_stripos($val['origin'], '(') === 0)
+                    $this->field[$val['data']] = DB::raw($val['origin'] . ' as ' . $val['data']);
+                else
+                    $this->field[$val['data']] = $val['origin'] . ' as ' . $val['data'];
+            }
             else if (!($val['custom'] ?? false))
                 $this->field[$val['data']] = $val['data'];
             //  对应字段
@@ -648,14 +656,22 @@ class DBTable
                 //  where和format可能是匿名函数所以特殊处理一下
                 $whereCall = $val['where'] ?? '=';
                 $formatCall = $val['format'] ?? '';
+                $dataCall = $val['data'] ?? '';
                 $val = array_to_object($val);
                 //  重新赋值where和format
                 $val->where = $whereCall;
                 $val->format = $formatCall;
+                $val->data = $dataCall;
                 //  将name的表去掉
                 $val->name = $val->name ?? $val->data;
                 if ($val->name == $val->data && $strrpos = strrpos($val->name, '.') !== false)
                     $val->name = substr($val->name, $strrpos + 1);
+                //  如果data是方法则使用DB::raw包裹
+                if (bomber()->isFunction($val->data))
+                    $val->data = DB::raw(call_user_func($val->data, $val->data));
+                //  如果是括号包裹则使用DB::raw包裹
+                else if (mb_stripos($val->data, '(') === 0)
+                    $val->data = DB::raw($val->data);
                 //  如果是范围搜索，则拼接start和end
                 $val->value = in_array($val->where, ['range', 'between']) ? [
                     $format(arguer("{$searchs}.{$val->name}__start", ''), $val), $format(arguer("{$searchs}.{$val->name}__end", ''), $val)
@@ -1032,7 +1048,7 @@ class DBTable
      */
     public function get($step = 1)
     {
-        return $this->static ? collect($this->data) : $this->getQuery($step)->select(array_values($this->field))->get();
+        return $this->static ? collect($this->data) : $this->getQuery($step)->select(...array_values($this->field))->get();
     }
 
     /**

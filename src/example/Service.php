@@ -426,7 +426,7 @@ class Service
      */
     public function saveLog($response)
     {
-        if (DEMON_SUBMIT && !app('admin')->log->break)
+        if ($response->getStatusCode() == 200 && DEMON_SUBMIT && !app('admin')->log->break)
             LogModel::insert(app('admin')->log->build(function(&$data) {
                 $data['arguments'] = app('admin')->log->filter($data['arguments']);
             }));

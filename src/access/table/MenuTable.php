@@ -87,6 +87,13 @@ class MenuTable extends DBTable
         return [
             'typeName' => function($val) { return $this->store['type'][$val->type] ?? null; },
             'icon' => function($val) { return $val->icon ? admin_html('fast', '', [], 'i', $val->icon) : null; },
+            'path' => function($val) {
+                return $val->path ? admin_html('input', ['readonly' => true, 'value' => $val->path], 'form-control input-sm', [
+                    'class' => 'input-group input-group-sm',
+                    'append' => "<button class='btn btn-secondary clipboard' data-clipboard-text='{$val->path}'><i class='far fa-clipboard'></i></button>",
+                    'attr' => ['style' => 'min-width:120px']
+                ]) : null;
+            },
             'deepTitle' => function($val) { return $val->deepTitle; },
             'status' => function($val) { return admin_html('switch', $this->access->action('status', true) && !$val->system ? ['action' => 'status'] : ['readonly' => true], $val->status); },
             '_action' => function($val) {

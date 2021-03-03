@@ -31,7 +31,10 @@
                 change:{function:{rule:function(e){return $(e).val() > 0; }, message:'请输入正确的变更数量'}}
             },
             callback:{
-                success:function(e){ $.post('', {change:e.value().type == 0 ? -(e.value().change) : e.value().change}, $.admin.api.report).fail($.admin.api.report);}
+                success:function(e){
+                    $.admin.api.report('loading', true);
+                    $.post('', {change:e.value().type == 0 ? -(e.value().change) : e.value().change}, $.admin.api.report).fail($.admin.api.report);
+                }
             }
         });
     </script>
