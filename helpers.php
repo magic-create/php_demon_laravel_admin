@@ -255,6 +255,14 @@ function admin_button($action = '', $type = '', $parm = [])
             $theme = $parm['theme'] ?? 'info';
             $icon = $parm['icon'] ?? 'fa fa-info';
             break;
+        //  审核
+        case 'audit':
+        case 'check':
+        case 'approve':
+        case 'confirm':
+            $theme = $parm['theme'] ?? 'warning';
+            $icon = $parm['icon'] ?? 'fa fa-gavel';
+            break;
         //  默认
         default:
             $theme = $parm['theme'] ?? 'secondary';

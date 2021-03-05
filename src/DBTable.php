@@ -844,9 +844,24 @@ class DBTable
         }
         //  附加排序
         foreach ($this->getOrder() as $key => $val) {
-            $foo = [strtok($this->field[$key] ?? $key, ' '), $val];
-            if ($foo == $orderDynamic)
+            //  如果是方法则使用DB::raw包裹
+            if (bomber()->isFunction($val)) {
+                $this->query->orderByRaw(DB::raw(call_user_func($val, $key)));
                 continue;
+            }
+            //  如果非字符串则直接使用
+            else if (!is_string($val)) {
+                $this->query->orderByRaw(DB::raw($val));
+                continue;
+            }
+            //  如果是括号包裹则使用DB::raw包裹
+            else if (mb_stripos($key, '(') === 0)
+                $foo = [DB::raw($key), $val];
+            else {
+                $foo = [strtok($this->field[$key] ?? $key, ' '), $val];
+                if ($foo == $orderDynamic)
+                    continue;
+            }
             $this->query->orderBy($foo[0], $foo[1]);
         }
 

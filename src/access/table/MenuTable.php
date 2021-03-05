@@ -63,7 +63,7 @@ class MenuTable extends DBTable
             ['data' => 'typeName', 'title' => $this->access->getLang('type')],
             ['data' => 'icon', 'title' => $this->access->getLang('icon')],
             ['data' => 'deepTitle', 'title' => $this->access->getLang('title')],
-            ['data' => 'path', 'title' => $this->access->getLang('path')],
+            ['data' => 'path', 'title' => $this->access->getLang('path'), 'action' => true],
             ['data' => 'remark', 'title' => $this->access->getLang('remark')],
             ['data' => 'status', 'title' => $this->access->getLang('status'), 'action' => true],
             ['data' => '_action', 'title' => $this->access->getLang('action'), 'action' => 'group'],
