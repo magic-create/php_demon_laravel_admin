@@ -54,7 +54,7 @@ class MenuTable extends DBTable
 
     public function setOrder()
     {
-        return ['weight' => 'desc'];
+        return ['weight' => 'desc', 'mid' => 'asc'];
     }
 
     public function setColumn()
