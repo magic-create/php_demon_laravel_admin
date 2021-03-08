@@ -38,15 +38,11 @@ app('router')->group([
                     return $router->current()->run();
                 }
                 else abort(DEMON_CODE_NONE);
-            } catch (NotFoundHttpException $exception) {
+            } catch (HttpException | NotFoundHttpException $exception) {
                 if (!DEMON_INAJAX && !DEMON_SUBMIT && !config('app.debug'))
                     return admin_view('preset.error.general', ['code' => $exception->getStatusCode(), 'message' => $exception->getMessage()]);
                 throw $exception;
-            } catch (HttpException $exception) {
-                if (!DEMON_INAJAX && !DEMON_SUBMIT && !config('app.debug'))
-                    return admin_view('preset.error.general', ['code' => $exception->getStatusCode(), 'message' => $exception->getMessage()]);
-                throw $exception;
-            } catch (ErrorException $exception) {
+            } catch (Exception | ErrorException $exception) {
                 if (!DEMON_INAJAX && !DEMON_SUBMIT && !config('app.debug'))
                     return admin_view('preset.error.general', ['code' => DEMON_CODE_SERVER, 'message' => config('app.debug') ? $exception->getMessage() : admin_error(DEMON_CODE_SERVER)]);
                 throw $exception;
