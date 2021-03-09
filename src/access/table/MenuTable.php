@@ -63,7 +63,7 @@ class MenuTable extends DBTable
             ['data' => 'typeName', 'title' => $this->access->getLang('type')],
             ['data' => 'icon', 'title' => $this->access->getLang('icon')],
             ['data' => 'deepTitle', 'title' => $this->access->getLang('title')],
-            ['data' => 'path', 'title' => $this->access->getLang('path'), 'action' => true],
+            ['data' => 'pathCopy', 'title' => $this->access->getLang('path'), 'action' => true],
             ['data' => 'remark', 'title' => $this->access->getLang('remark')],
             ['data' => 'status', 'title' => $this->access->getLang('status'), 'action' => true],
             ['data' => '_action', 'title' => $this->access->getLang('action'), 'action' => 'group'],
@@ -87,7 +87,7 @@ class MenuTable extends DBTable
         return [
             'typeName' => function($val) { return $this->store['type'][$val->type] ?? null; },
             'icon' => function($val) { return $val->icon ? admin_html('fast', '', [], 'i', $val->icon) : null; },
-            'path' => function($val) {
+            'pathCopy' => function($val) {
                 return $val->path ? admin_html('input', ['readonly' => true, 'value' => $val->path], 'form-control input-sm', [
                     'class' => 'input-group input-group-sm',
                     'append' => "<button class='btn btn-secondary clipboard' data-clipboard-text='{$val->path}'><i class='far fa-clipboard'></i></button>",
