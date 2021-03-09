@@ -411,13 +411,13 @@ class DBTable
     /**
      * 设置格式化
      *
-     * @param       $array
+     * @param $data
      *
      * @return array
-     * @copyright 魔网天创信息科技
      * @author    ComingDemon
+     * @copyright 魔网天创信息科技
      */
-    public function setFormat(&$data)
+    public function setFormat($data)
     {
         return [];
     }

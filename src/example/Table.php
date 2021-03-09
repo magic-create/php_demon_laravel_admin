@@ -208,7 +208,7 @@ class Table extends DBTable
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function setFormat(&$data)
+    public function setFormat($data)
     {
         $credit = [];
         foreach ($this->store['credit'] as $type => $v)

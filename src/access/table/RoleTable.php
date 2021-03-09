@@ -59,7 +59,7 @@ class RoleTable extends DBTable
         return RoleModel::query();
     }
 
-    public function setFormat(&$data)
+    public function setFormat($data)
     {
         return [
             'deepName' => function($val) { return $this->access->autoLang($val->name); },

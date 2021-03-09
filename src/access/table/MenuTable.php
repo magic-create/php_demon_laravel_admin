@@ -80,7 +80,7 @@ class MenuTable extends DBTable
         return MenuModel::query();
     }
 
-    public function setFormat(&$data)
+    public function setFormat($data)
     {
         $data = $this->access->getAccessTreeDeep($data);
 
