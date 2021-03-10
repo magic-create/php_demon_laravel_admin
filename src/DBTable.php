@@ -13,6 +13,7 @@ namespace Demon\AdminLaravel;
 use Demon\AdminLaravel\access\Service;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
 use stdClass;
@@ -85,7 +86,7 @@ class DBTable
     public $query = null;
 
     /**
-     * @var array 设置内容
+     * @var Collection 设置内容
      */
     public $data = [];
 
@@ -103,7 +104,7 @@ class DBTable
         $this->getField();
         $this->access = $this->access ? : app('admin')->access;
         if ($this->static)
-            $this->data = $this->setData();
+            $this->data = collect($this->setData());
     }
 
     /**
@@ -411,13 +412,11 @@ class DBTable
     /**
      * 设置格式化
      *
-     * @param $data
-     *
      * @return array
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
-    public function setFormat($data)
+    public function setFormat()
     {
         return [];
     }
@@ -425,19 +424,20 @@ class DBTable
     /**
      * 格式化内容
      *
-     * @param       $array
-     * @param array $array
-     *
      * @return array
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
      */
-    public function getFormat($list)
+    public function getFormat()
     {
         //  获取表字段
         $rawColumns = [];
+        //  格式化配置
+        $format = $this->setFormat();
+        //  获取数据
+        $list = $this->data;
         //  循环处理字段内容
-        foreach ($this->format + $this->setFormat($list) as $key => $val) {
+        foreach ($this->format + $format as $key => $val) {
             //  处理类型
             $type = is_array($val) ? ($val['type'] ?? '') : '';
             //  处理方法
@@ -1063,7 +1063,7 @@ class DBTable
      */
     public function get($step = 1)
     {
-        return $this->static ? collect($this->data) : $this->getQuery($step)->select(...array_values($this->field))->get();
+        return $this->static ? $this->data : $this->data = $this->getQuery($step)->select(...array_values($this->field))->get();
     }
 
     /**

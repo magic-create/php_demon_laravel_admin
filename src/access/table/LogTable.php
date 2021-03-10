@@ -79,7 +79,7 @@ class LogTable extends DBTable
         return LogModel::from((new LogModel())->getTable(), 'a')->leftJoin((new UserModel())->getTable() . ' as b', 'b.uid', '=', 'a.uid', 'left');
     }
 
-    public function setFormat($data)
+    public function setFormat()
     {
         return [
             'uid' => function($val) { return "[{$val->uid}]{$val->username}"; },

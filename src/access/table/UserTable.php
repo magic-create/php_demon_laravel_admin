@@ -89,7 +89,7 @@ class UserTable extends DBTable
         return UserModel::from((new UserModel())->getTable(), 'a')->where('a.status', '>=', 0)->joinSub(AllotModel::select(DB::raw('GROUP_CONCAT(rid) as role,uid'))->groupBy('uid'), 'b', 'b.uid', '=', 'a.uid', 'left');
     }
 
-    public function setFormat($data)
+    public function setFormat()
     {
         return [
             'avatar' => function($val) { return admin_html('image', app('admin')->getUserAvatar($val->avatar, $val->nickname), ['name' => $val->nickname]); },
