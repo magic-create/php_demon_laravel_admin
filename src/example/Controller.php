@@ -270,8 +270,19 @@ class Controller extends Controllers
 
             return response($data);
         }
+        else {
+            $id = 1;
+            for ($i = 0; $i < 10; $i++) {
+                $list[$i] = ['id' => $id, 'title' => '一级.' . bomber()->strFill(3, $i + 1) . '-' . $id++, 'list' => []];
+                for ($j = 0; $j < 10; $j++) {
+                    $list[$i]['list'][$j] = ['id' => $id, 'title' => '二级.' . bomber()->strFill(3, $j + 1) . '-' . $id++, 'list' => []];
+                    for ($k = 0; $k < 10; $k++)
+                        $list[$i]['list'][$j]['list'][$k] = ['id' => $id, 'title' => '三级.' . bomber()->strFill(3, $k + 1) . '-' . $id++];
+                }
+            }
 
-        return view('admin::preset.example.form');
+            return view('admin::preset.example.form', ['linkage' => collect(array_to_object($list))]);
+        }
     }
 
     /**

@@ -63,6 +63,28 @@
                                     </select>
                                 @endif
                                 @break
+                                {{--联动列表选择--}}
+                                @case('linkage')
+                                @php($val->option->level = $val->option->level ?? 2)
+                                <div class="row linkage-{{$val->option->level}}">
+                                    @for($i = 1; $i <= $val->option->level; $i++)
+                                        <div class="col-{{12 / $val->option->level}}">
+                                            <select name="{{$val->name}}[{{$i}}]" data-level="{{$i}}" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}"></select>
+                                        </div>
+                                    @endfor
+                                    <script id="search_{{$val->name}}">
+                                        $(function(){
+                                            var namespace = eval({{$dbTableConfig->namespace}});
+                                            namespace = namespace || {};
+                                            namespace.linkage = namespace.linkage || {};
+                                            var selector = [];
+                                            for(var i = 1; i <= {{$val->option->level}}; i++) selector.push('[name="{{$val->name}}[' + i + ']"][data-level="' + i + '"]');
+                                            namespace.linkage.{{$val->name}} = $.extend({selector}, JSON.parse('{!!json_encode($val->option)!!}'));
+                                            $('#search_{{$val->name}}').remove();
+                                        });
+                                    </script>
+                                </div>
+                                @break
                                 {{--数字和范围--}}
                                 @case('num')
                                 @if(in_array($val->where,['range','between']))

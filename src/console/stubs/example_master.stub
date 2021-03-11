@@ -28,6 +28,7 @@ class Create{{tableClassName}}Table extends Migration
                   $table->text('intro')->nullable()->comment('简介(富文本)');
                   $table->date('birthday')->default('1800-01-01')->comment('生日');
                   $table->text('hobby')->nullable()->comment('爱好(用,分隔)');
+                  $table->unsignedInteger('type')->default(0)->comment('三级分类');
                   $table->timestamp('activeTime')->useCurrent()->comment('活动时间');
                   $table->unsignedInteger('signDate')->default(0)->comment('签到日期');
                   $table->unsignedInteger('loginTime')->default(0)->comment('登录时间');

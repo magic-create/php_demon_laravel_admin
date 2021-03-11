@@ -83,9 +83,24 @@ class Service
             'avatar' => ['none' => '未设置', 'have' => '已设置'],
             'status' => [0 => '隐藏', 1 => '正常'],
             'hobby' => collect(array_to_object([['id' => 1, 'title' => '运动'], ['id' => 2, 'title' => '娱乐'], ['id' => 3, 'title' => '收藏'], ['id' => 4, 'title' => '乐器'], ['id' => 5, 'title' => '文艺'], ['id' => 6, 'title' => '社交']])),
+            'type' => []
         ];
+        //  循环等级数据
         for ($i = 0; $i <= 100; $i++)
             $store['level'][$i] = array_to_object(['name' => 'LV.' . bomber()->strFill(3, $i)]);
+        //  循环三级分类数据
+        for ($i = 0; $i < 10; $i++) {
+            $pid = 0;
+            $store['type'][] = ['upId' => $pid, 'id' => $i + 1, 'name' => '一级.' . bomber()->strFill(3, $i + 1)];
+            for ($j = 0; $j < 10; $j++) {
+                $pid = $i + 1;
+                $store['type'][] = ['upId' => $pid, 'id' => $pid * 1000 + $j, 'name' => '二级.' . bomber()->strFill(3, $pid * 1000 + $j)];
+                $pid = $pid * 1000 + $j;
+                for ($k = 0; $k < 10; $k++)
+                    $store['type'][] = ['upId' => $pid, 'id' => $pid * 100 + $k, 'name' => '三级.' . bomber()->strFill(3, $pid * 100 + $k)];
+            }
+        }
+        $store['type'] = collect(array_to_object($store['type']));
 
         return $field ? ($store[$field] ?? null) : $store;
     }
@@ -205,6 +220,8 @@ class Service
         $reData['sex'] = (string)$reData['sex'];
         //  头像为Null
         $reData['avatar'] = ($reData['avatar'] ?? null) ? : null;
+        //  类型为0
+        $reData['type'] = ($reData['type'] ?? 0) ? : 0;
         //  验证字段
         if (($reData['phone'] ?? null) && !bomber()->regexp($reData['phone'], 'mobile'))
             return error_build('手机号码格式有误');

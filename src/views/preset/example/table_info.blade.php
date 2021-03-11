@@ -35,6 +35,20 @@
                 <input type="text" name="level" class="form-control slider" data-min="{{min(array_keys($store['level']))}}" data-max="{{max(array_keys($store['level']))}}" value="{{$info->level ?? 0}}" @if($readonly ?? false) readonly @endif/>
             </div>
             <div class="form-group">
+                <label>分类</label>
+                <div class="form-row">
+                    <div class="col-md-4 mb-sm-1">
+                        <select data-name="type" data-level="1" class="form-control select"></select>
+                    </div>
+                    <div class="col-md-4 mb-sm-1">
+                        <select data-name="type" data-level="2" class="form-control select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="type" data-level="3" class="form-control select"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
                 <label>爱好</label>
                 <select name="hobby" class="form-control select" multiple @if($readonly ?? false) readonly @endif>
                     @foreach($store['hobby'] as $key => $val)
@@ -112,6 +126,17 @@
                     });
                 }, 'image/jpeg');
             });
+        });
+        $.admin.linkage(['#validate [data-name="type"][data-level="1"]', '#validate [data-name="type"][data-level="2"]', '#validate [name="type"]'], {
+            data:JSON.parse('{!!json_encode($store['type'])!!}'),
+            bindKey:'id',
+            parentKey:'upId',
+            listKey:'list',
+            titleKey:'name',
+            tree:false,
+            placeholderStatus:true,
+            placeholderList:['请选择一级', '请选择二级', '请选择三级'],
+            value:'{{$info->type ?? 0}}'
         });
         var dimage = {
             dimageChoose:{maxWidth:480, dispose:true, uploadUrl:'{{admin_url('extend/image/upload')}}'},

@@ -72,6 +72,31 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label>二级联动</label>
+                            <div class="form-row">
+                                <div class="col-md-6 mb-sm-1">
+                                    <select name="linkage2[1]" data-level="1" class="form-control select"></select>
+                                </div>
+                                <div class="col-md-6 mb-sm-1">
+                                    <select name="linkage2[2]" data-level="2" class="form-control select"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>三级联动</label>
+                            <div class="form-row">
+                                <div class="col-md-4 mb-sm-1">
+                                    <select name="linkage3[1]" data-level="1" class="form-control select"></select>
+                                </div>
+                                <div class="col-md-4 mb-sm-1">
+                                    <select name="linkage3[2]" data-level="2" class="form-control select"></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select name="linkage3[3]" data-level="3" class="form-control select"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label>多选下拉框并保持顺序</label>
                             <select name="keep" class="form-control select" multiple data-keep="true">
                                 @for($i=1;$i<=10;$i++)
@@ -169,6 +194,16 @@
         $.admin.checkbox('#validate .checkbox');
         $.admin.radio('#validate .radio');
         $.admin.select('#validate .select');
+        $.admin.linkage(['#validate [name="linkage2[1]"][data-level="1"]', '#validate [name="linkage2[2]"][data-level="2"]'], {
+            data:JSON.parse('{!!json_encode($linkage)!!}'),
+            value:[889, 978]
+        });
+        $.admin.linkage(['#validate [name="linkage3[1]"][data-level="1"]', '#validate [name="linkage3[2]"][data-level="2"]', '#validate [name="linkage3[3]"][data-level="3"]'], {
+            data:JSON.parse('{!!json_encode($linkage)!!}'),
+            value:[223, 268, 272],
+            placeholderStatus:true,
+            placeholderList:['请选择一级', '请选择二级', '请选择三级']
+        });
         var modalContent = function(status, data){return '<p>' + status + ':</p><textarea class="form-control" rows="10">' + JSON.stringify(data) + '</textarea>';};
         $.admin.form('#validate', {
             list:{

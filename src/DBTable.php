@@ -673,9 +673,16 @@ class DBTable
                 else if (mb_stripos($val->data, '(') === 0)
                     $val->data = DB::raw($val->data);
                 //  如果是范围搜索，则拼接start和end
-                $val->value = in_array($val->where, ['range', 'between']) ? [
-                    $format(arguer("{$searchs}.{$val->name}__start", ''), $val), $format(arguer("{$searchs}.{$val->name}__end", ''), $val)
-                ] : $format(arguer("{$searchs}.{$val->name}", ''), $val);
+                if (in_array($val->where, ['range', 'between']))
+                    $val->value = [$format(arguer("{$searchs}.{$val->name}__start", ''), $val), $format(arguer("{$searchs}.{$val->name}__end", ''), $val)];
+                //  如果是联动选择器，则循环层级数组
+                else if (($val->type ?? '') == 'linkage') {
+                    $val->value = [];
+                    for ($i = 1; $i <= ($val->option->level ?? 2); $i++)
+                        $val->value[$i] = arguer("{$searchs}.{$val->name}[$i]", '');
+                    $val->value = $format($val->value, $val);
+                }
+                else $val->value = $format(arguer("{$searchs}.{$val->name}", ''), $val);
                 // 如果有内容的话开始拼接where条件
                 if ($val->value !== '') {
                     //  是自定义方法

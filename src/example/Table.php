@@ -78,6 +78,22 @@ class Table extends DBTable
             ['data' => 'a.inviteUid', 'title' => '邀请人UID', 'placeholder' => '精准UID，多个可用 , 分隔', 'where' => 'in', 'value' => arguer('inviteUid')],
             ['data' => 'a.level', 'title' => '等级', 'type' => 'select', 'value' => [0, count($this->store['level']) - 2], 'placeholder' => ['不限制最小等级', '不限制最大等级'], 'where' => 'range', 'option' => ['title' => 'name', 'list' => $this->store['level']], 'attr' => ['data-select' => true]],
             ['data' => 'a.hobby', 'title' => '爱好', 'type' => 'select', 'placeholder' => '全部', 'option' => ['bind' => 'id', 'title' => 'title', 'list' => $this->store['hobby']], 'attr' => ['data-select' => true]],
+            [
+                'data' => 'a.type', 'title' => '分类',
+                'type' => 'linkage', 'option' => ['level' => 3, 'placeholderStatus' => true, 'placeholderList' => ['请选择一级分类', '请选择二级分类', '请选择三级分类'], 'bindKey' => 'id', 'parentKey' => 'upId', 'tree' => false, 'titleKey' => 'name', 'list' => $this->store['type']],
+                'attr' => ['data-select' => true],
+                'where' => function($value, $field) {
+                    $list = [];
+                    if ($value[3])
+                        $list = [$value[3]];
+                    else if ($value[2])
+                        $list = $this->store['type']->where('upId', $value[2])->pluck('id')->toArray();
+                    else
+                        $list = $this->store['type']->whereIn('upId', $this->store['type']->where('upId', $value[1])->pluck('id')->toArray())->pluck('id')->toArray();
+
+                    return $list ? function($query) use ($field, $list) { $query->whereIn($field, $list); } : null;
+                }
+            ],
             ['data' => 'a.birthday', 'title' => '生日', 'type' => 'time', 'where' => 'range', 'attr' => ['data-time' => 'YYYY-MM-DD']],
             ['data' => 'a.activeTime', 'title' => '活跃时间', 'type' => 'time', 'where' => 'range', 'attr' => ['data-time' => null]],
             ['data' => 'a.signDate', 'title' => '签到日期', 'type' => 'time', 'where' => 'range', 'format' => function($value) { return date('Ymd', strtotime($value)); }, 'attr' => ['data-time' => 'YYYY-MM-DD']],
@@ -126,7 +142,8 @@ class Table extends DBTable
             ['data' => 'a.avatar', 'title' => '头像', 'width' => '60px', 'action' => true],
             ['data' => 'a.sex', 'title' => '性别'],
             ['data' => 'a.level', 'title' => '等级', 'reorder' => true],
-            ['data' => 'a.hobby', 'title' => '爱好']
+            ['data' => 'a.hobby', 'title' => '爱好'],
+            ['data' => 'a.type', 'title' => '分类']
         ], $credit, [
             ['data' => 'a.birthday', 'title' => '生日', 'reorder' => true],
             ['data' => 'a.activeTime', 'title' => '活跃时间', 'reorder' => true],
@@ -237,6 +254,19 @@ class Table extends DBTable
                     }
 
                     return $html ? : null;
+                },
+                'type' => function($val) {
+                    $data3 = $this->store['type']->where('id', $val->type)->first();
+                    if (!$data3)
+                        return null;
+                    $data2 = $this->store['type']->where('id', $data3->upId)->first();
+                    if (!$data2)
+                        return null;
+                    $data1 = $this->store['type']->where('id', $data2->upId)->first();
+                    if (!$data1)
+                        return null;
+
+                    return admin_html()->fast($data3->name, ['data-toggle' => 'tooltip', 'title' => "{$data1->name} - {$data2->name} - {$data3->name}"], 'span');
                 },
                 'signDate' => function($val) { return $val->signDate ? date('Y-m-d', strtotime($val->signDate)) : null; },
                 'loginIpv4i' => function($val) { return $val->loginIpv4i ? long2ip($val->loginIpv4i) : null; },
