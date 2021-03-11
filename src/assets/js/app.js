@@ -55,7 +55,7 @@
                     else $('.sidebar-body').hide();
                 }
                 if(window._layout == 'vertical') $('.slimscroll-menu').height($(window).height() - 80);
-                if(window._layout == 'horizontal' && $('html').attr('tabs') !== undefined) $('.container-fluid').css('padding-right', this.getScrollbarWidth() ? 0 : '15px');
+                if(window._layout == 'horizontal' && $('html').attr('tabs') !== undefined) $('.container-fluid').css('padding-right', this.getScrollbarWidth() ? '12px' : '15px');
                 _delay = clearTimeout(_delay);
             }.bind(this);
             _resize();
