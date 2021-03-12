@@ -39,7 +39,10 @@ class RoleController extends Controller
         if (!$info)
             abort(DEMON_CODE_PARAM);
         if (DEMON_SUBMIT) {
-            $this->api->check(RoleModel::edit($info->rid, arguer('data', [], 'array')));
+            $data = arguer('data', [], 'array');
+            $this->api->check(RoleModel::edit($info->rid, $data));
+            //  设置记录
+            $this->log->setTag('admin.access.role')->setContent(bomber()->arrayDiffer($data, $info));
 
             return $this->api->send();
         }

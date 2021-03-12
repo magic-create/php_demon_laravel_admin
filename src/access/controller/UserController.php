@@ -45,7 +45,10 @@ class UserController extends Controller
         if (!$info)
             abort(DEMON_CODE_PARAM);
         if (DEMON_SUBMIT) {
-            $this->api->check(UserModel::edit($info->uid, arguer('data', [], 'array')));
+            $data = arguer('data', [], 'array');
+            $this->api->check(UserModel::edit($info->uid, $data));
+            //  设置记录
+            $this->log->setTag('admin.access.user')->setContent(bomber()->arrayDiffer($data, $info));
 
             return $this->api->send();
         }

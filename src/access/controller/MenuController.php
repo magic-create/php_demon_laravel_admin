@@ -42,7 +42,10 @@ class MenuController extends Controller
         if (!$info)
             abort(DEMON_CODE_PARAM);
         if (DEMON_SUBMIT) {
-            $this->api->check(MenuModel::edit($info->mid, arguer('data', [], 'array')));
+            $data = arguer('data', [], 'array');
+            $this->api->check(MenuModel::edit($info->mid, $data));
+            //  设置记录
+            $this->log->setTag('admin.access.menu')->setContent(bomber()->arrayDiffer($data, $info));
 
             return $this->api->send();
         }

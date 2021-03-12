@@ -1019,6 +1019,20 @@ class DBTable
     }
 
     /**
+     * 输出SQL语句
+     *
+     * @return mixed|null
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function toSql()
+    {
+        return array_reduce($this->query->getBindings(), function($sql, $binding) {
+            return preg_replace('/\?/', is_numeric($binding) ? $binding : "'" . $binding . "'", $sql, 1);
+        }, $this->query->toSql());
+    }
+
+    /**
      * 查询数据集并打包格式
      *
      * @return JsonResponse
@@ -1028,18 +1042,34 @@ class DBTable
      */
     public function ajax()
     {
+        //  获取总数
         $time = mstime();
         $data = [$this->config->totalField => $this->count()];
-        if (config('app.debug'))
-            $data['_debug'] = [$this->config->totalField => !$this->static ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null];
-        if (!$this->static && $statis = $this->getStatis($this->query))
+        if (config('app.debug')) {
+            $data['_query'] = [$this->config->totalField => !$this->static ? $this->toSql() : null];
+            $data['_time'] = [$this->config->totalField => (mstime() - $time) . 'ms'];
+        }
+        //  获取统计
+        $time = mstime();
+        if (!$this->static && $statis = $this->getStatis($this->query)) {
             $data['statis'] = $statis;
-        $data[$this->config->dataField] = $this->getFormat($this->get(2));
+            if (config('app.debug'))
+                $data['_time']['statis'] = (mstime() - $time) . 'ms';
+        }
+        //  获取数据
+        $time = mstime();
+        $data[$this->config->dataField] = $this->get(2);
+        if (config('app.debug')) {
+            $data['_query'][$this->config->dataField] = !$this->static ? $this->toSql() : null;
+            $data['_time'][$this->config->dataField] = (mstime() - $time) . 'ms';
+        }
+        //  处理数据
+        $time = mstime();
+        $data[$this->config->dataField] = $this->getFormat($data[$this->config->dataField]);
         if (config('app.debug'))
-            $data['_debug'][$this->config->dataField] = !$this->static ? sprintf(str_replace('?', '%s', $this->query->toSql()), ...$this->query->getBindings()) : null;
+            $data['_time']['format'] = (mstime() - $time) . 'ms';
+        //  附加数据
         $data += $this->setWith();
-        if (config('app.debug'))
-            $data['_debug']['time'] = (mstime() - $time) . 'ms';
 
         //  输出JSON
         return new JsonResponse($data);
