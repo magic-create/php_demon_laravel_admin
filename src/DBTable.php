@@ -387,7 +387,7 @@ class DBTable
             }
             else if (isset($val['origin'])) {
                 //  如果origin是方法则使用DB::raw包裹
-                if (bomber()->isFunction($val['origin']))
+                if (bomber()->isFunction($val['origin'], false))
                     $this->field[$val['data']] = DB::raw(call_user_func($val['origin'], $val['origin']) . ' as ' . $val['data']);
                 //  如果是括号包裹则使用DB::raw包裹
                 else if (mb_stripos($val['origin'], '(') === 0)
@@ -667,7 +667,7 @@ class DBTable
                 if ($val->name == $val->data && $strrpos = strrpos($val->name, '.') !== false)
                     $val->name = substr($val->name, $strrpos + 1);
                 //  如果data是方法则使用DB::raw包裹
-                if (bomber()->isFunction($val->data))
+                if (bomber()->isFunction($val->data, false))
                     $val->data = DB::raw(call_user_func($val->data, $val->data));
                 //  如果是括号包裹则使用DB::raw包裹
                 else if (mb_stripos($val->data, '(') === 0)
@@ -852,7 +852,7 @@ class DBTable
         //  附加排序
         foreach ($this->getOrder() as $key => $val) {
             //  如果是方法则使用DB::raw包裹
-            if (bomber()->isFunction($val)) {
+            if (bomber()->isFunction($val, false)) {
                 $this->query->orderByRaw(DB::raw(call_user_func($val, $key)));
                 continue;
             }
