@@ -299,6 +299,21 @@ class Api
     }
 
     /**
+     * 快速输出消息
+     *
+     * @param string $message
+     * @param array  $extend
+     *
+     * @return string
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function sendMessage(string $message, array $extend = [])
+    {
+        return $this->setMessage($message)->send($extend);
+    }
+
+    /**
      * 返回发送结果
      *
      * @param array $extend
