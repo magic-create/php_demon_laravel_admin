@@ -33,6 +33,11 @@ class Api
     public $default = DEMON_CODE_PARAM;
 
     /**
+     * @var int JSON选项
+     */
+    public $options = 0;
+
+    /**
      * @var string[] 错误提示
      */
     public $preset = [
@@ -159,6 +164,22 @@ class Api
     public function check($content, array $extend = [])
     {
         return error_check($content, function($error) use ($extend) { abort($this->setError($error)->send($extend)); });
+    }
+
+    /**
+     * 设置JSON选项
+     *
+     * @param int $options
+     *
+     * @return $this
+     * @author    ComingDemon
+     * @copyright 魔网天创信息科技
+     */
+    public function setOptions($options = 0)
+    {
+        $this->options = $options;
+
+        return $this;
     }
 
     /**
@@ -333,6 +354,6 @@ class Api
         $result = array_merge($result, $extend);
 
         //  返回结果内容
-        return response()->json($result, $this->code ? in_array($this->code, array_keys($this->preset)) ? $this->code : $this->default : 200, [], JSON_UNESCAPED_UNICODE);
+        return response()->json($result, $this->code ? in_array($this->code, array_keys($this->preset)) ? $this->code : $this->default : 200, [], $this->options);
     }
 }

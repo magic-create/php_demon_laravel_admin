@@ -17,7 +17,7 @@
                 {{--内容列表--}}
                 <div class="slimscroll notification-item-list">
                     @foreach ($notifications as $item)
-                        <a href="{{$item['path']}}" data-tabs data-title="{{$item['title']}}" class="dropdown-item notify-item">
+                        <a href="{{$item['path']}}" data-tabs="{{$item['tabs'] ?? ''}}" data-title="{{$item['title']}}" class="dropdown-item notify-item">
                             <div class="notify-icon bg-{{$item['theme']}}"><i class="{{$item['icon']}}"></i></div>
                             <p class="notify-details">{{$item['title']}}<span class="text-muted">{{$item['content']}}</span></p>
                         </a>
