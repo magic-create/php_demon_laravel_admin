@@ -136,7 +136,7 @@ class Setting
                 }
                 break;
             default:
-                $value = arguer('value', null, $filter, ['value' => $value]);
+                $value = bomber()->typeCast($value, $filter);
                 break;
         }
 
@@ -348,7 +348,7 @@ class Setting
                         }
                         break;
                     default:
-                        $change[$item['name']] = arguer('value', null, $item['filter'], ['value' => $data[$item['name']]]);
+                        $change[$item['name']] = bomber()->typeCast($data[$item['name']], $item['filter']);
                         break;
                 }
                 //  如果是一样的数据就销毁掉
