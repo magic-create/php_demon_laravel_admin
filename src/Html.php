@@ -11,8 +11,12 @@
 namespace Demon\AdminLaravel;
 
 
+use Illuminate\Support\Traits\Macroable;
+
 class Html
 {
+    use Macroable;
+
     /**
      * @var object 对象实例
      */

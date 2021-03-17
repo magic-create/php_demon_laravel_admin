@@ -11,6 +11,7 @@
 namespace Demon\AdminLaravel;
 
 use Exception;
+use Illuminate\Support\Traits\Macroable;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet as Spreadsheets;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -20,6 +21,8 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class Spreadsheet
 {
+    use Macroable;
+
     /**
      * @var object 对象实例
      */

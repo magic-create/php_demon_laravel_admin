@@ -4,6 +4,7 @@ namespace Demon\AdminLaravel;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
 
 /**
  * Class Setting
@@ -11,6 +12,8 @@ use Illuminate\Support\Str;
  */
 class Setting
 {
+    use Macroable;
+
     /**
      * @var Collection
      */

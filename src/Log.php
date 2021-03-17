@@ -2,12 +2,16 @@
 
 namespace Demon\AdminLaravel;
 
+use Illuminate\Support\Traits\Macroable;
+
 /**
  * Class Log
  * @package Demon\AdminLaravel
  */
 class Log
 {
+    use Macroable;
+
     /**
      * @var int
      */

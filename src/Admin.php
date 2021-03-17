@@ -15,9 +15,12 @@ use Exception;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
 use Illuminate\Config\Repository;
+use Illuminate\Support\Traits\Macroable;
 
 class Admin
 {
+    use Macroable;
+    
     /**
      * @var array|mixed
      */

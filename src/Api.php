@@ -5,6 +5,7 @@ namespace Demon\AdminLaravel;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Traits\Macroable;
 
 /**
  * Class Api
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Validator;
  */
 class Api
 {
+    use Macroable;
+
     /**
      * @var int 状态码
      */
@@ -244,9 +247,16 @@ class Api
         //  获取参数
         $data = func_get_args();
         //  如果没有参数则跳过
-        if (isset($data[0]))
-            //  如果第二个值未设定则表示是数组直接设定，否则为键值对设定
-            is_array($data[0]) || is_object($data[0]) ? $this->data = $data[0] : $this->data[$data[0]] = $data[1];
+        if (isset($data[0])) {
+            //  数组合并
+            if (is_array($data[0]))
+                $this->data = array_merge($this->data, $data[0]);
+            //  对方赋值
+            else if (is_object($data[0]))
+                $this->data = $data[0];
+            //  键值设置
+            else $this->data[$data[0]] = $data[1];
+        }
 
         return $this;
     }

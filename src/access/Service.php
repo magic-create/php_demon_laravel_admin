@@ -7,9 +7,12 @@ use Demon\AdminLaravel\access\model\MenuModel;
 use Demon\AdminLaravel\access\model\RoleModel;
 use Demon\AdminLaravel\access\model\UserModel;
 use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
 
 class Service
 {
+    use Macroable;
+
     /**
      * @var array
      */

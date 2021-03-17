@@ -16,10 +16,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Traits\Macroable;
 use stdClass;
 
 class DBTable
 {
+    use Macroable;
+
     /**
      * @var string[] 模板内容
      */
