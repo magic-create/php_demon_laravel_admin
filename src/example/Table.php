@@ -70,8 +70,8 @@ class Table extends DBTable
                 'data' => 'a.avatar', 'title' => '头像', 'type' => 'select', 'placeholder' => '不限', 'option' => ['list' => $this->store['avatar']],
                 'where' => function($value, $field) {
                     return $value == 'have' ?
-                        function($query) use ($field) { $query->whereNotNull($field)->whereOr($field, '!=', ''); } :
-                        function($query) use ($field) { $query->whereNull($field)->whereOr($field, ''); };
+                        function($query) use ($field) { $query->whereNotNull($field)->orWhere($field, '!=', ''); } :
+                        function($query) use ($field) { $query->whereNull($field)->orWhere($field, ''); };
                 }
             ],
             ['data' => 'a.code', 'title' => '邀请码', 'where' => 'like'],

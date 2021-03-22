@@ -2,7 +2,6 @@
 
 namespace Demon\AdminLaravel\access\controller;
 
-use Demon\AdminLaravel\access\model\AllotModel;
 use Demon\AdminLaravel\access\model\UserModel;
 use Demon\AdminLaravel\access\table\UserTable;
 use Demon\AdminLaravel\Controller;

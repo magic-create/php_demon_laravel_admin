@@ -2,7 +2,6 @@
 
 namespace Demon\AdminLaravel\access\model;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class MenuModel extends BaseModel

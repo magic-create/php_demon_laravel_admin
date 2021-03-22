@@ -2,14 +2,10 @@
 
 namespace Demon\AdminLaravel\access\table;
 
-use Demon\AdminLaravel\access\model\AllotModel;
 use Demon\AdminLaravel\access\model\LogModel;
-use Demon\AdminLaravel\access\model\RoleModel;
 use Demon\AdminLaravel\access\model\UserModel;
-use Demon\AdminLaravel\access\Service;
 use Demon\AdminLaravel\DBTable;
 use Demon\AdminLaravel\Spreadsheet;
-use Illuminate\Support\Facades\DB;
 
 class LogTable extends DBTable
 {

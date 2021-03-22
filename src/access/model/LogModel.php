@@ -2,8 +2,6 @@
 
 namespace Demon\AdminLaravel\access\model;
 
-use Illuminate\Support\Facades\DB;
-
 class LogModel extends BaseModel
 {
     public function __construct()

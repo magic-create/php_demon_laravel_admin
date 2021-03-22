@@ -4,7 +4,6 @@ namespace Demon\AdminLaravel\access\controller;
 
 use Demon\AdminLaravel\access\model\UserModel;
 use Demon\AdminLaravel\Controller;
-use Illuminate\Support\Facades\Artisan;
 
 class AuthController extends Controller
 {

@@ -3,10 +3,7 @@
 namespace Demon\AdminLaravel\access\table;
 
 use Demon\AdminLaravel\access\model\RoleModel;
-use Demon\AdminLaravel\access\model\UserModel;
-use Demon\AdminLaravel\access\Service;
 use Demon\AdminLaravel\DBTable;
-use Illuminate\Support\Facades\DB;
 
 class RoleTable extends DBTable
 {
