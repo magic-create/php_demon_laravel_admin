@@ -222,10 +222,10 @@ class Api
      */
     public function sendError($message = '', $error = DEMON_CODE_PARAM)
     {
-        //  如果第一个参数是数字则表示错误码，参数顺位
+        //  如果第一个参数是数字则表示错误码，参数对调
         if (is_numeric($message)) {
-            $error = $message;
-            $message = '';
+            [$error, $message] = [$message, $error];
+            $message = !is_numeric($message) ? $message : '';
         }
 
         return abort($this->setError($error, $message)->send());
