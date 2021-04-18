@@ -56,7 +56,8 @@ class Api
         DEMON_CODE_MANY,
         DEMON_CODE_SERVER,
         DEMON_CODE_DATA,
-        DEMON_CODE_SERVICE
+        DEMON_CODE_SERVICE,
+        DEMON_CODE_VERSION,
     ];
 
     /**
