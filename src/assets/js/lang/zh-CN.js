@@ -748,4 +748,16 @@
             }
         });
     }
+    //  Dual默认语言
+    if(typeof ($.DemonDualListbox) != 'undefined'){
+        $.extend($.DemonDualListbox.settings, {
+            filterPlaceHolder:'搜索',
+            moveAllLabel:'添加全部',
+            moveSelectedLabel:'添加选中',
+            removeAllLabel:'移除全部',
+            removeSelectedLabel:'移除选中',
+            itemUpLabel:'向上移动',
+            itemDownLabel:'向下移动'
+        });
+    }
 }();

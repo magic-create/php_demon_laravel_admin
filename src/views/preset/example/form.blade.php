@@ -74,10 +74,10 @@
                         <div class="form-group">
                             <label>二级联动</label>
                             <div class="form-row">
-                                <div class="col-md-6 mb-sm-1">
+                                <div class="col-md-6 mb-1 mb-md-0">
                                     <select name="linkage2[1]" data-level="1" class="form-control select"></select>
                                 </div>
-                                <div class="col-md-6 mb-sm-1">
+                                <div class="col-md-6">
                                     <select name="linkage2[2]" data-level="2" class="form-control select"></select>
                                 </div>
                             </div>
@@ -85,24 +85,16 @@
                         <div class="form-group">
                             <label>三级联动</label>
                             <div class="form-row">
-                                <div class="col-md-4 mb-sm-1">
+                                <div class="col-md-4 mb-1 mb-md-0">
                                     <select name="linkage3[1]" data-level="1" class="form-control select"></select>
                                 </div>
-                                <div class="col-md-4 mb-sm-1">
+                                <div class="col-md-4 mb-1 mb-md-0">
                                     <select name="linkage3[2]" data-level="2" class="form-control select"></select>
                                 </div>
                                 <div class="col-md-4">
                                     <select name="linkage3[3]" data-level="3" class="form-control select"></select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>多选下拉框并保持顺序</label>
-                            <select name="keep" class="form-control select" multiple data-keep="true">
-                                @for($i=1;$i<=10;$i++)
-                                    <option value="{{$i}}">选项-{{$i}}</option>
-                                @endfor
-                            </select>
                         </div>
                         <div class="form-group">
                             <label>自定义</label>
@@ -167,6 +159,14 @@
                                 </div>
                             </div>
                             <small class="form-text text-muted">复制的内容是：{{$rand}}</small>
+                        </div>
+                        <div class="form-group">
+                            <label>穿梭框</label>
+                            <select name="dual" class="form-control dual" multiple>
+                                @for($i=1;$i<=10;$i++)
+                                    <option value="{{$i}}">选项-{{$i}}</option>
+                                @endfor
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Markdown</label>
@@ -241,6 +241,7 @@
         $.admin.slider('#advanced .slider[name="slider"]');
         $.admin.slider('#advanced .slider[name="sliders"]', {type:'double', grid:true, grid_num:10, prefix:"￥", max:1000, step:0.01, from:150, to:600});
         $.admin.clipboard('#advanced .clipboard', function(){$.admin.layer.msg('复制成功', {icon:6, time:2000});}, function(){$.admin.layer.msg('复制失败', {icon:5, time:2000});});
+        $.admin.dualbox('#advanced .dual');
         var height = function(){ return $('#markdown').height($('#advanced .markdown').height());};
         height().css('overflow-y', 'auto');
         $('#advanced .markdown').on("keyup blur", function(){$('#markdown').html(marked($(this).val()));}).on('resize', height);

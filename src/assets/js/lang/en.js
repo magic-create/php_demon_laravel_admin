@@ -305,4 +305,16 @@
             }
         });
     }
+    //  Dual默认语言
+    if(typeof ($.DemonDualListbox) != 'undefined'){
+        $.extend($.DemonDualListbox.settings, {
+            filterPlaceHolder:'Search',
+            moveAllLabel:'Select All',
+            moveSelectedLabel:'Select Checked',
+            removeAllLabel:'Remove All',
+            removeSelectedLabel:'Remove Checked',
+            itemUpLabel:'Move Up',
+            itemDownLabel:'Move Down'
+        });
+    }
 }();
