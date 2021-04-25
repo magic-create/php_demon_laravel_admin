@@ -27,7 +27,7 @@
 5. php artisan admin:table
 6. php artisan migrate
 7. edit.env (ADMIN_STATIC) or add config/admin.php (edit static, default : /static/admin)
-8. php artisan vendor:publish --tag=admin
+8. php artisan vendor:publish --tag=admin-all
 9. edit.env (ADMIN_PATH) or add config/admin.php (edit path, default : admin)
 10. edit.env (ADMIN_CDN) or add config/admin.php (edit cdn, default : )
 11. browser url  {address}/admin or {path}
