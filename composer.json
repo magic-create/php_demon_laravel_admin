@@ -14,7 +14,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2",
+        "php": ">=7.2.0",
         "laravel/framework": ">=6.0",
         "comingdemon/demon": "dev-master",
         "gregwar/captcha": "^1.1.9",
