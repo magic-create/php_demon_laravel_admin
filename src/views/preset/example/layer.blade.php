@@ -249,7 +249,7 @@ $('#alert-dark').click(function() {
         });
         $('#image').click(function(){
             $.admin.layer.image({image:'{{url('/static/admin/images/avatar/9.jpg')}}', dump:'{{admin_url('extend/image/dump')}}', cropper:true, dispose:false}, function(index, o){
-                $.admin.modal.alert('<div style="margin:0 auto;width:320px;max-height:500px;text-align:center"><img class="rounded" style="max-width:80%;" src="' + o.cropper.getCroppedCanvas().toDataURL() + '"></div>', {title:'图片裁剪结果'});
+                $.admin.modal.alert('<div style="margin:0 auto;width:320px;max-height:500px;text-align:center"><img class="rounded" style="max-width:80%;" src="' + (o.info.mime == 'image/gif' ? o.preview : o.cropper.getCroppedCanvas().toDataURL()) + '"></div>', {title:'图片裁剪结果'});
                 $.admin.layer.close(index);
             });
         });
