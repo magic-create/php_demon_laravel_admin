@@ -78,10 +78,10 @@ class Html
     /**
      * 生成图片元素
      *
-     * @param        $url
-     * @param array  $attribute
-     * @param int[]  $size
-     * @param string $class
+     * @param          $url
+     * @param array    $attribute
+     * @param string[] $size
+     * @param string   $class
      *
      * @return string
      *

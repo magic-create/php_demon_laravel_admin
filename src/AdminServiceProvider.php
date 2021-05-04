@@ -54,18 +54,20 @@ class AdminServiceProvider extends ServiceProvider
         $this->loadViewsFrom([admin_path('Views'), __DIR__ . DIRECTORY_SEPARATOR . 'views'], 'admin');
         //  实例化更多
         $this->app->singleton('admin', function($app) { return new Admin($app['config']); });
-        //  初始化安装
-        $this->publishes([
-            __DIR__ . DIRECTORY_SEPARATOR . 'directory' => admin_path(),
-            __DIR__ . DIRECTORY_SEPARATOR . 'assets' => public_path(trim(config('admin.static', '/static/admin'), '/')),
-        ], 'admin-all');
-        //  只安装资源
-        $this->publishes([
-            __DIR__ . DIRECTORY_SEPARATOR . 'assets' => public_path(trim(config('admin.static', '/static/admin'), '/')),
-        ], 'admin-assets');
-        //  注册命令
-        $this->app->singleton('common.admin.table', function($app) { return new TableCommand($app['files'], $app['composer']); });
-        $this->app->singleton('common.admin.reset', function($app) { return new ResetCommand(); });
-        $this->commands(['AdminTable' => 'common.admin.table', 'AdminReset' => 'common.admin.reset']);
+        if ($this->app->runningInConsole()) {
+            //  初始化安装
+            $this->publishes([
+                __DIR__ . DIRECTORY_SEPARATOR . 'directory' => admin_path(),
+                __DIR__ . DIRECTORY_SEPARATOR . 'assets' => public_path(trim(config('admin.static', '/static/admin'), '/')),
+            ], 'admin-all');
+            //  只安装资源
+            $this->publishes([
+                __DIR__ . DIRECTORY_SEPARATOR . 'assets' => public_path(trim(config('admin.static', '/static/admin'), '/')),
+            ], 'admin-assets');
+            //  注册命令
+            $this->app->singleton('common.admin.table', function($app) { return new TableCommand($app['files'], $app['composer']); });
+            $this->app->singleton('common.admin.reset', function($app) { return new ResetCommand(); });
+            $this->commands(['AdminTable' => 'common.admin.table', 'AdminReset' => 'common.admin.reset']);
+        }
     }
 }

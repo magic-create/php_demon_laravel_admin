@@ -21,6 +21,7 @@ function admin_path($path = '')
  * 是否为Tabs页或者替换类型
  *
  * @param string      $type
+ * @param null        $url
  * @param bool|string $replace
  *
  * @return bool
@@ -197,9 +198,9 @@ function admin_html()
 /**
  * 运维后台快速生成Table操作按钮
  *
- * @param       $title
- * @param null  $action
- * @param array $parm
+ * @param string $action
+ * @param string $type
+ * @param array  $parm
  *
  * @return string
  *
@@ -218,7 +219,6 @@ function admin_button($action = '', $type = '', $parm = [])
     $modal = $parm['modal'] ?? $text;
     $tag = $parm['tag'] ?? 'button';
     $size = $parm['size'] ?? 'sm';
-    $theme = $parm['theme'] ?? 'secondary';
     $icon = $parm['icon'] ?? '';
     $auto = $parm['auto'] ?? false;
     $type = $type ? : $action;
