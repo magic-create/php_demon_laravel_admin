@@ -236,7 +236,7 @@ class Service
      * @param int $upId
      * @param int $deep
      *
-     * @return string
+     * @return array
      *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
@@ -347,7 +347,6 @@ class Service
             $count = 1;
             $childs = self::getAccessChilds($data, $mid);
             if ($childs) {
-                $total = count($childs);
                 foreach ($data as &$item) {
                     if ($item['upId'] != $mid)
                         continue;

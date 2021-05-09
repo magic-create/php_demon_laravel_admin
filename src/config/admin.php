@@ -25,15 +25,15 @@ return [
     //  权限验证
     'access' => env('ADMIN_ACCESS', false),
     //  授权控制器
-    'authentication' => env('ADMIN_AUTHENTICATION', \Demon\AdminLaravel\access\controller\AuthController::class),
+    'authentication' => env('ADMIN_AUTHENTICATION', Demon\AdminLaravel\access\controller\AuthController::class),
     //  设置控制器(包含退出登录,设置,清理缓存,切换语言等用户操作)
-    'setting' => env('ADMIN_SETTING', \Demon\AdminLaravel\access\controller\SettingController::class),
+    'setting' => env('ADMIN_SETTING', Demon\AdminLaravel\access\controller\SettingController::class),
     //  菜单统计
-    'badge' => env('ADMIN_BADGE', \Demon\AdminLaravel\example\Service::class),
+    'badge' => env('ADMIN_BADGE', Demon\AdminLaravel\example\Service::class),
     //  通知内容
-    'notification' => env('ADMIN_NOTIFICATION', \Demon\AdminLaravel\example\Service::class),
+    'notification' => env('ADMIN_NOTIFICATION', Demon\AdminLaravel\example\Service::class),
     //  提交日志
-    'log' => env('ADMIN_LOG', \Demon\AdminLaravel\example\Service::class),
+    'log' => env('ADMIN_LOG', Demon\AdminLaravel\example\Service::class),
     //  使用语言
     'locales' => [
         'en' => 'English',

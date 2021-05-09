@@ -126,7 +126,7 @@ class DBTable
     /**
      * 表格配置定义
      *
-     * @return array
+     * @return object
      *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
@@ -225,6 +225,8 @@ class DBTable
     /**
      * 设置额外字段
      *
+     * @param $field
+     *
      * @return array
      *
      * @copyright 魔网天创信息科技
@@ -264,7 +266,7 @@ class DBTable
     /**
      * 表格按钮定义
      *
-     * @return array
+     * @return object
      *
      * @copyright 魔网天创信息科技
      * @author    ComingDemon
@@ -433,8 +435,6 @@ class DBTable
      */
     public function getFormat()
     {
-        //  获取表字段
-        $rawColumns = [];
         //  格式化配置
         $format = $this->setFormat();
         //  获取数据
@@ -445,7 +445,6 @@ class DBTable
             $type = is_array($val) ? ($val['type'] ?? '') : '';
             //  处理方法
             $callback = is_array($val) ? ($val['callback'] ?? null) : $val;
-            $isHtml = is_array($val) ? ($val['html'] ?? true) : true;
             //  处理类型
             switch ($type) {
                 //  添加字段
@@ -516,9 +515,7 @@ class DBTable
     /**
      * 表格搜索定义
      *
-     * @param array $data
-     *
-     * @return array
+     * @return object
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
      */
@@ -999,7 +996,7 @@ class DBTable
     /**
      * 直接设置内容
      *
-     * @return $this
+     * @return array
      *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技
@@ -1068,7 +1065,7 @@ class DBTable
         }
         //  处理数据
         $time = mstime();
-        $data[$this->config->dataField] = $this->getFormat($data[$this->config->dataField]);
+        $data[$this->config->dataField] = $this->getFormat();
         if (config('app.debug'))
             $data['_time']['format'] = (mstime() - $time) . 'ms';
         //  附加数据
@@ -1096,7 +1093,7 @@ class DBTable
      *
      * @param int $step
      *
-     * @return array
+     * @return array|object
      *
      * @author    ComingDemon
      * @copyright 魔网天创信息科技

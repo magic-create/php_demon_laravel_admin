@@ -8,6 +8,9 @@
 
 使用的Bootstrap4作为基础前端框架，jQuery版本为3.5
 
+## 前置说明
+1. 例子用的是MYSQL5.7（有json字段），如果不需要的话释放迁移后请手动将字段改成text（example_master.stub）
+
 ## 安装说明
 
 > 1. 使用composer安装服务
@@ -29,7 +32,7 @@
 5. php artisan admin:table
 6. php artisan migrate
 7. edit.env (ADMIN_STATIC) or add config/admin.php (edit static, default : /static/admin)
-8. php artisan vendor:publish --tag=admin-all
+8. php artisan vendor:publish --tag=admin-all (If only the asset is updated later, --tag=admin-asset)
 9. edit.env (ADMIN_PATH) or add config/admin.php (edit path, default : admin)
 10. edit.env (ADMIN_CDN) or add config/admin.php (edit cdn, default : )
 11. browser url  {address}/admin or {path}

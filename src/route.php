@@ -58,9 +58,9 @@ app('router')->group([
     //  权限
     $router->match(['get', 'post'], '/admin/access/{con?}/{act?}', function($con, $act = null) use ($run) { return $run("Demon\\AdminLaravel\\access\\controller\\" . ucwords($con) . 'Controller', $act); });
     //  例子
-    $router->match(['get', 'post'], '/example/{act?}', function($act = null) use ($run) { return $run(\Demon\AdminLaravel\example\Controller::class, $act); });
+    $router->match(['get', 'post'], '/example/{act?}', function($act = null) use ($run) { return $run(Demon\AdminLaravel\example\Controller::class, $act); });
     //  扩展图片例子
-    $router->match(['get', 'post'], '/extend/image/{act?}', function($act = '') use ($run) { return $run(\Demon\AdminLaravel\example\Extend::class, $act); });
+    $router->match(['get', 'post'], '/extend/image/{act?}', function($act = '') use ($run) { return $run(Demon\AdminLaravel\example\Extend::class, $act); });
     //  加载自定义
     if (is_file(admin_path('route.php')))
         include admin_path('route.php');

@@ -83,13 +83,13 @@ class Table extends DBTable
                 'type' => 'linkage', 'option' => ['level' => 3, 'placeholderStatus' => true, 'placeholderList' => ['请选择一级分类', '请选择二级分类', '请选择三级分类'], 'bindKey' => 'id', 'parentKey' => 'upId', 'tree' => false, 'titleKey' => 'name', 'list' => $this->store['type']],
                 'attr' => ['data-select' => true],
                 'where' => function($value, $field) {
-                    $list = [];
-                    if ($value[3])
+                    if (!$value[1])
+                        return null;
+                    else if ($value[3])
                         $list = [$value[3]];
                     else if ($value[2])
                         $list = $this->store['type']->where('upId', $value[2])->pluck('id')->toArray();
-                    else
-                        $list = $this->store['type']->whereIn('upId', $this->store['type']->where('upId', $value[1])->pluck('id')->toArray())->pluck('id')->toArray();
+                    else $list = $this->store['type']->whereIn('upId', $this->store['type']->where('upId', $value[1])->pluck('id')->toArray())->pluck('id')->toArray();
 
                     return $list ? function($query) use ($field, $list) { $query->whereIn($field, $list); } : null;
                 }
@@ -316,7 +316,8 @@ class Table extends DBTable
             'status' => function($val) { return $this->store['status'][$val->status]; },
             '_action' => ['type' => 'remove']
         ];
-        $list = $this->getFormat($this->get());
+        $this->get();
+        $list = $this->getFormat();
         //  设置表头
         $column = [
             'UID', '手机号', '昵称' => 50, '头像' => 'image', '邀请码', '已邀请人数',

@@ -55,7 +55,7 @@ class LogTable extends DBTable
         return [
             ['data' => 'a.createTime', 'title' => $this->access->getLang('createTime'), 'reorder' => true],
             ['data' => 'b.uid', 'title' => $this->access->getLang('username'), 'width' => '10%', 'reorder' => true],
-            ['data' => 'userRemark', 'origin' => 'b.remark as userRemark', 'title' => $this->access->getLang('userRemark'), 'width' => '10%', 'search' => true],
+            ['data' => 'userRemark', 'origin' => 'b.remark', 'title' => $this->access->getLang('userRemark'), 'width' => '10%', 'search' => true],
             ['data' => 'a.tag', 'title' => $this->access->getLang('tag'), 'search' => true],
             ['data' => 'a.path', 'title' => $this->access->getLang('path'), 'search' => true, 'action' => true],
             ['data' => 'a.remark', 'title' => $this->access->getLang('remark'), 'search' => true],
@@ -72,7 +72,7 @@ class LogTable extends DBTable
 
     public function setQuery()
     {
-        return LogModel::from((new LogModel())->getTable(), 'a')->leftJoin((new UserModel())->getTable() . ' as b', 'b.uid', '=', 'a.uid', 'left');
+        return LogModel::from((new LogModel())->getTable(), 'a')->leftJoin((new UserModel())->getTable() . ' as b', 'b.uid', '=', 'a.uid');
     }
 
     public function setFormat()

@@ -22,7 +22,7 @@ class Controller extends Controllers
     public function login()
     {
         if (DEMON_SUBMIT) {
-            $data = $this->api->arguer([
+            $this->api->arguer([
                 'account' => [
                     'name' => app('admin')->__('base.auth.account'),
                     'rule' => 'required|string|in:admin',

@@ -58,12 +58,12 @@ class AdminServiceProvider extends ServiceProvider
             //  初始化安装
             $this->publishes([
                 __DIR__ . DIRECTORY_SEPARATOR . 'directory' => admin_path(),
-                __DIR__ . DIRECTORY_SEPARATOR . 'assets' => public_path(trim(config('admin.static', '/static/admin'), '/')),
+                base_path('vendor' . DIRECTORY_SEPARATOR . 'comingdemon' . DIRECTORY_SEPARATOR . 'admin-asset' . DIRECTORY_SEPARATOR . 'static') => public_path(trim(config('admin.static', '/static/admin'), '/')),
             ], 'admin-all');
             //  只安装资源
             $this->publishes([
-                __DIR__ . DIRECTORY_SEPARATOR . 'assets' => public_path(trim(config('admin.static', '/static/admin'), '/')),
-            ], 'admin-assets');
+                base_path('vendor' . DIRECTORY_SEPARATOR . 'comingdemon' . DIRECTORY_SEPARATOR . 'admin-asset' . DIRECTORY_SEPARATOR . 'static') => public_path(trim(config('admin.static', '/static/admin'), '/')),
+            ], 'admin-asset');
             //  注册命令
             $this->app->singleton('common.admin.table', function($app) { return new TableCommand($app['files'], $app['composer']); });
             $this->app->singleton('common.admin.reset', function($app) { return new ResetCommand(); });
