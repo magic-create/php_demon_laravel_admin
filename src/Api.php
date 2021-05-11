@@ -95,8 +95,8 @@ class Api
         $field = [];
         foreach ($list as $key => $val) {
             if (is_string($val)) {
-                $rules[$key] = $val;
-                $messages[$key . '.*'] = $key;
+                $rules[$key] = 'required';
+                $messages[$key . '.*'] = $val;
             }
             if (is_array($val) && ($val['name'] ?? ''))
                 $field[$key] = $val['name'];

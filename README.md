@@ -15,7 +15,7 @@
 
 > 1. 使用composer安装服务
 > 2. 在config/app.php的providers中增加本服务
-> 3. 设置admin的数据库连接（默认是admin）
+> 3. 设置admin的数据库连接（默认是admin）以及相关database配置
 > 4. 编辑AppServiceProvider文件中的boot方法，增加默认字符长度，用于解决laravel的session表默认字符串255导致无法生成索引的问题，
 > 5. 执行命令生成建表迁移文件
 > 6. 执行迁移动作生成对应表和初始数据
@@ -28,14 +28,15 @@
 1. composer require comingdemon/admin-laravel
 2. edit config/app.php providers add Demon\AdminLaravel\AdminServiceProvider::class
 3. edit.env (ADMIN_CONNECTION) or add config/admin.php (edit connection, default : admin)
-4. edit AppServiceProvider boot : Schema::defaultStringLength(191)
-5. php artisan admin:table
-6. php artisan migrate
-7. edit.env (ADMIN_STATIC) or add config/admin.php (edit static, default : /static/admin)
-8. php artisan vendor:publish --tag=admin-all (If only the asset is updated later, --tag=admin-asset)
-9. edit.env (ADMIN_PATH) or add config/admin.php (edit path, default : admin)
-10. edit.env (ADMIN_CDN) or add config/admin.php (edit cdn, default : )
-11. browser url  {address}/admin or {path}
+4. edit config/database.php : connections add {connection}
+5. edit AppServiceProvider boot : Schema::defaultStringLength(191)
+6. php artisan admin:table
+7. php artisan migrate
+8. edit.env (ADMIN_STATIC) or add config/admin.php (edit static, default : /static/admin)
+9. php artisan vendor:publish --tag=admin-all (If only the asset is updated later, --tag=admin-asset)
+10. edit.env (ADMIN_PATH) or add config/admin.php (edit path, default : admin)
+11. edit.env (ADMIN_CDN) or add config/admin.php (edit cdn, default : )
+12. browser url {address}/admin or {path}
 
 ## 进阶操作
 

@@ -560,8 +560,8 @@ EOF;
         }
         //  生成格式
         foreach ($data as &$item) {
-            //  过滤操作
-            if ($item['type'] == 'action')
+            //  过滤操作和重复处理
+            if ($item['type'] == 'action' || (is_string($item['path']) && strpos($item['path'], 'http') === 0))
                 continue;
             //  统计
             $item['badge'] = $item['badge'] ?? 0;
