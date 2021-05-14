@@ -56,7 +56,6 @@ class RoleController extends Controller
 
     public function status()
     {
-        return response()->json(['code' => DEMON_CODE_ACCESS, 'message' => __('admin::base.error.' . DEMON_CODE_ACCESS)], DEMON_CODE_ACCESS);
         $this->api->check(RoleModel::updateStatus(arguer('rid'), arguer('status', false, 'bool')));
 
         return $this->api->send();
