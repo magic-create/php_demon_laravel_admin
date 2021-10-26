@@ -52,6 +52,7 @@
                 <label>{{$access->getLang('remark')}}</label>
                 <input type="text" name="remark" class="form-control" placeholder="{{$access->getLang('enter_remark')}}" value="{{$info->remark ?? ''}}"/>
             </div>
+            <input type="hidden" name="weight" class="form-control" value="{{$info->weight ?? 0}}"/>
         </form>
     </div>
 @endsection
