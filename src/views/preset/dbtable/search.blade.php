@@ -69,7 +69,7 @@
                                 <div class="row linkage-{{$val->option->level}}">
                                     @for($i = 1; $i <= $val->option->level; $i++)
                                         <div class="col-{{12 / $val->option->level}}">
-                                            <select name="{{$val->name}}[{{$i}}]" data-level="{{$i}}" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}"></select>
+                                            <select name="{{$val->name}}__{{$i}}" data-level="{{$i}}" class="form-control" {!!$val->attrHtml!!} style="{{$val->style}}"></select>
                                         </div>
                                     @endfor
                                     <script id="search_{{$val->name}}">
@@ -78,7 +78,7 @@
                                             namespace = namespace || {};
                                             namespace.linkage = namespace.linkage || {};
                                             var selector = [];
-                                            for(var i = 1; i <= {{$val->option->level}}; i++) selector.push('[name="{{$val->name}}[' + i + ']"][data-level="' + i + '"]');
+                                            for(var i = 1; i <= {{$val->option->level}}; i++) selector.push('[name="{{$val->name}}__' + i + '"][data-level="' + i + '"]');
                                             namespace.linkage.{{$val->name}} = $.extend({selector}, JSON.parse('{!!json_encode($val->option)!!}'));
                                             $('#search_{{$val->name}}').remove();
                                         });

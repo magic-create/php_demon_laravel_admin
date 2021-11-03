@@ -679,7 +679,7 @@ class DBTable
                 else if (($val->type ?? '') == 'linkage') {
                     $val->value = [];
                     for ($i = 1; $i <= ($val->option->level ?? 2); $i++)
-                        $val->value[$i] = arguer("{$searchs}.{$val->name}[$i]", '');
+                        $val->value[$i] = arguer("{$searchs}.{$val->name}__{$i}", '');
                     $val->value = $format($val->value, $val);
                 }
                 else if (($val->searchs ?? false) == true)
