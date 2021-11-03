@@ -114,7 +114,7 @@ class Service
      */
     public static function fieldList()
     {
-        return Schema::connection(self::$connection)->getColumnListing(self::MasterModel);
+        return Schema::connection(self::connection())->getColumnListing(self::MasterModel);
     }
 
     /**
@@ -129,7 +129,20 @@ class Service
      */
     public static function model(string $table = '')
     {
-        return $table ? DB::connection(self::$connection)->table($table) : DB::connection(self::$connection);
+        return $table ? DB::connection(self::connection())->table($table) : DB::connection(self::connection());
+    }
+
+    /**
+     * 获取数据库连接对象
+     *
+     * @return mixed
+     *
+     * @copyright 魔网天创信息科技
+     * @author    ComingDemon
+     */
+    public static function connection()
+    {
+        return config('admin.connection', self::$connection);
     }
 
     /**
@@ -150,7 +163,7 @@ class Service
             return DEMON_CODE_PARAM;
 
         //  返回执行结果
-        return DB::connection(self::$connection)->table(self::MasterModel)->whereIn(self::MasterKey, is_array($uid) ? $uid : explode(',', $uid))->update(['status' => (int)$status, 'updateTime' => mstime()]) ? true : DEMON_CODE_COND;
+        return DB::connection(self::connection())->table(self::MasterModel)->whereIn(self::MasterKey, is_array($uid) ? $uid : explode(',', $uid))->update(['status' => (int)$status, 'updateTime' => mstime()]) ? true : DEMON_CODE_COND;
     }
 
     /**
@@ -168,7 +181,7 @@ class Service
         if (!$uid)
             return null;
         $field = ['a.*', 'b.nickname as inviteNickname'];
-        $query = DB::connection(self::$connection)
+        $query = DB::connection(self::connection())
                    ->table(self::MasterModel, 'a')
                    ->leftJoin(self::MasterModel . ' as b', 'b.uid', '=', 'a.inviteUid')
                    ->where('a.uid', $uid);
@@ -267,7 +280,7 @@ class Service
         $data = $preData + [
                 'nickname' => $preData['nickname'] ?? bomber()->rand(rand(2, 16), 'chinese'),
                 'sex' => $preData['sex'] ?? array_rand(array_flip(array_keys($store['sex']))),
-                'inviteCode' => $preData['inviteCode'] ?? (DB::connection(self::$connection)->table(self::MasterModel)->orderByRaw('RAND()')->first()->code ?? null),
+                'inviteCode' => $preData['inviteCode'] ?? (DB::connection(self::connection())->table(self::MasterModel)->orderByRaw('RAND()')->first()->code ?? null),
                 'level' => $preData['level'] ?? array_rand(array_flip(array_keys($store['level']))),
                 'birthday' => $preData['birthday'] ?? date('Y-m-d', rand(strtotime('1900-01-01'), strtotime('Ymd'))),
                 'intro' => $preData['intro'] ?? admin_html('fast', bomber()->rand(rand(16, 128), 'chinese'), [], 'p'),
@@ -295,9 +308,9 @@ class Service
         $reData += ['createTime' => mstime()];
 
         //  返回执行结果
-        $uid = DB::connection(self::$connection)->table(self::MasterModel)->insertGetId($reData);
+        $uid = DB::connection(self::connection())->table(self::MasterModel)->insertGetId($reData);
         if ($uid) {
-            DB::connection(self::$connection)->table(self::MasterModel)->where('uid', $uid)->update(['code' => bomber()->inviteCode($uid, 1, self::InviteCodeKey, self::InviteCodeOffset)]);
+            DB::connection(self::connection())->table(self::MasterModel)->where('uid', $uid)->update(['code' => bomber()->inviteCode($uid, 1, self::InviteCodeKey, self::InviteCodeOffset)]);
 
             return true;
         }
@@ -337,7 +350,7 @@ class Service
         }
 
         //  返回执行结果
-        return DB::connection(self::$connection)->table(self::MasterModel)->where('uid', $uid)->update($reData) ? true : DEMON_CODE_DATA;
+        return DB::connection(self::connection())->table(self::MasterModel)->where('uid', $uid)->update($reData) ? true : DEMON_CODE_DATA;
     }
 
     /**
@@ -362,16 +375,16 @@ class Service
         if (!$credit)
             return error_build('积分类型错误');
         //  获取当前数据，如果没有则创建
-        $now = DB::connection(self::$connection)->table(self::SlaveModel)->where(['uid' => $uid, 'type' => $type])->first();
+        $now = DB::connection(self::connection())->table(self::SlaveModel)->where(['uid' => $uid, 'type' => $type])->first();
         if (!$now) {
-            $foo = DB::connection(self::$connection)->table(self::SlaveModel)->insertGetId(['uid' => $uid, 'type' => $type, 'createTime' => mstime()]);
+            $foo = DB::connection(self::connection())->table(self::SlaveModel)->insertGetId(['uid' => $uid, 'type' => $type, 'createTime' => mstime()]);
             if (!$foo)
                 return DEMON_CODE_DATA;
 
             return self::credit($uid, $type, $change);
         }
         //  构造器
-        $query = DB::connection(self::$connection)->table(self::SlaveModel)->where('id', $now->id);
+        $query = DB::connection(self::connection())->table(self::SlaveModel)->where('id', $now->id);
         //  变更数量绝对值
         $num = bcadd(0, abs($change), $credit['decimals']);
         //  扣除
@@ -400,9 +413,9 @@ class Service
     public static function setting($module = null)
     {
         if ($module)
-            return DB::connection(self::$connection)->table(self::SettingModel)->whereIn(is_array($module) ? $module : [$module])->get();
+            return DB::connection(self::connection())->table(self::SettingModel)->whereIn(is_array($module) ? $module : [$module])->get();
         else
-            return DB::connection(self::$connection)->table(self::SettingModel)->get();
+            return DB::connection(self::connection())->table(self::SettingModel)->get();
     }
 
     /**

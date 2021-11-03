@@ -682,6 +682,8 @@ class DBTable
                         $val->value[$i] = arguer("{$searchs}.{$val->name}[$i]", '');
                     $val->value = $format($val->value, $val);
                 }
+                else if (($val->searchs ?? false) == true)
+                    $val->value = $format(arguer("{$searchs}", ''), $val);
                 else $val->value = $format(arguer("{$searchs}.{$val->name}", ''), $val);
                 // 如果有内容的话开始拼接where条件
                 if ($val->value !== '') {
