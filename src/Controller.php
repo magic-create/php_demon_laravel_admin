@@ -125,12 +125,12 @@ class Controller extends BaseController
                 return true;
             //  需要登录
             if (!$this->uid) {
-                if (!DEMON_SUBMIT) {
+                if (!DEMON_SUBMIT && !DEMON_INJSON) {
                     session(['admin.login' => url()->full()]);
                     abort(response(app()->make(config('admin.authentication'))->login()));
                 }
                 else
-                    abort(response()->json(['code' => DEMON_CODE_AUTH, 'message' => admin_error(DEMON_CODE_AUTH)], DEMON_CODE_AUTH));
+                    abort(response()->json(['code' => DEMON_CODE_AUTH, 'message' => admin_error(DEMON_CODE_AUTH), 'data' => ['javascript' => 'window.location.href=window.location.href;window.location.reload;']], DEMON_CODE_AUTH));
             }
         }
     }
@@ -149,7 +149,7 @@ class Controller extends BaseController
         if (config('admin.access')) {
             //  需要权限
             if (!app('admin')->access->intercept($action, $this->accessExcept, $this->accessAssign)) {
-                abort(DEMON_SUBMIT ?
+                abort((DEMON_SUBMIT || DEMON_INJSON) ?
                     response()->json(['code' => DEMON_CODE_ACCESS, 'message' => admin_error(DEMON_CODE_ACCESS)], DEMON_CODE_ACCESS) :
                     response(admin_view('preset.error.general', ['code' => DEMON_CODE_ACCESS, 'message' => admin_error(DEMON_CODE_ACCESS)]), DEMON_CODE_ACCESS));
             }
@@ -167,7 +167,7 @@ class Controller extends BaseController
     public function __tabs($action)
     {
         //  开启判断
-        if (config('admin.tabs') && !DEMON_SUBMIT && !DEMON_INAJAX) {
+        if (config('admin.tabs') && !DEMON_SUBMIT && !DEMON_INAJAX && !DEMON_INJSON) {
             //  携带框架标记并且不是授权相关功能，或者是首页但没有携带框架标记
             if ((admin_tabs('frame') || (url()->current() == admin_url() && !admin_tabs(null))) && get_called_class() != config('admin.authentication')) {
                 //  获取用户菜单信息

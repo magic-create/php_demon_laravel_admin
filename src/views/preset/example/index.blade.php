@@ -1,6 +1,6 @@
 @extends('admin::layout.vessel.blank')
 @section('container.link.before')
-    <script src="{{admin_cdn('echarts/5.0.1/echarts.min.js',true)}}"></script>
+    <script src="{{admin_cdn('echarts/5.3.2/echarts.min.js')}}"></script>
 @endsection
 @section('container.style')
     <style>
