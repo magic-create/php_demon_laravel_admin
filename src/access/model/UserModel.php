@@ -45,7 +45,11 @@ class UserModel extends BaseModel
         if (!$uid)
             return DEMON_CODE_PARAM;
 
-        return self::where('system', 0)->whereIn('uid', is_array($uid) ? $uid : explode(',', $uid))->update(['status' => (int)$status, 'username' => null, 'updateTime' => mstime()]) ? true : DEMON_CODE_COND;
+        $update = ['status' => (int)$status, 'updateTime' => mstime()];
+        if ((int)$status == -1)
+            $update += ['username' => null];
+
+        return self::where('system', 0)->whereIn('uid', is_array($uid) ? $uid : explode(',', $uid))->update($update) ? true : DEMON_CODE_COND;
     }
 
     public static function checkData($data = [], $info = [])
