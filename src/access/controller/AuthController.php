@@ -38,7 +38,7 @@ class AuthController extends Controller
             //  验证登录
             $user = $this->api->check(UserModel::password('username', $data['account'], $data['password']));
             //  保存用户信息
-            session(['uid' => $user->uid, 'admin.login' => null]);
+            session(['uid' => $user->uid, 'time' => DEMON_MSTIME, 'admin.login' => null]);
             //  更新到上次登录
             UserModel::where('uid', $user->uid)->update(['loginTime' => DEMON_MSTIME]);
             //  记录标记

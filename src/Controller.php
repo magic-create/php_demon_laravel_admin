@@ -100,7 +100,7 @@ class Controller extends BaseController
                     UserModel::where('uid', $this->uid)->update(['activeTime' => mstime()]);
                 }
                 //  如果数据有误或状态不正确
-                if (!$this->user || $this->user->status < 1) {
+                if (!$this->user || $this->user->status < 1 || ((session('time') ? : 0) < ($this->user->passwordTime ?? 0))) {
                     $this->uid = 0;
                     $this->user = null;
                 }

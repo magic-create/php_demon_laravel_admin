@@ -12,6 +12,7 @@ namespace Demon\AdminLaravel;
 
 use Exception;
 use Illuminate\Support\Traits\Macroable;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet as Spreadsheets;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -261,9 +262,11 @@ class Spreadsheet
                 if ($format != 'html')
                     $value = str_replace(["\r", "\n", "\r\n", PHP_EOL, '&nbsp;'], '', trim(strip_tags((string)nl2br($value))));
                 //  数字转换
-                if ((is_numeric($value) || is_double($value) || is_float($value)) && $value >= 1e10)
+                if ((is_numeric($value) || is_double($value) || is_float($value)) && $value >= 1e10) {
                     $value = (string)$value;
-                $object->setCellValue($skeyName, $value);
+                    $object->setCellValueExplicit($skeyName, $value, DataType::TYPE_STRING);
+                }
+                else $object->setCellValue($skeyName, $value);
                 //  URL转换
                 if ($format == 'url') {
                     $object->getCell($skeyName)->getHyperlink()->setUrl($value);

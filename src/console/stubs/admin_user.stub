@@ -29,6 +29,7 @@ class Create{{tableClassName}}Table extends Migration
                   $table->unsignedBigInteger('updateTime')->default(0)->comment('更新时间');
                   $table->unsignedBigInteger('loginTime')->default(0)->comment('最后登录时间');
                   $table->unsignedBigInteger('activeTime')->default(0)->comment('最后活跃时间');
+                  $table->unsignedBigInteger('passwordTime')->default(0)->comment('最后改密时间');
                   $table->unique('username');
               });
         DB::connection('{{connection}}')

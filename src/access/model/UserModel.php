@@ -62,10 +62,11 @@ class UserModel extends BaseModel
         $reData['avatar'] = ($reData['avatar'] ?? '') ? : null;
         $reData['nickname'] = ($reData['nickname'] ?? '') ? : $reData['username'];
         $reData['remark'] = ($reData['remark'] ?? '') ? : null;
-        if ($reData['password'] ?? null)
+        if ($reData['password'] ?? null) {
             $reData['password'] = bomber()->password(['content' => $reData['password'], 'action' => 'hash']);
-        else
-            unset($reData['password']);
+            $reData['passwordTime'] = mstime();
+        }
+        else unset($reData['password']);
         if ($reData['username']) {
             $uniqueUsername = self::where('username', $reData['username'])->where('uid', '!=', $info['uid'] ?? 0)->first();
             if ($uniqueUsername)
