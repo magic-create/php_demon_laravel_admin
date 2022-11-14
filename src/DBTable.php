@@ -94,6 +94,11 @@ class DBTable
     public $data = [];
 
     /**
+     * @var int 设置总数
+     */
+    public $count = 0;
+
+    /**
      * @var array 按钮定义
      */
     public $button = [];
@@ -1087,7 +1092,7 @@ class DBTable
      */
     public function count()
     {
-        return $this->static ? count($this->data) : $this->getQuery(0)->count();
+        return $this->static ? ($this->count ? : count($this->data)) : $this->getQuery(0)->count();
     }
 
     /**
