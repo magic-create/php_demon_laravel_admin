@@ -73,7 +73,7 @@
             menuChange(type);
         });
         $('#validate [name="icon"]').parent().find('button').on('click', function(){
-            $.admin.layer.fontAwesome({list:'{{admin_static('libs/font-awesome/5.15.1/css/all.min.css')}}'}, function(index, layero){
+            $.admin.layer.fontAwesome({list:'{{admin_static('libs/font-awesome/7.2.0/css/all.min.css')}}'}, function(index, layero){
                 $('#validate [name="icon"]').val(layero.iconClass);
                 $.admin.layer.close(index);
             });

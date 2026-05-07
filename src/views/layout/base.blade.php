@@ -59,7 +59,7 @@
     <link href="{{admin_cdn('select2/4.0.9/css/select2.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{admin_cdn('iCheck/1.0.3/skins/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{admin_cdn('bootstrap-colorpicker/3.2.0/css/bootstrap-colorpicker.min.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{admin_cdn('font-awesome/5.15.1/css/all.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{admin_cdn('font-awesome/7.2.0/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{admin_cdn('node-waves/0.7.6/waves.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{admin_static('css/theme_'.config('admin.theme').'.css')}}" rel="stylesheet" type="text/css">
     {{--从配置项循环加载--}}
