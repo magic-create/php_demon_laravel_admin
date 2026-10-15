@@ -336,26 +336,50 @@ class Setting
                         $change[$item['name']] = $data[$item['name']];
                         //  如果是字符串则转换为数组
                         if (is_string($change[$item['name']])) {
-                            if (!bomber()->regexp($change[$item['name']], 'json'))
-                                $change[$item['name']] = explode(',', $change[$item['name']]);
+                            if (!bomber()->regexp($change[$item['name']], 'json')) {
+                                $rawStr = $change[$item['name']];
+                                if (preg_match('/[a-zA-Z_][a-zA-Z0-9_]*:/', $rawStr)) {
+                                    $parms = preg_split('/,(?=[a-zA-Z_][a-zA-Z0-9_]*:)/', $rawStr);
+                                    $tempArr = [];
+                                    foreach ($parms as $oneItem) {
+                                        $pos = strpos($oneItem, ':');
+                                        if ($pos === false)
+                                            continue;
+                                        $key = trim(substr($oneItem, 0, $pos));
+                                        $val = substr($oneItem, $pos + 1);
+                                        $tempArr[$key] = $val;
+                                    }
+                                    $change[$item['name']] = $tempArr;
+                                }
+                                else $change[$item['name']] = explode(',', $rawStr);
+                            }
                             else $change[$item['name']] = json_decode($change[$item['name']], true);
                         }
                         //  循环处理一下浮点型和整数型去掉字符串的引号
                         foreach ($change[$item['name']] as $k => $v) {
-                            if (mb_strlen((int)$v) == mb_strlen($v))
+                            if (preg_match('/^-?\d+$/', $v))
                                 $change[$item['name']][$k] = (int)$v;
-                            else if (mb_strlen((float)$v) == mb_strlen($v))
+                            else if (preg_match('/^-?\d+\.\d+$/', $v))
                                 $change[$item['name']][$k] = (float)$v;
-                            else
-                                $change[$item['name']][$k] = $v;
+                            else $change[$item['name']][$k] = $v;
+                        }
+                        //  循环处理一下浮点型和整数型去掉字符串的引号
+                        $itemValue = $item['value'];
+                        foreach ($itemValue as $k => $v) {
+                            if (preg_match('/^-?\d+$/', $v))
+                                $itemValue[$k] = (int)$v;
+                            else if (preg_match('/^-?\d+\.\d+$/', $v))
+                                $itemValue[$k] = (float)$v;
+                            else $itemValue[$k] = $v;
                         }
                         break;
                     default:
                         $change[$item['name']] = bomber()->typeCast($data[$item['name']], $item['filter']);
+                        $itemValue = bomber()->typeCast($item['value'], $item['filter']);
                         break;
                 }
                 //  如果是一样的数据就销毁掉
-                if ($change[$item['name']] == $item['value'])
+                if ($change[$item['name']] === $itemValue)
                     unset($change[$item['name']]);
             }
         }
